@@ -18,7 +18,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import houseIconUrl from '@/assets/house-icon.png';
 import axios from 'axios';
 import { PropertyMap } from '../components/property-map';
-import { properties } from '@/data/properties';
+import { allProperties, Property } from '@/data/properties';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -57,7 +57,7 @@ const displayPrice = (property: any) => {
 };
 
 // Use our client-side properties data
-const allProperties: PropertyWithScore[] = properties.map(property => ({
+const mappedProperties: PropertyWithScore[] = allProperties.map(property => ({
   ...property,
   coordinates: {
     lat: property.latitude,
@@ -91,7 +91,7 @@ function MapEffect({ properties, houseIcon, selectedMarker, setSelectedMarker, m
     // @ts-ignore
     const markerClusterGroup = L.markerClusterGroup();
     
-    properties.forEach((property: any, idx: number) => {
+    properties.forEach((property: Property, idx: number) => {
       // Get coordinates from our property data
       const lat = property.latitude;
       const lng = property.longitude;
@@ -112,18 +112,21 @@ function MapEffect({ properties, houseIcon, selectedMarker, setSelectedMarker, m
         imgHtml = `<img src='${property.img_url}' alt='Property' style='width:100px;height:auto;margin-bottom:8px;border-radius:8px;' />`;
       }
       
-      const popupContent = `
-        <div style='min-width:200px;'>
-          ${imgHtml}
-          <strong>${property.title}</strong><br />
-          <span style='color:#666;'>${property.location}</span><br />
-          <span style='color:#2563eb;font-weight:bold;font-size:16px;'>${property.price}</span><br />
-          <p style='margin:8px 0;font-size:14px;'>${property.description}</p>
-          ${property.tags ? property.tags.slice(0,3).map((tag:string) => 
-            `<span style='background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:12px;font-size:11px;margin-right:4px;'>${tag}</span>`
-          ).join('') : ''}
-        </div>
-      `;
+             const popupContent = `
+         <div style='min-width:250px;'>
+           ${imgHtml}
+           <strong style='font-size:16px;color:#1f2937;'>${property.title}</strong><br />
+           <span style='color:#666;font-size:14px;'>${property.location}</span><br />
+           <span style='color:#2563eb;font-weight:bold;font-size:18px;'>${property.price}</span><br />
+           <p style='margin:8px 0;font-size:14px;color:#4b5563;'>${property.description}</p>
+           ${property.tags ? property.tags.slice(0,3).map((tag:string) => 
+             `<span style='background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:12px;font-size:11px;margin-right:4px;'>${tag}</span>`
+           ).join('') : ''}
+           <div style='margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;'>
+             <a href='${property.contactUrl}' target='_blank' rel='noopener noreferrer' style='background:#2563eb;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block;width:100%;text-align:center;box-sizing:border-box;'>Contact Agent</a>
+           </div>
+         </div>
+       `;
       
       marker.bindPopup(popupContent);
       
