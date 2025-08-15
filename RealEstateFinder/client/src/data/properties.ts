@@ -1,6 +1,6 @@
 import { PropertyWithScore } from '@/lib/types';
 
-// Client-side property data - no backend needed!
+// Client-side property data - no backend needed! INSTANT LOADING!
 export const properties: PropertyWithScore[] = [
   {
     id: 1,
@@ -120,6 +120,207 @@ export const properties: PropertyWithScore[] = [
     personas: { remoteWorker: 0.7, family: 0.8, investor: 0.6, retiree: 0.4, luxury: 0.7 },
     latitude: 34.0535,
     longitude: -118.2420,
+    isActive: true
+  },
+  // NEW PROPERTIES - CYPRUS
+  {
+    id: 9,
+    title: "Beachfront Villa in Limassol",
+    price: "€1,200,000",
+    location: "Limassol, Cyprus",
+    country: "CY",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Stunning beachfront villa with Mediterranean views",
+    tags: ["Villa", "Beachfront", "Mediterranean"],
+    personas: { remoteWorker: 0.8, family: 0.9, investor: 0.8, retiree: 0.9, luxury: 0.9 },
+    latitude: 34.7071,
+    longitude: 33.0226,
+    isActive: true
+  },
+  {
+    id: 10,
+    title: "Modern Apartment in Nicosia",
+    price: "€450,000",
+    location: "Nicosia, Cyprus",
+    country: "CY",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    description: "Contemporary apartment in Cyprus capital",
+    tags: ["Apartment", "Modern", "City Center"],
+    personas: { remoteWorker: 0.9, family: 0.6, investor: 0.7, retiree: 0.5, luxury: 0.7 },
+    latitude: 35.1856,
+    longitude: 33.3823,
+    isActive: true
+  },
+  {
+    id: 11,
+    title: "Luxury Villa in Paphos",
+    price: "€1,800,000",
+    location: "Paphos, Cyprus",
+    country: "CY",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Exclusive villa with sea views in historic Paphos",
+    tags: ["Villa", "Luxury", "Sea View"],
+    personas: { remoteWorker: 0.7, family: 0.9, investor: 0.9, retiree: 0.95, luxury: 0.95 },
+    latitude: 34.7720,
+    longitude: 32.4297,
+    isActive: true
+  },
+  // MORE UAE PROPERTIES
+  {
+    id: 12,
+    title: "Penthouse in Abu Dhabi",
+    price: "د.إ15,000,000",
+    location: "Abu Dhabi, UAE",
+    country: "UAE",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    description: "Luxury penthouse with panoramic city views",
+    tags: ["Penthouse", "Luxury", "City View"],
+    personas: { remoteWorker: 0.8, family: 0.7, investor: 0.95, retiree: 0.6, luxury: 0.98 },
+    latitude: 24.4539,
+    longitude: 54.3773,
+    isActive: true
+  },
+  {
+    id: 13,
+    title: "Beach House in Ajman",
+    price: "د.إ6,500,000",
+    location: "Ajman, UAE",
+    country: "UAE",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Beautiful beach house with private beach access",
+    tags: ["Beach House", "Beachfront", "Family"],
+    personas: { remoteWorker: 0.6, family: 0.95, investor: 0.8, retiree: 0.8, luxury: 0.8 },
+    latitude: 25.4058,
+    longitude: 55.4628,
+    isActive: true
+  },
+  // MORE UK PROPERTIES
+  {
+    id: 14,
+    title: "Victorian House in Manchester",
+    price: "£750,000",
+    location: "Manchester, UK",
+    country: "UK",
+    images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=400&q=80",
+    description: "Beautiful Victorian house with period features",
+    tags: ["House", "Victorian", "Period"],
+    personas: { remoteWorker: 0.7, family: 0.9, investor: 0.7, retiree: 0.6, luxury: 0.7 },
+    latitude: 53.4808,
+    longitude: -2.2426,
+    isActive: true
+  },
+  {
+    id: 15,
+    title: "Modern Flat in Edinburgh",
+    price: "£380,000",
+    location: "Edinburgh, UK",
+    country: "UK",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    description: "Contemporary flat in historic Edinburgh",
+    tags: ["Flat", "Modern", "Historic City"],
+    personas: { remoteWorker: 0.8, family: 0.5, investor: 0.7, retiree: 0.7, luxury: 0.6 },
+    latitude: 55.9533,
+    longitude: -3.1883,
+    isActive: true
+  },
+  // SPAIN PROPERTIES
+  {
+    id: 16,
+    title: "Beachfront Apartment in Marbella",
+    price: "€650,000",
+    location: "Marbella, Spain",
+    country: "ES",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    description: "Beautiful beachfront apartment on Costa del Sol",
+    tags: ["Apartment", "Beachfront", "Costa del Sol"],
+    personas: { remoteWorker: 0.8, family: 0.8, investor: 0.7, retiree: 0.9, luxury: 0.8 },
+    latitude: 36.5097,
+    longitude: -4.8860,
+    isActive: true
+  },
+  {
+    id: 17,
+    title: "Villa in Ibiza",
+    price: "€1,500,000",
+    location: "Ibiza, Spain",
+    country: "ES",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Stunning villa with sea views in Ibiza",
+    tags: ["Villa", "Sea View", "Island"],
+    personas: { remoteWorker: 0.7, family: 0.8, investor: 0.8, retiree: 0.8, luxury: 0.9 },
+    latitude: 38.9067,
+    longitude: 1.4206,
+    isActive: true
+  },
+  // FRANCE PROPERTIES
+  {
+    id: 18,
+    title: "Chateau in Provence",
+    price: "€2,500,000",
+    location: "Provence, France",
+    country: "FR",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Magnificent chateau in the heart of Provence",
+    tags: ["Chateau", "Provence", "Historic"],
+    personas: { remoteWorker: 0.6, family: 0.9, investor: 0.9, retiree: 0.95, luxury: 0.95 },
+    latitude: 43.9352,
+    longitude: 5.2210,
+    isActive: true
+  },
+  {
+    id: 19,
+    title: "Parisian Apartment",
+    price: "€1,800,000",
+    location: "Paris, France",
+    country: "FR",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    description: "Elegant apartment in the heart of Paris",
+    tags: ["Apartment", "Paris", "Elegant"],
+    personas: { remoteWorker: 0.8, family: 0.7, investor: 0.9, retiree: 0.7, luxury: 0.9 },
+    latitude: 48.8566,
+    longitude: 2.3522,
+    isActive: true
+  },
+  // GERMANY PROPERTIES
+  {
+    id: 20,
+    title: "Modern House in Berlin",
+    price: "€850,000",
+    location: "Berlin, Germany",
+    country: "DE",
+    images: ["https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=400&q=80",
+    description: "Contemporary house in trendy Berlin",
+    tags: ["House", "Modern", "Berlin"],
+    personas: { remoteWorker: 0.9, family: 0.8, investor: 0.7, retiree: 0.6, luxury: 0.7 },
+    latitude: 52.5200,
+    longitude: 13.4050,
+    isActive: true
+  },
+  {
+    id: 21,
+    title: "Bavarian Villa",
+    price: "€1,200,000",
+    location: "Bavaria, Germany",
+    country: "DE",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    description: "Beautiful villa in the Bavarian countryside",
+    tags: ["Villa", "Bavaria", "Countryside"],
+    personas: { remoteWorker: 0.6, family: 0.9, investor: 0.7, retiree: 0.9, luxury: 0.8 },
+    latitude: 48.1351,
+    longitude: 11.5820,
     isActive: true
   }
 ];
