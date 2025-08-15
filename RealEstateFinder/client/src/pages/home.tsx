@@ -23,24 +23,36 @@ export default function HomePage() {
   const [propertyType, setPropertyType] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  // Use client-side data instead of API calls
-  const allProperties: PropertyWithScore[] = properties.map(property => ({
-    ...property,
-    coordinates: {
-      lat: property.latitude,
-      lng: property.longitude
-    }
-  }));
+  // Fetch all properties with search enhancement
+  const { data: allProperties = [], isLoading: propertiesLoading } = useQuery<PropertyWithScore[]>({
+    queryKey: ['/api/properties', searchQuery],
+    queryFn: async () => {
+      const params = searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : '';
+      const response = await fetch(`/api/properties${params}`);
+      if (!response.ok) throw new Error('Failed to fetch properties');
+      return response.json();
+    },
+  });
+
+  // Fetch user stats
+  const { data: stats } = useQuery<UserStats>({
+    queryKey: ['/api/stats', sessionId],
+  });
+
+  // Fetch liked properties
+  const { data: likedProperties = [] } = useQuery<PropertyWithScore[]>({
+    queryKey: ['/api/liked', sessionId],
+  });
 
   // Mock user stats for now
-  const stats: UserStats = {
-    totalSeen: allProperties.length,
-    totalLiked: 0,
-    matchRate: 0.8
-  };
+  // const stats: UserStats = {
+  //   totalSeen: allProperties.length,
+  //   totalLiked: 0,
+  //   matchRate: 0.8
+  // };
 
   // Mock liked properties for now
-  const likedProperties: PropertyWithScore[] = [];
+  // const likedProperties: PropertyWithScore[] = [];
 
   // Record interaction mutation (client-side only for now)
   const recordInteractionMutation = useMutation({

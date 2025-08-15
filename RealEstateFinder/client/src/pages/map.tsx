@@ -159,19 +159,40 @@ function MapEffect({ properties, houseIcon, selectedMarker, setSelectedMarker, m
 
 export default function MapPage() {
   const [selectedCountry, setSelectedCountry] = useState('All');
-  const [filteredProperties, setFilteredProperties] = useState<PropertyWithScore[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [properties, setProperties] = useState<PropertyWithScore[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Filter properties based on selected country
-    if (selectedCountry === 'All') {
-      setFilteredProperties(allProperties);
-    } else {
-      const countryProperties = allProperties.filter(property => 
-        property.country === selectedCountry
-      );
-      setFilteredProperties(countryProperties);
-    }
+    const loadProperties = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (selectedCountry && selectedCountry !== 'All') {
+          params.append('country', selectedCountry);
+        }
+        
+        // Use the real API endpoint
+        const response = await axios.get(`/api/properties?${params.toString()}`);
+        setProperties(response.data);
+        console.log('Loaded properties from API:', response.data);
+      } catch (error) {
+        console.error('Failed to load properties:', error);
+        // Fallback to client-side data if API fails
+        if (selectedCountry === 'All') {
+          setProperties(allProperties);
+        } else {
+          const countryProperties = allProperties.filter(property => 
+            property.country === selectedCountry
+          );
+          setProperties(countryProperties);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Load properties immediately when component mounts
+    loadProperties();
   }, [selectedCountry]);
 
   return (
@@ -196,14 +217,14 @@ export default function MapPage() {
         
         {/* Property Count Display */}
         <div className="mt-2 text-sm text-gray-600">
-          Showing {filteredProperties.length} properties
+          {loading ? 'Loading...' : `Showing ${properties.length} properties`}
         </div>
       </div>
 
       <PropertyMap 
         initialCenter={[51.505, -0.09]} // London coordinates
         initialZoom={2} // Zoom out to show world view
-        properties={filteredProperties}
+        properties={properties}
         loading={loading}
       />
     </div>

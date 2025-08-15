@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import { properties as allProperties } from '@/data/properties';
+import axios from 'axios';
 import { PropertyWithScore } from '@/lib/types';
 
 interface Country {
@@ -48,25 +48,19 @@ export default function SwipePage() {
     setCurrentIndex(0);
     
     try {
-      // Filter properties by country using our client-side data
-      let filteredProperties = allProperties.filter(property => 
-        property.country === selectedCountry.code
-      );
+      // Use real API to get properties by country
+      const params = new URLSearchParams();
+      params.append('country', selectedCountry.code);
       
-      // Apply price filters if set
-      if (minPrice.trim() || maxPrice.trim()) {
-        filteredProperties = filteredProperties.filter(property => {
-          const priceStr = property.price.replace(/[^0-9]/g, '');
-          const price = parseInt(priceStr);
-          if (isNaN(price)) return true;
-          
-          if (minPrice.trim() && price < parseInt(minPrice)) return false;
-          if (maxPrice.trim() && price > parseInt(maxPrice)) return false;
-          return true;
-        });
+      if (minPrice.trim()) {
+        params.append('price_min', minPrice);
+      }
+      if (maxPrice.trim()) {
+        params.append('price_max', maxPrice);
       }
       
-      setProperties(filteredProperties);
+      const response = await axios.get(`/api/properties?${params.toString()}`);
+      setProperties(response.data);
       setCurrentStep('swipe');
     } catch (err) {
       setError('Failed to load properties. Please try again.');
