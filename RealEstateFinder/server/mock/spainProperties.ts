@@ -1,0 +1,68 @@
+export default [
+  {
+    id: 2001,
+    latitude: 40.4168,
+    longitude: -3.7038,
+    title: "Luxury Apartment in Madrid Centro",
+    price: "€850,000",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    location: "Madrid, Spain",
+    contactUrl: "https://www.idealista.com/venta-vivienda-madrid/",
+    lister_url: "https://www.idealista.com/venta-vivienda-madrid/",
+    description: "Beautiful luxury apartment in the heart of Madrid with stunning city views.",
+    tags: ["Luxury", "Apartment", "Madrid", "City Center"],
+    personas: {
+      remoteWorker: 0.8,
+      family: 0.6,
+      investor: 0.9,
+      retiree: 0.4,
+      luxury: 0.9
+    },
+    isActive: true,
+  },
+  {
+    id: 2002,
+    latitude: 41.3851,
+    longitude: 2.1734,
+    title: "Modern Flat in Barcelona Eixample",
+    price: "€650,000",
+    images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80",
+    location: "Barcelona, Spain",
+    contactUrl: "https://www.idealista.com/venta-vivienda-barcelona/",
+    lister_url: "https://www.idealista.com/venta-vivienda-barcelona/",
+    description: "Modern flat in the prestigious Eixample district of Barcelona.",
+    tags: ["Modern", "Flat", "Barcelona", "Eixample"],
+    personas: {
+      remoteWorker: 0.7,
+      family: 0.8,
+      investor: 0.8,
+      retiree: 0.5,
+      luxury: 0.7
+    },
+    isActive: true,
+  },
+  {
+    id: 2003,
+    latitude: 37.3891,
+    longitude: -5.9845,
+    title: "Traditional House in Seville",
+    price: "€420,000",
+    images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
+    location: "Seville, Spain",
+    contactUrl: "https://www.idealista.com/venta-vivienda-sevilla/",
+    lister_url: "https://www.idealista.com/venta-vivienda-sevilla/",
+    description: "Traditional Andalusian house with courtyard in historic Seville.",
+    tags: ["Traditional", "House", "Seville", "Historic"],
+    personas: {
+      remoteWorker: 0.6,
+      family: 0.9,
+      investor: 0.7,
+      retiree: 0.8,
+      luxury: 0.6
+    },
+    isActive: true,
+  }
+]; 

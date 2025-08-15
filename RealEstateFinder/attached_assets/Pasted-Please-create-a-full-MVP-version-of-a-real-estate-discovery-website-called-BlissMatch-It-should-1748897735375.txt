@@ -1,0 +1,57 @@
+Please create a full MVP version of a real estate discovery website called **BlissMatch**. It should NOT be a mobile app. I want it as a responsive website (desktop + mobile browser friendly).
+
+BlissMatch is a Tinder-style real estate discovery site that lets users swipe through properties matched to their emotional and lifestyle preferences using AI tagging and personality matching.
+
+🔹 Tech stack suggestions:
+- Frontend: React (or Next.js), Tailwind or similar
+- Backend: Firebase (Firestore for DB, Auth, Storage), Node.js (optional for API functions)
+- Scraping: Python (Scrapy or Selenium), proxy manager like Bright Data or Puppeteer Cluster
+- AI: OpenAI API (GPT-4) for property tag extraction and buyer profile matching
+
+🔹 Functional Requirements:
+
+1. **Property Scraper (backend):**
+   - Scrape public property portals like Sahibinden or Idealista
+   - Extract title, description, price, location (geo if possible), 1–3 images, contact URL
+   - Run daily, store raw data in Firebase or MongoDB
+
+2. **AI Tagging Engine:**
+   - Use OpenAI to analyze property descriptions and assign tags such as:
+     - "Isolated", "Family-Friendly", "Modern", "Remote Work Friendly", "High Yield"
+   - Score properties for 5 personas:
+     - Remote worker, Family mover, Investor, Retiree/Wellness, Luxury buyer
+
+3. **User Lifestyle Quiz:**
+   - 6–8 questions to create a lifestyle profile vector (e.g., [0.8, 0.3, 0.6])
+   - Questions about priorities (view, walkability, investment), urgency, location type
+
+4. **Swipe UI:**
+   - Show property card with photo, price, title, and lifestyle tags
+   - Swipe right to save, left to skip
+   - Click for more details (map preview, description)
+   - Save liked properties in local user profile
+
+5. **Matching Logic (Rule-based – Phase 1):**
+   - Score each property against user profile vector
+   - Prioritize results based on persona match, budget, location preference
+
+6. **Storage & Hosting:**
+   - Use Firebase for user auth, Firestore DB for data, and optional AWS S3 for images
+
+7. **Legal & Compliance:**
+   - No personal contact info stored
+   - Redirect user to original listing for contact
+   - Add disclaimer: "BlissMatch helps you discover lifestyle-aligned properties. Transactions occur outside the platform."
+
+🔹 Timeline:
+- Week 1–2: Build scraper + user quiz prototype
+- Week 3–4: Connect OpenAI for property tagging and profile matching
+- Week 5–6: Build swipe UI and save/like functionality
+- Week 7–8: Polish UX, test logic, optimize mobile, and launch as beta
+
+⚠️ Important:
+- This must be a **website only**, not a mobile app.
+- It must look clean and work across desktop and mobile browsers.
+- Use mock data if scraping is not possible at this stage.
+
+Please make it functional, intuitive, and AI-powered.

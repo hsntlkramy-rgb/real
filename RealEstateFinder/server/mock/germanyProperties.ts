@@ -1,0 +1,68 @@
+export default [
+  {
+    id: 4001,
+    latitude: 52.5200,
+    longitude: 13.4050,
+    title: "Modern Apartment in Berlin Mitte",
+    price: "€850,000",
+    images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+    location: "Berlin, Germany",
+    contactUrl: "https://www.immobilienscout24.de/immobilien/berlin-mitte/",
+    lister_url: "https://www.immobilienscout24.de/immobilien/berlin-mitte/",
+    description: "Modern apartment in the vibrant Mitte district of Berlin.",
+    tags: ["Modern", "Apartment", "Berlin", "Mitte"],
+    personas: {
+      remoteWorker: 0.9,
+      family: 0.7,
+      investor: 0.8,
+      retiree: 0.5,
+      luxury: 0.8
+    },
+    isActive: true,
+  },
+  {
+    id: 4002,
+    latitude: 48.1351,
+    longitude: 11.5820,
+    title: "Luxury Villa in Munich",
+    price: "€2,500,000",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    location: "Munich, Germany",
+    contactUrl: "https://www.immobilienscout24.de/immobilien/muenchen/",
+    lister_url: "https://www.immobilienscout24.de/immobilien/muenchen/",
+    description: "Luxury villa in the prestigious district of Munich.",
+    tags: ["Luxury", "Villa", "Munich", "Prestigious"],
+    personas: {
+      remoteWorker: 0.7,
+      family: 0.9,
+      investor: 0.95,
+      retiree: 0.8,
+      luxury: 0.95
+    },
+    isActive: true,
+  },
+  {
+    id: 4003,
+    latitude: 50.9375,
+    longitude: 6.9603,
+    title: "Contemporary Loft in Cologne",
+    price: "€680,000",
+    images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80",
+    location: "Cologne, Germany",
+    contactUrl: "https://www.immobilienscout24.de/immobilien/koeln/",
+    lister_url: "https://www.immobilienscout24.de/immobilien/koeln/",
+    description: "Contemporary loft with industrial design in Cologne.",
+    tags: ["Contemporary", "Loft", "Cologne", "Industrial"],
+    personas: {
+      remoteWorker: 0.9,
+      family: 0.5,
+      investor: 0.8,
+      retiree: 0.4,
+      luxury: 0.7
+    },
+    isActive: true,
+  }
+]; 

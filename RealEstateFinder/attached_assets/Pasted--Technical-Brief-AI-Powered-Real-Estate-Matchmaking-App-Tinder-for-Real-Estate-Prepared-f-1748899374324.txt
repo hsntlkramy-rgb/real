@@ -1,0 +1,180 @@
+
+ Technical Brief – AI-Powered Real Estate Matchmaking App ("Tinder for Real Estate")
+
+Prepared for: Development Team
+Product Owner: Anita Papp
+Strategic Oversight: Dr. Siamak Goudarzi
+Project Code Name: BlissMatch
+Version: MVP Build – Phase 1
+
+I. Objective
+Build a mobile/web app that allows users to discover properties via a swipe-based interface, similar to Tinder, using AI-matched emotional and lifestyle compatibility. Properties are scraped from public portals, tagged by AI, and presented to users based on quiz-based profiles.
+
+II. Key Components
+1. Property Scraper (Backend Service)
+Purpose: Pull listings from a public property portal (e.g., Sahibinden, Idealista, or Cyprus-specific portals).
+
+Stack: Python (Scrapy or Selenium) + Proxy management (Bright Data or Puppeteer Cluster)
+
+Functionality:
+
+Crawl and extract:
+
+Title
+
+Description
+
+Price
+
+Location (geo if available)
+
+Photos (1–3)
+
+Contact URL (redirect only – do not store sensitive info)
+
+Frequency: Daily scrape of 100–200 listings
+
+Storage: Store raw data in Firebase or MongoDB
+
+2. AI Tagging Engine
+Purpose: Convert raw property descriptions into emotion/lifestyle tags and match scores.
+
+Stack: Node.js or Python + OpenAI GPT API
+
+Workflow:
+
+Pass property descriptions through a prompt:
+
+Extract tags like: "secluded", "family-friendly", "modern", "investment", "remote work-friendly", "high rental yield"
+
+Assign scores (0–5) for fit against 5 buyer personas:
+
+Remote Worker
+
+Family Relocator
+
+Investor
+
+Retiree / Wellness Seeker
+
+Luxury Buyer
+
+Store tags and scores in listing object
+
+3. User Quiz Onboarding (Frontend)
+Purpose: Profile users based on lifestyle, location preference, urgency, and emotional needs.
+
+Frontend Stack: React (Web) or React Native (Mobile MVP)
+
+Quiz Flow:
+
+6–8 questions:
+
+“What matters most to you?” (options: view, privacy, investment, walkability, etc.)
+
+“How soon are you planning to buy?”
+
+“Do you have residency or will apply?”
+
+“What is your budget range?”
+
+“Preferred setting?” (Beach, Rural, Urban)
+
+Output: Store user as a profile vector (e.g., [0.8, 0.3, 0.6, 0.2])
+
+4. Swipe-Based User Interface
+Purpose: Let users swipe properties they like (❤️) or dislike (✖️)
+
+Functionality:
+
+View: Property image, price, title, short tags (e.g., "Family-friendly | Beach")
+
+Tap for more details (scroll description, map preview)
+
+Swipe right to save → store in local user list
+
+Swipe left to skip
+
+Optional: Like counter per listing
+
+5. Matching Logic (Rules-Based – Phase 1)
+For each user:
+
+Calculate compatibility score with each property
+
+Rank properties by:
+
+Persona match score (from AI tag engine)
+
+Budget alignment
+
+Location preference
+
+Display best-fit properties first in swipe queue
+
+6. Storage & Hosting
+Firebase for user authentication, data, and media
+
+Optional: AWS S3 for storing image cache
+
+Use Firestore DB to store:
+
+Users
+
+Listings (tagged)
+
+Swipes & saved preferences
+
+7. Legal Handling
+All property listings include a “View on Original Site” CTA
+
+No storage of personal contact info from portals
+
+Add disclaimer: “BlissMatch helps you discover listings based on lifestyle fit. Final transactions occur off-platform.”
+
+III. Phased Build Plan (6–8 Weeks)
+Week 1–2
+
+Build scraper + storage
+
+Prepare quiz UI prototype
+
+Week 3–4
+
+Connect OpenAI tag engine
+
+Build user profile & matching logic
+
+Week 5–6
+
+Swipe interface + save feature
+
+Test matching logic & rankings
+
+Week 7–8
+
+Polish UI/UX
+
+Mobile optimization (React Native or PWA)
+
+Soft launch for test users
+
+IV. Team Roles
+Anita Papp – Product Owner (UX feedback, real estate positioning)
+
+Dr. Siamak Goudarzi – Strategic Oversight, Legal Ethics, Branding
+
+Parastoo – Backend Developer (Scraper, AI tagging, DB)
+
+Arshia – Frontend Developer (Quiz, Swipe UI, Match logic)
+
+Mehdi – Testers + Community Seeding (users, realtors)
+
+V. Success KPIs (Post-MVP)
+1,000+ swipe actions within 30 days
+
+200+ quiz completions
+
+At least 3 inquiries redirected to property owners per week
+
+<10% bounce rate on app load

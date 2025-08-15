@@ -1,0 +1,241 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.mockProperties = exports.uaeProperties = exports.api = void 0;
+const functions = __importStar(require("firebase-functions"));
+const admin = __importStar(require("firebase-admin"));
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const compression_1 = __importDefault(require("compression"));
+const socket_io_1 = require("socket.io");
+const http_1 = require("http");
+// Initialize Firebase Admin
+admin.initializeApp();
+// Create Express app
+const app = (0, express_1.default)();
+// Middleware
+app.use((0, helmet_1.default)());
+app.use((0, compression_1.default)());
+app.use((0, cors_1.default)({ origin: true, credentials: true }));
+app.use(express_1.default.json({ limit: '50mb' }));
+app.use(express_1.default.urlencoded({ extended: true, limit: '50mb' }));
+// Session middleware (using memory store for Cloud Functions)
+const express_session_1 = __importDefault(require("express-session"));
+const memorystore_1 = __importDefault(require("memorystore"));
+const MemoryStoreSession = (0, memorystore_1.default)(express_session_1.default);
+app.use((0, express_session_1.default)({
+    store: new MemoryStoreSession({
+        checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+// Import routes
+const routes_1 = require("./routes");
+// Register all routes
+(0, routes_1.registerRoutes)(app);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+    res.status(status).json({ error: message });
+});
+// Create HTTP server for Socket.io
+const server = (0, http_1.createServer)(app);
+// Socket.io setup for real-time chat
+const io = new socket_io_1.Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+    }
+});
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+    // Join a room for a property or agent
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`Socket ${socket.id} joined room ${roomId}`);
+    });
+    // Handle sending a chat message
+    socket.on('chatMessage', ({ roomId, message, sender }) => {
+        // Broadcast to everyone in the room (user and agent)
+        io.to(roomId).emit('chatMessage', { message, sender, timestamp: new Date().toISOString() });
+    });
+    socket.on('disconnect', () => {
+        console.log('A user disconnected:', socket.id);
+    });
+});
+// Export the Express app as a Firebase Function
+exports.api = functions.https.onRequest(app);
+// Export individual API endpoints for better performance
+exports.uaeProperties = functions.https.onRequest(async (req, res) => {
+    // Enable CORS
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'GET, POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {
+        res.status(204).send('');
+        return;
+    }
+    try {
+        let allProperties = [];
+        let page = 0;
+        const maxProperties = 300;
+        const pageSize = 30;
+        console.log('[UAE API] Starting to fetch properties...');
+        while (allProperties.length < maxProperties && page < 10) {
+            try {
+                const response = await fetch('https://bayut-com1.p.rapidapi.com/agencies/get-listings?' + new URLSearchParams({
+                    agencySlug: 'patriot-real-estate-7737',
+                    hitsPerPage: pageSize.toString(),
+                    page: page.toString()
+                }), {
+                    headers: {
+                        'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
+                        'x-rapidapi-host': 'bayut-com1.p.rapidapi.com'
+                    }
+                });
+                const data = await response.json();
+                const listings = data && data.data && data.data.listings || [];
+                if (listings.length > 0) {
+                    allProperties = allProperties.concat(listings);
+                    console.log(`[UAE API] Fetched page ${page + 1}, got ${listings.length} properties, total: ${allProperties.length}`);
+                }
+                if (listings.length < pageSize)
+                    break;
+                page++;
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+            catch (error) {
+                console.error(`[UAE API] Error fetching page ${page + 1}:`, error.message);
+                break;
+            }
+        }
+        console.log(`[UAE API] Total properties fetched: ${allProperties.length}`);
+        const formatted = allProperties.slice(0, maxProperties).map((item, idx) => {
+            let propertyUrl = '';
+            if (item.externalID) {
+                propertyUrl = `https://www.bayut.com/property/details-${item.externalID}.html`;
+            }
+            else if (item.url) {
+                propertyUrl = item.url;
+            }
+            return {
+                id: item.id || idx + 30000,
+                latitude: item.geography && item.geography.lat || item.latitude,
+                longitude: item.geography && item.geography.lng || item.longitude,
+                title: item.title || item.name || 'UAE Property',
+                price: item.price ? `د.إ${item.price.toLocaleString()}` : 'Price on request',
+                price_formatted: item.price ? `د.إ${item.price.toLocaleString()}` : 'Price on request',
+                images: item.coverPhoto ? [item.coverPhoto.url] : (item.images || []),
+                img_url: item.coverPhoto ? item.coverPhoto.url : (item.images && item.images[0]) || '',
+                location: item.location && item.location[0] && item.location[0].name || item.address || 'UAE',
+                keywords: item.purpose || item.propertyType || '',
+                lister_url: propertyUrl,
+                contactUrl: propertyUrl,
+                contact: item.agent && item.agent.phone || item.contact || '',
+                description: item.description || item.summary || '',
+                tags: [
+                    item.propertyType,
+                    item.purpose,
+                    `${item.bedrooms || 0} bed`,
+                    `${item.bedrooms || 0} bath`
+                ].filter(Boolean),
+                personas: {
+                    remoteWorker: 0.6,
+                    family: (item.bedrooms || 0) > 2 ? 0.8 : 0.4,
+                    investor: 0.7,
+                    retiree: 0.5,
+                    luxury: parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')) > 3000000 ? 0.8 : 0.4
+                },
+                isActive: true,
+            };
+        });
+        const properties = formatted.filter((p) => p.latitude != null && p.longitude != null &&
+            typeof p.latitude === 'number' && typeof p.longitude === 'number');
+        console.log(`[UAE API] Returning ${properties.length} valid properties`);
+        res.json(properties);
+    }
+    catch (error) {
+        console.error('[UAE API] Error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch UAE properties' });
+    }
+});
+// Mock properties for testing
+exports.mockProperties = functions.https.onRequest(async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    const mockProperties = [
+        {
+            id: 1,
+            title: "Modern Apartment in Dubai Marina",
+            price: "د.إ2,500,000",
+            location: "Dubai Marina, UAE",
+            images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80"],
+            img_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80",
+            description: "Beautiful modern apartment with marina views",
+            tags: ["Apartment", "Modern", "Marina View"],
+            personas: { remoteWorker: 0.8, family: 0.6, investor: 0.7, retiree: 0.4, luxury: 0.8 },
+            latitude: 25.1972,
+            longitude: 55.2744,
+            isActive: true
+        },
+        {
+            id: 2,
+            title: "Luxury Villa in Palm Jumeirah",
+            price: "د.إ8,500,000",
+            location: "Palm Jumeirah, UAE",
+            images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+            img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+            description: "Exclusive villa with private beach access",
+            tags: ["Villa", "Luxury", "Beach Access"],
+            personas: { remoteWorker: 0.6, family: 0.9, investor: 0.9, retiree: 0.7, luxury: 0.95 },
+            latitude: 25.0657,
+            longitude: 55.1713,
+            isActive: true
+        }
+    ];
+    res.json(mockProperties);
+});
+//# sourceMappingURL=index.js.map

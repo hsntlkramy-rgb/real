@@ -1,0 +1,614 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { analyzeProperty } from "./lib/openai";
+import { 
+  insertPropertySchema, 
+  insertUserProfileSchema, 
+  insertUserInteractionSchema,
+  propertyAnalysisSchema,
+  insertFavoriteSchema,
+  insertSavedSearchSchema
+} from "@shared/schema";
+import { z } from "zod";
+import axios from 'axios';
+import { fallbackUSProperties } from './mock/usProperties';
+import { fallbackITProperties } from './mock/itProperties';
+// @ts-ignore
+import cyprusPropertiesRaw from './mock/cyprusProperties.mjs';
+import fallbackUKProperties from './mock/ukProperties.ts';
+import fallbackUAEProperties from './mock/uaeProperties.ts';
+import express from 'express';
+import cors from 'cors';
+import { Server as SocketServer } from 'socket.io';
+import { Property } from '../shared/schema';
+import { cyprusProperties } from './mock/cyprusProperties.mjs';
+import { ukProperties } from './mock/ukProperties';
+import { uaeProperties } from './mock/uaeProperties';
+import fallbackUSProperties from './mock/usProperties';
+
+// Define a fallback dataset for Spain properties
+const fallbackESProperties = [
+  {
+    latitude: 40.4168,
+    longitude: -3.7038,
+    title: 'Fallback Property 1',
+    price: '€500,000',
+    img_url: '',
+    location: 'Madrid, Spain',
+    contactUrl: '',
+    contactPhone: '',
+    contactEmail: '',
+    description: 'This is a fallback property.',
+    tags: [],
+    personas: {},
+  },
+  // Add more fallback properties as needed
+];
+
+// Helper: Geocode location to coordinates (using OpenStreetMap Nominatim)
+async function geocodeLocation(location: string): Promise<{ lat: number, lng: number } | undefined> {
+  if (!location) return undefined;
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location + ', Cyprus')}`;
+    const { data } = await axios.get(url, { headers: { 'User-Agent': 'BlissMatch/1.0' } });
+    if (data && data.length > 0) {
+      return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+    }
+  } catch (e) {
+    console.error('Geocoding failed for', location, e.message);
+  }
+  return undefined;
+}
+
+// Add coordinates to Cyprus properties if missing
+async function enrichCyprusProperties() {
+  for (const prop of cyprusPropertiesRaw) {
+    if (!prop.coordinates && prop.location) {
+      const coords = await geocodeLocation(prop.location);
+      if (coords) prop.coordinates = coords;
+    }
+  }
+  return cyprusPropertiesRaw;
+}
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  
+  // Get all properties with optional filtering
+  app.get("/api/properties", async (req, res) => {
+    try {
+      // Fetch all UAE properties as before
+      let uaeProperties = [];
+      try {
+        const response = await axios.get('http://localhost:3000/api/uae-properties');
+        uaeProperties = response.data || [];
+      } catch {
+        uaeProperties = [];
+      }
+      res.json(uaeProperties);
+      } catch (err: any) {
+      res.status(500).json({ error: 'Failed to fetch properties.' });
+    }
+  });
+
+  // Get property by ID
+  app.get("/api/properties/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const property = await storage.getProperty(id);
+      
+      if (!property) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+      
+      res.json(property);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch property" });
+    }
+  });
+
+  // Create new property with AI analysis
+  app.post("/api/properties", async (req, res) => {
+    try {
+      const propertyData = insertPropertySchema.parse(req.body);
+      
+      // If tags or personas are not provided, use AI to analyze
+      if (!propertyData.tags || !propertyData.personas) {
+        const analysis = await analyzeProperty(
+          propertyData.description,
+          propertyData.title,
+          propertyData.price,
+          propertyData.location
+        );
+        
+        propertyData.tags = analysis.tags;
+        propertyData.personas = analysis.personas;
+      }
+      
+      const property = await storage.createProperty(propertyData);
+      res.status(201).json(property);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid property data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create property" });
+    }
+  });
+
+  // Analyze property with AI
+  app.post("/api/properties/analyze", async (req, res) => {
+    try {
+      const { description } = propertyAnalysisSchema.parse(req.body);
+      const { title = "", price = "", location = "" } = req.body;
+      
+      const analysis = await analyzeProperty(description, title, price, location);
+      res.json(analysis);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid request data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to analyze property" });
+    }
+  });
+
+  // Get user profile
+  app.get("/api/profile/:sessionId", async (req, res) => {
+    try {
+      const sessionId = req.params.sessionId;
+      const profile = await storage.getUserProfile(sessionId);
+      
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+      
+      res.json(profile);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch profile" });
+    }
+  });
+
+  // Create or update user profile
+  app.post("/api/profile", async (req, res) => {
+    try {
+      const profileData = insertUserProfileSchema.parse(req.body);
+      
+      const existingProfile = await storage.getUserProfile(profileData.sessionId);
+      
+      let profile;
+      if (existingProfile) {
+        profile = await storage.updateUserProfile(profileData.sessionId, profileData);
+      } else {
+        profile = await storage.createUserProfile(profileData);
+      }
+      
+      res.json(profile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid profile data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to save profile" });
+    }
+  });
+
+  // Record user interaction (like, pass, view)
+  app.post("/api/interactions", async (req, res) => {
+    try {
+      const interactionData = insertUserInteractionSchema.parse(req.body);
+      const interaction = await storage.createUserInteraction(interactionData);
+      res.status(201).json(interaction);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid interaction data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to record interaction" });
+    }
+  });
+
+  // Get user's liked properties
+  app.get("/api/liked/:sessionId", async (req, res) => {
+    try {
+      const sessionId = req.params.sessionId;
+      const likedProperties = await storage.getLikedProperties(sessionId);
+      res.json(likedProperties);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch liked properties" });
+    }
+  });
+
+  // Get recommended properties for user
+  app.get("/api/recommendations/:sessionId", async (req, res) => {
+    try {
+      const sessionId = req.params.sessionId;
+      const userProfile = await storage.getUserProfile(sessionId);
+      
+      if (!userProfile) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+      
+      const allProperties = await storage.getAllProperties();
+      const seenPropertyIds = await storage.getSeenPropertyIds(sessionId);
+      
+      // Filter out seen properties
+      const unseenProperties = allProperties.filter(p => !seenPropertyIds.includes(p.id));
+      
+      // Calculate match scores and sort by relevance
+      const propertiesWithScores = unseenProperties.map(property => {
+        let score = 0;
+        score += userProfile.remoteWorker * (property.personas.remoteWorker || 0);
+        score += userProfile.family * (property.personas.family || 0);
+        score += userProfile.investor * (property.personas.investor || 0);
+        score += userProfile.retiree * (property.personas.retiree || 0);
+        score += userProfile.luxury * (property.personas.luxury || 0);
+        
+        return { ...property, matchScore: score };
+      });
+      
+      // Sort by match score (highest first)
+      propertiesWithScores.sort((a, b) => b.matchScore - a.matchScore);
+      
+      res.json(propertiesWithScores);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get recommendations" });
+    }
+  });
+
+  // Get user statistics
+  app.get("/api/stats/:sessionId", async (req, res) => {
+    try {
+      const sessionId = req.params.sessionId;
+      const interactions = await storage.getUserInteractions(sessionId);
+      
+      const totalSeen = interactions.filter(i => i.action === 'like' || i.action === 'pass').length;
+      const totalLiked = interactions.filter(i => i.action === 'like').length;
+      const matchRate = totalSeen > 0 ? Math.round((totalLiked / totalSeen) * 100) : 0;
+      
+      res.json({
+        totalSeen,
+        totalLiked,
+        matchRate
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch statistics" });
+    }
+  });
+
+  // Favorites endpoints
+  app.get("/api/favorites/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const favorites = await storage.getFavorites(userId);
+      res.json(favorites);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch favorites" });
+    }
+  });
+
+  app.post("/api/favorites", async (req, res) => {
+    try {
+      const favoriteData = insertFavoriteSchema.parse(req.body);
+      const favorite = await storage.addFavorite(favoriteData);
+      res.status(201).json(favorite);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid favorite data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to add favorite" });
+    }
+  });
+
+  app.delete("/api/favorites/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.removeFavorite(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove favorite" });
+    }
+  });
+
+  // Saved searches endpoints
+  app.get("/api/saved-searches/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const savedSearches = await storage.getSavedSearches(userId);
+      res.json(savedSearches);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch saved searches" });
+    }
+  });
+
+  app.post("/api/saved-searches", async (req, res) => {
+    try {
+      const savedSearchData = insertSavedSearchSchema.parse(req.body);
+      const savedSearch = await storage.addSavedSearch(savedSearchData);
+      res.status(201).json(savedSearch);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid saved search data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to add saved search" });
+    }
+  });
+
+  app.delete("/api/saved-searches/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.removeSavedSearch(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to remove saved search" });
+    }
+  });
+
+  // Nestoria proxy endpoint for real global properties
+  app.get('/api/nestoria', async (req, res) => {
+    const { country = 'uk', place_name = 'london' } = req.query;
+    try {
+      const url = `https://api.nestoria.${country}/api`;
+      const response = await axios.get(url, {
+        params: {
+          country,
+          pretty: 1,
+          action: 'search_listings',
+          encoding: 'json',
+          listing_type: 'buy',
+          place_name,
+          number_of_results: 50
+        }
+      });
+      res.json(response.data.response.listings);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch properties', error: error.toString() });
+    }
+  });
+
+  // --- UAE Properties Proxy Endpoint ---
+  app.get('/api/uae-properties', async (req, res) => {
+    try {
+      let allHits: any[] = [];
+      for (let page = 1; page <= 10; page++) {
+        const response = await axios.get('https://bayut.p.rapidapi.com/properties/list', {
+        params: {
+            locationExternalIDs: '5002', // Dubai
+            purpose: 'for-sale',
+            hitsPerPage: '25',
+            page: page.toString(),
+        },
+        headers: {
+            'x-rapidapi-key': '858735acb2mshe55af724938229ep19591ajsn8d73b1fd29d0',
+            'x-rapidapi-host': 'bayut.p.rapidapi.com',
+        },
+      });
+      const hits = response.data && Array.isArray(response.data.hits) ? response.data.hits : [];
+        allHits = allHits.concat(hits);
+        if (hits.length < 25) break; // No more pages
+      }
+      const formatted = allHits.map((item, idx) => ({
+        id: idx + 30000,
+        latitude: item.geography && item.geography.lat,
+        longitude: item.geography && item.geography.lng,
+        title: item.title || 'UAE Property',
+        price_formatted: item.price ? `د.إ${item.price.toLocaleString()}` : '',
+        images: item.coverPhoto ? [item.coverPhoto.url] : [],
+        img_url: item.coverPhoto ? item.coverPhoto.url : '',
+        location: item.location && item.location[0] && item.location[0].name ? item.location[0].name : 'UAE',
+        keywords: item.purpose || '',
+        lister_url: item.externalID ? `https://www.bayut.com/property/details-${item.externalID}.html` : '',
+        contactUrl: item.externalID ? `https://www.bayut.com/property/details-${item.externalID}.html` : '',
+        contact: item.externalID ? `https://www.bayut.com/property/details-${item.externalID}.html` : '',
+        description: item.description || '',
+        tags: [],
+        personas: {},
+        isActive: true,
+      })).filter((p) => p.latitude && p.longitude);
+      res.json(formatted);
+    } catch (error) {
+      console.error('Error fetching UAE properties from Bayut:', error);
+      res.json(fallbackUAEProperties);
+    }
+  });
+
+  // --- AU Properties Proxy Endpoint ---
+  app.get('/api/au-properties', async (req, res) => {
+    try {
+      let allListings: any[] = [];
+      let page = 1;
+      const maxProperties = 250;
+      const pageSize = 20; // AU API uses pageSize of 20
+      const maxPages = Math.ceil(maxProperties / pageSize);
+
+      while (allListings.length < maxProperties && page <= maxPages) {
+        try {
+          const response = await axios.request({
+            method: 'GET',
+            url: 'https://realty-in-au.p.rapidapi.com/agents/get-listings',
+            params: {
+              page: page.toString(),
+              channel: 'BUY',
+              linkedSalespeopleIds: '315781,2008566,2046994,2084750',
+              pageSize: pageSize.toString()
+            },
+            headers: {
+              'x-rapidapi-key': 'a92aa1eeb4msh7bbffa51f405f9dp1b970cjsn5e5f66090ae7',
+              'x-rapidapi-host': 'realty-in-au.p.rapidapi.com'
+            }
+          });
+
+          console.log('AU API response:', JSON.stringify(response.data, null, 2));
+
+          let listings: any[] = [];
+          if (response.data && typeof response.data === 'object') {
+            if (Array.isArray(response.data.data)) {
+              listings = response.data.data;
+            }
+          }
+
+          if (listings.length > 0) {
+            allListings = allListings.concat(listings);
+          }
+
+          if (listings.length < pageSize) break; // No more pages
+          page++;
+
+          // Add a small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (e: any) {
+          console.error('Error fetching page', page, 'of AU properties:', e?.response?.data || e);
+          break; // Stop fetching on error
+        }
+      }
+
+      const mapped = allListings.slice(0, maxProperties).map((item: any) => ({
+        id: item.id || Date.now(),
+        title: item.headline || 'Australian Property',
+        description: item.description || '',
+        price: item.price?.display || '',
+        location: [
+          item.address?.streetAddress,
+          item.address?.suburb,
+          item.address?.state,
+          item.address?.postcode
+        ].filter(Boolean).join(', '),
+        images: item.media?.images?.map((img: any) => img.url) || [],
+        tags: [
+          item.propertyType,
+          `${item.features?.bedrooms || 0} bed`,
+          `${item.features?.bathrooms || 0} bath`,
+          item.features?.landSize ? `${item.features.landSize}m²` : '',
+          item.features?.buildingSize ? `${item.features.buildingSize}m²` : ''
+        ].filter(Boolean),
+        personas: {
+          remoteWorker: 0.5,
+          family: item.features?.bedrooms > 2 ? 0.8 : 0.4,
+          investor: 0.6,
+          retiree: 0.5,
+          luxury: item.price?.amount > 1000000 ? 0.8 : 0.4
+        },
+        coordinates: item.address?.location ? {
+          lat: item.address.location.latitude,
+          lng: item.address.location.longitude
+        } : null,
+        contactUrl: item.agency?.phone ? `tel:${item.agency.phone}` : null,
+        isActive: true
+      }));
+
+      // Filter out properties without coordinates
+      const properties = mapped.filter(p => p.coordinates !== null);
+
+      res.json(properties);
+    } catch (error: any) {
+      console.error('Error fetching AU properties:', error?.response?.data || error);
+      res.status(500).json({ error: 'Failed to fetch AU properties.' });
+    }
+  });
+
+  // --- Cyprus Properties Endpoint ---
+  app.get("/api/cyprus-properties", async (req, res) => {
+    try {
+      let cyprusProperties = cyprusPropertiesRaw.map((prop: any, idx: number) => {
+        // Ensure images is always an array of valid URLs
+        let images = Array.isArray(prop.images) ? prop.images.filter(Boolean) : [];
+        // If images is empty but img_url exists, add it
+        if (images.length === 0 && prop.img_url) images = [prop.img_url];
+        // Always set img_url to the first image if available
+        const img_url = images.length > 0 ? images[0] : (prop.img_url || "");
+        return {
+          ...prop,
+          images,
+          img_url,
+        };
+      });
+      res.json(cyprusProperties);
+    } catch (e: any) {
+      res.status(500).json({ error: 'Failed to load Cyprus properties.' });
+    }
+  });
+
+  // --- UK Properties via Zoopla RapidAPI (User's latest key) ---
+  app.get('/api/uk-properties', async (req, res) => {
+    try {
+      let allListings: any[] = [];
+      let page = 1;
+      const maxProperties = 250;
+      const pageSize = 25; // Zoopla's default page size
+      const maxPages = Math.ceil(maxProperties / pageSize);
+
+      while (allListings.length < maxProperties && page <= maxPages) {
+        const response = await axios.request({
+          method: 'GET',
+          url: 'https://zoopla.p.rapidapi.com/properties/v2/list',
+          params: {
+            locationValue: 'London',
+            locationIdentifier: 'london',
+            category: 'residential',
+            furnishedState: 'Any',
+            sortOrder: 'newest_listings',
+            page: page.toString()
+          },
+          headers: {
+            'x-rapidapi-key': 'a92aa1eeb4msh7bbffa51f405f9dp1b970cjsn5e5f66090ae7',
+            'x-rapidapi-host': 'zoopla.p.rapidapi.com'
+          }
+        });
+
+        const listings = response.data?.data?.listings?.regular || [];
+        allListings = allListings.concat(listings);
+        
+        if (listings.length < pageSize) break; // No more pages
+        page++;
+      }
+
+      const mapped = allListings.slice(0, maxProperties).map((item: any, idx: number) => {
+        // Extract image URLs from imageUris array
+        const imageUrls = Array.isArray(item.imageUris) ? item.imageUris : [];
+        const firstImageUrl = imageUrls[0] || '';
+
+        // Construct the Zoopla listing URL
+        const listingUrl = `https://www.zoopla.co.uk/for-sale/details/${item.listingId}`;
+
+        return {
+          id: item.listingId || idx + 40000,
+          latitude: item.location?.coordinates?.latitude,
+          longitude: item.location?.coordinates?.longitude,
+          title: item.title || 'UK Property',
+          price_formatted: item.pricing?.label || '',
+          images: imageUrls,
+          img_url: firstImageUrl,
+          location: item.address || '',
+          keywords: `${item.attributes?.bedrooms || 0} bed, ${item.attributes?.bathrooms || 0} bath`,
+          lister_url: listingUrl,
+          contactUrl: item.agent?.phone ? `tel:${item.agent.phone}` : '',
+          contact: item.agent?.phone || '',
+          description: '',
+          tags: Array.isArray(item.tags) ? item.tags.map((t: { label: string }) => t.label) : [],
+          personas: {},
+          isActive: true,
+        };
+      });
+
+      const properties = mapped.filter((p: { latitude: number | null; longitude: number | null }) => 
+        p.latitude != null && p.longitude != null && 
+        typeof p.latitude === 'number' && typeof p.longitude === 'number'
+      );
+
+      res.json(properties);
+    } catch (error: unknown) {
+      console.error('Error fetching UK properties from Zoopla:', error);
+      res.status(500).json({ error: 'Failed to fetch UK properties.' });
+    }
+  });
+
+  // --- US Properties via Realty-in-US RapidAPI (User's latest key) ---
+  app.get('/api/us-properties', async (req, res) => {
+    try {
+      // For now, use mock data until we get API access
+      res.json(fallbackUSProperties);
+    } catch (error: any) {
+      console.error('Error fetching US properties:', error);
+      res.status(500).json({ error: 'Failed to fetch US properties.' });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}

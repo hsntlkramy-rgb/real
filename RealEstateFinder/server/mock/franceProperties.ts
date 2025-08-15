@@ -1,0 +1,68 @@
+export default [
+  {
+    id: 3001,
+    latitude: 48.8566,
+    longitude: 2.3522,
+    title: "Elegant Apartment in Paris 8ème",
+    price: "€1,200,000",
+    images: ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80",
+    location: "Paris, France",
+    contactUrl: "https://www.seloger.com/vente-appartement-paris-8eme-arrondissement-75008/",
+    lister_url: "https://www.seloger.com/vente-appartement-paris-8eme-arrondissement-75008/",
+    description: "Elegant apartment in the prestigious 8th arrondissement of Paris.",
+    tags: ["Elegant", "Apartment", "Paris", "8ème"],
+    personas: {
+      remoteWorker: 0.8,
+      family: 0.7,
+      investor: 0.9,
+      retiree: 0.6,
+      luxury: 0.95
+    },
+    isActive: true,
+  },
+  {
+    id: 3002,
+    latitude: 43.2965,
+    longitude: 5.3698,
+    title: "Modern Villa in Marseille",
+    price: "€750,000",
+    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    location: "Marseille, France",
+    contactUrl: "https://www.seloger.com/vente-maison-marseille-13000/",
+    lister_url: "https://www.seloger.com/vente-maison-marseille-13000/",
+    description: "Modern villa with sea views in the beautiful city of Marseille.",
+    tags: ["Modern", "Villa", "Marseille", "Sea Views"],
+    personas: {
+      remoteWorker: 0.7,
+      family: 0.9,
+      investor: 0.8,
+      retiree: 0.8,
+      luxury: 0.8
+    },
+    isActive: true,
+  },
+  {
+    id: 3003,
+    latitude: 45.7578,
+    longitude: 4.8320,
+    title: "Historic Loft in Lyon",
+    price: "€580,000",
+    images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80"],
+    img_url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80",
+    location: "Lyon, France",
+    contactUrl: "https://www.seloger.com/vente-appartement-lyon-69000/",
+    lister_url: "https://www.seloger.com/vente-appartement-lyon-69000/",
+    description: "Beautifully renovated historic loft in the heart of Lyon.",
+    tags: ["Historic", "Loft", "Lyon", "Renovated"],
+    personas: {
+      remoteWorker: 0.9,
+      family: 0.6,
+      investor: 0.8,
+      retiree: 0.5,
+      luxury: 0.7
+    },
+    isActive: true,
+  }
+]; 
