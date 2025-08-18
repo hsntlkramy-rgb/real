@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, MapPin, Phone, Mail, Globe, Heart } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { api } from '@/data/properties';
 
 interface Property {
   id: number;
@@ -50,10 +51,9 @@ export default function PropertyDetailPage() {
   const fetchProperty = async (id: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/properties/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setProperty(data);
+      const propertyData = await api.getPropertyById(parseInt(id));
+      if (propertyData) {
+        setProperty(propertyData);
       } else {
         toast({
           title: "Property not found",
