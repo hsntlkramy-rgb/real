@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PropertyWithScore } from '../lib/types';
 import { api } from '../data/properties';
-import { Heart, X, MapPin, Home, Star } from 'lucide-react';
+import { Heart, X, MapPin, Home, Star, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function SwipePage() {
   const [selectedCountry, setSelectedCountry] = useState<{ code: string; name: string } | null>(null);
@@ -13,6 +13,12 @@ export default function SwipePage() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+
+  // Refs for touch handling
+  const cardRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
 
   const countries = [
     { code: 'UAE', name: 'United Arab Emirates' },
@@ -73,6 +79,98 @@ export default function SwipePage() {
       setCurrentIndex(prev => prev + 1);
     }
   };
+
+  // Touch swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartX.current) return;
+    
+    const touchCurrentX = e.touches[0].clientX;
+    const touchCurrentY = e.touches[0].clientY;
+    
+    const diffX = touchStartX.current - touchCurrentX;
+    const diffY = touchStartY.current - touchCurrentY;
+    
+    // Only handle horizontal swipes (ignore vertical scrolling)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartX.current) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = touchStartX.current - touchEndX;
+    const diffY = touchStartY.current - touchEndY;
+    
+    // Minimum swipe distance
+    const minSwipeDistance = 100;
+    
+    if (Math.abs(diffX) > minSwipeDistance && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        // Swipe left = Pass
+        setSwipeDirection('left');
+        setTimeout(() => {
+          handlePass();
+          setSwipeDirection(null);
+        }, 300);
+      } else {
+        // Swipe right = Like
+        setSwipeDirection('right');
+        setTimeout(() => {
+          handleLike();
+          setSwipeDirection(null);
+        }, 300);
+      }
+    }
+    
+    touchStartX.current = 0;
+    touchStartY.current = 0;
+  };
+
+  // Keyboard handlers
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (currentStep !== 'swipe' || currentIndex >= properties.length) return;
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          setSwipeDirection('left');
+          setTimeout(() => {
+            handlePass();
+            setSwipeDirection(null);
+          }, 300);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          setSwipeDirection('right');
+          setTimeout(() => {
+            handleLike();
+            setSwipeDirection(null);
+          }, 300);
+          break;
+        case ' ':
+          e.preventDefault();
+          handleLike();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          handlePass();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentStep, currentIndex, properties.length]);
 
   const handleBackToCountrySelect = () => {
     setCurrentStep('country-select');
@@ -229,7 +327,16 @@ export default function SwipePage() {
         </div>
 
         {/* Property Card */}
-        <div className="relative">
+        <div 
+          ref={cardRef}
+          className={`relative transition-transform duration-300 ${
+            swipeDirection === 'left' ? 'transform -translate-x-full opacity-0' :
+            swipeDirection === 'right' ? 'transform translate-x-full opacity-0' : ''
+          }`}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <img
             src={currentProperty.img_url}
             alt={currentProperty.title}
@@ -276,6 +383,22 @@ export default function SwipePage() {
             >
               <Heart className="h-8 w-8" />
             </button>
+          </div>
+
+          {/* Swipe Instructions */}
+          <div className="mt-4 text-center text-sm text-gray-500">
+            <p className="mb-2">💡 <strong>Swipe Controls:</strong></p>
+            <div className="flex justify-center items-center space-x-6 text-xs">
+              <div className="flex items-center">
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span>Swipe Left = Pass</span>
+              </div>
+              <div className="flex items-center">
+                <ArrowRight className="h-4 w-4 mr-1" />
+                <span>Swipe Right = Like</span>
+              </div>
+            </div>
+            <p className="mt-2 text-xs">Keyboard: ← → arrows, Space (like), Esc (pass)</p>
           </div>
           
           {/* View Details Button */}
