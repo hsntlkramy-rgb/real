@@ -67,32 +67,9 @@ export const generateUAEProperties = (): Property[] => {
     const lat = city.lat + (Math.random() - 0.5) * 0.1;
     const lng = city.lng + (Math.random() - 0.5) * 0.1;
     
-    // Generate unique images for each property using working Unsplash URLs
+    // Generate unique images for each property
     const imageIndex = i % 20; // 20 different high-quality images
-    const workingImageUrls = [
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80'
-    ];
-    
-    const baseImageUrl = workingImageUrls[imageIndex];
+    const baseImageUrl = `https://images.unsplash.com/photo-${1506744038136 + imageIndex}?auto=format&fit=crop&w=800&q=80`;
     
     const property: Property = {
       id: 3000 + i,
@@ -102,8 +79,8 @@ export const generateUAEProperties = (): Property[] => {
       country: 'UAE',
       images: [
         baseImageUrl,
-        workingImageUrls[(imageIndex + 1) % workingImageUrls.length],
-        workingImageUrls[(imageIndex + 2) % workingImageUrls.length]
+        `https://images.unsplash.com/photo-${1564013799919 + imageIndex}?auto=format&fit=crop&w=800&q=80`,
+        `https://images.unsplash.com/photo-${1570129477492 + imageIndex}?auto=format&fit=crop&w=800&q=80`
       ],
       img_url: baseImageUrl,
       description: `Beautiful ${propertyType.toLowerCase()} in ${city.name} with ${bedrooms} bedroom${bedrooms > 1 ? 's' : ''}. Modern amenities and prime location.`,

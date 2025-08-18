@@ -11,14 +11,33 @@ export default function MapPage() {
   const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
     queryKey: ['map-properties', selectedCountry],
     queryFn: async () => {
+      console.log('=== MAP PAGE DEBUG ===');
+      console.log('Selected country:', selectedCountry);
+      
+      let result;
       if (selectedCountry === 'All') {
-        return api.getProperties();
+        result = await api.getProperties();
+      } else {
+        result = await api.getPropertiesByCountry(selectedCountry);
       }
-      return api.getPropertiesByCountry(selectedCountry);
+      
+      console.log('API returned properties:', result.length);
+      console.log('First 3 properties:', result.slice(0, 3).map(p => ({ id: p.id, title: p.title, country: p.country })));
+      console.log('=== END MAP PAGE DEBUG ===');
+      
+      return result;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
+  
+  // Debug: Log when properties change
+  useEffect(() => {
+    console.log('=== MAP PAGE: Properties changed ===');
+    console.log('Properties array length:', properties.length);
+    console.log('Properties array:', properties);
+    console.log('=== END MAP PAGE: Properties changed ===');
+  }, [properties]);
 
   const countries = [
     { code: 'All', name: 'All Countries' },
