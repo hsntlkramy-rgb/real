@@ -794,7 +794,7 @@ export const germanyProperties: Property[] = [
   }
 ];
 
-// Generate 250+ real-looking UAE properties immediately
+// Generate 300+ real-looking UAE properties immediately
 export const generateUAEProperties = (): Property[] => {
   const properties: Property[] = [];
   
@@ -813,14 +813,21 @@ export const generateUAEProperties = (): Property[] => {
     { name: 'Umm Al Quwain', lat: 25.5654, lng: 55.5553, area: 'Umm Al Quwain' },
     { name: 'Abu Dhabi', lat: 24.4539, lng: 54.3773, area: 'Abu Dhabi' },
     { name: 'Al Ain', lat: 24.2075, lng: 55.7447, area: 'Al Ain' },
-    { name: 'Liwa Oasis', lat: 23.1322, lng: 53.7843, area: 'Liwa Oasis' }
+    { name: 'Liwa Oasis', lat: 23.1322, lng: 53.7843, area: 'Liwa Oasis' },
+    { name: 'Dubai Silicon Oasis', lat: 25.1198, lng: 55.3778, area: 'Dubai Silicon Oasis' },
+    { name: 'Dubai Sports City', lat: 25.0389, lng: 55.2000, area: 'Dubai Sports City' },
+    { name: 'Dubai Production City', lat: 25.0589, lng: 55.2389, area: 'Dubai Production City' },
+    { name: 'Dubai International City', lat: 25.1589, lng: 55.3189, area: 'Dubai International City' },
+    { name: 'Dubai Motor City', lat: 25.0589, lng: 55.2389, area: 'Dubai Motor City' },
+    { name: 'Dubai Studio City', lat: 25.0589, lng: 55.2389, area: 'Dubai Studio City' },
+    { name: 'Dubai Knowledge Park', lat: 25.0589, lng: 55.2389, area: 'Dubai Knowledge Park' }
   ];
 
-  const propertyTypes = ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Studio', 'Duplex'];
+  const propertyTypes = ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Studio', 'Duplex', 'Loft', 'Garden Apartment'];
   const amenities = ['Pool', 'Gym', 'Garden', 'Balcony', 'Parking', 'Security', 'Concierge', 'Beach Access'];
   
-  // Generate 250+ properties
-  for (let i = 0; i < 250; i++) {
+  // Generate 400 properties to ensure we have enough
+  for (let i = 0; i < 400; i++) {
     const city = uaeCities[i % uaeCities.length];
     const propertyType = propertyTypes[i % propertyTypes.length];
     const bedrooms = Math.floor(Math.random() * 5) + 1;
@@ -858,8 +865,8 @@ export const generateUAEProperties = (): Property[] => {
       latitude: lat,
       longitude: lng,
       isActive: true,
-      contactUrl: `https://www.bayut.com/property-details/${3000 + i}`,
-      lister_url: `https://www.bayut.com/property-details/${3000 + i}`,
+      contactUrl: `https://www.bayut.com/properties-for-sale/dubai/${3000 + i}`,
+      lister_url: `https://www.bayut.com/properties-for-sale/dubai/${3000 + i}`,
       contactPhone: `+971 ${Math.floor(Math.random() * 90000000) + 10000000}`,
       contactEmail: `agent${i + 1}@bayut.com`
     };
@@ -873,9 +880,9 @@ export const generateUAEProperties = (): Property[] => {
 // Generate the properties immediately
 export const generatedUAEProperties = generateUAEProperties();
 
-// All properties combined - now includes 250+ generated UAE properties
+// All properties combined - now includes 400+ generated UAE properties
 export const allProperties: Property[] = [
-  ...generatedUAEProperties, // 250+ UAE properties
+  ...generatedUAEProperties, // 400+ UAE properties
   ...cyprusProperties,
   ...ukProperties,
   ...usaProperties,
@@ -887,64 +894,48 @@ export const allProperties: Property[] = [
 
 // API functions that simulate backend calls
 export const api = {
-  // Get all properties - returns 250+ UAE properties immediately
+  // Get all properties - returns 400+ UAE properties immediately
   getProperties: async (): Promise<Property[]> => {
-    // Return generated properties immediately (no waiting)
-    const immediateProperties = allProperties;
-    
-    // Try to fetch from Bayut API in background (non-blocking)
-    try {
-      fetch('https://bayut6.p.rapidapi.com/bayut/market_analysis/buy_transactions', {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
-          'x-rapidapi-host': 'bayut6.p.rapidapi.com'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Bayut API data received:', data);
-        // You can update the properties here if needed
-      })
-      .catch(error => {
-        console.log('Bayut API fetch failed (non-blocking):', error);
-      });
-    } catch (error) {
-      console.log('Bayut API error (non-blocking):', error);
-    }
-    
-    // Return properties immediately
-    return immediateProperties;
+    console.log('API getProperties called, returning', allProperties.length, 'properties');
+    console.log('UAE properties count:', generatedUAEProperties.length);
+    return allProperties;
   },
 
   // Search properties - works immediately with generated data
   searchProperties: async (query: string): Promise<Property[]> => {
     const searchTerm = query.toLowerCase();
-    return allProperties.filter(property =>
+    const results = allProperties.filter(property =>
       property.title.toLowerCase().includes(searchTerm) ||
       property.location.toLowerCase().includes(searchTerm) ||
       property.description.toLowerCase().includes(searchTerm) ||
       property.tags.some(tag => tag.toLowerCase().includes(searchTerm))
     );
+    console.log('Search results:', results.length, 'properties found for query:', query);
+    return results;
   },
 
   // Get properties by country - returns data immediately
   getPropertiesByCountry: async (country: string): Promise<Property[]> => {
     if (country === 'All') {
-      return api.getProperties();
+      console.log('Returning all properties:', allProperties.length);
+      return allProperties;
     }
     
     if (country === 'UAE') {
-      // Return generated UAE properties immediately
+      console.log('Returning UAE properties:', generatedUAEProperties.length);
       return generatedUAEProperties;
     }
     
     // For other countries, use mock data
-    return allProperties.filter(property => property.country === country);
+    const countryProperties = allProperties.filter(property => property.country === country);
+    console.log(`Returning ${country} properties:`, countryProperties.length);
+    return countryProperties;
   },
 
   // Get property by ID - works immediately
   getPropertyById: async (id: number): Promise<Property | null> => {
-    return allProperties.find(property => property.id === id) || null;
+    const property = allProperties.find(property => property.id === id);
+    console.log('Property by ID:', id, property ? 'found' : 'not found');
+    return property || null;
   }
 };
