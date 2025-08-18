@@ -49,7 +49,8 @@ export function PropertyMap({
 
   useEffect(() => {
     // If properties are passed as props, use those
-    if (passedProperties) {
+    if (passedProperties && passedProperties.length > 0) {
+      console.log('PropertyMap: Received properties:', passedProperties.length);
       setProperties(passedProperties);
       return;
     }
@@ -74,11 +75,9 @@ export function PropertyMap({
       }
     }
 
-    // Use passed properties instead of fetching from Nestoria
-    if (passedProperties) {
-      setProperties(passedProperties);
-    }
-  }, [selectedCountry, selectedCity, property, passedProperties]);
+    // Default to empty array if no properties provided
+    setProperties([]);
+  }, [passedProperties, property]); // Remove selectedCountry and selectedCity from dependencies
 
   // Calculate map center based on property or properties
   const mapCenter = property?.coordinates 
@@ -153,14 +152,15 @@ export function PropertyMap({
             spiderfyOnMaxZoom={true}
             showCoverageOnHover={false}
           >
-            {properties
-              .filter(property => {
+            {(() => {
+              const validProperties = properties.filter(property => {
                 // Filter out properties without valid coordinates
                 const lat = property.latitude || property.lat || (property.coordinates && property.coordinates.lat);
                 const lng = property.longitude || property.lng || (property.coordinates && property.coordinates.lng);
                 return lat && lng && !isNaN(lat) && !isNaN(lng);
-              })
-              .map((property, index) => {
+              });
+              console.log('PropertyMap: Rendering', validProperties.length, 'valid properties out of', properties.length, 'total');
+              return validProperties.map((property, index) => {
                 const lat = property.latitude || property.lat || (property.coordinates && property.coordinates.lat);
                 const lng = property.longitude || property.lng || (property.coordinates && property.coordinates.lng);
                 const imageUrl = property.imageUrl || property.img_url || (property.images && property.images[0]);
@@ -212,7 +212,8 @@ export function PropertyMap({
                     </Popup>
                   </Marker>
                 );
-              })}
+              });
+            })()}
           </MarkerClusterGroup>
         </MapContainer>
       </div>
