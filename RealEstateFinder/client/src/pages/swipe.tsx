@@ -1,144 +1,109 @@
-import { useState, useEffect } from 'react';
-import SwipeCard from '../components/swipe-card';
-import { Loader2, ArrowLeft, ArrowRight, MapPin, DollarSign } from 'lucide-react';
-import { Alert } from '../components/ui/alert';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import axios from 'axios';
-import { PropertyWithScore } from '@/lib/types';
-
-interface Country {
-  code: string;
-  name: string;
-  flag: string;
-  currency: string;
-  description: string;
-}
-
-const availableCountries: Country[] = [
-  { code: 'UAE', name: 'United Arab Emirates', flag: '🇦🇪', currency: 'AED', description: 'Luxury properties in Dubai, Abu Dhabi' },
-  { code: 'UK', name: 'United Kingdom', flag: '🇬🇧', currency: 'GBP', description: 'Properties across England, Scotland, Wales' },
-  { code: 'USA', name: 'United States', flag: '🇺🇸', currency: 'USD', description: 'American properties from coast to coast' },
-  { code: 'CY', name: 'Cyprus', flag: '🇨🇾', currency: 'EUR', description: 'Mediterranean island properties' },
-  { code: 'IT', name: 'Italy', flag: '🇮🇹', currency: 'EUR', description: 'Italian properties and villas' },
-  { code: 'ES', name: 'Spain', flag: '🇪🇸', currency: 'EUR', description: 'Spanish coastal and city properties' },
-  { code: 'FR', name: 'France', flag: '🇫🇷', currency: 'EUR', description: 'French properties and chateaux' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪', currency: 'EUR', description: 'German urban and rural properties' },
-];
-
-type SwipeStep = 'country' | 'price' | 'swipe';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { PropertyWithScore } from '../lib/types';
+import { api } from '../data/properties';
+import { Heart, X, MapPin, Home, Star } from 'lucide-react';
 
 export default function SwipePage() {
-  const [currentStep, setCurrentStep] = useState<SwipeStep>('country');
-  const [properties, setProperties] = useState<PropertyWithScore[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<{ code: string; name: string } | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentStep, setCurrentStep] = useState<'country-select' | 'swipe'>('country-select');
+  const [likedProperties, setLikedProperties] = useState<PropertyWithScore[]>([]);
+  const [passedProperties, setPassedProperties] = useState<PropertyWithScore[]>([]);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const loadProperties = async () => {
-    if (!selectedCountry) return;
-    
-    setLoading(true);
-    setError(null);
-    setCurrentIndex(0);
-    
-    try {
-      // Use real API to get properties by country
-      const params = new URLSearchParams();
-      params.append('country', selectedCountry.code);
+  const countries = [
+    { code: 'UAE', name: 'United Arab Emirates' },
+    { code: 'CY', name: 'Cyprus' },
+    { code: 'UK', name: 'United Kingdom' },
+    { code: 'US', name: 'United States' },
+    { code: 'IT', name: 'Italy' },
+    { code: 'ES', name: 'Spain' },
+    { code: 'FR', name: 'France' },
+    { code: 'DE', name: 'Germany' }
+  ];
+
+  // Fetch properties for selected country using Bayut API
+  const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
+    queryKey: ['swipe-properties', selectedCountry?.code, minPrice, maxPrice],
+    queryFn: async () => {
+      if (!selectedCountry) return [];
       
-      if (minPrice.trim()) {
-        params.append('price_min', minPrice);
+      try {
+        if (selectedCountry.code === 'UAE') {
+          // Use Bayut API for UAE
+          return api.getPropertiesByCountry('UAE');
+        } else {
+          // Use mock data for other countries
+          return api.getPropertiesByCountry(selectedCountry.code);
+        }
+      } catch (error) {
+        console.error('Error loading properties:', error);
+        return [];
       }
-      if (maxPrice.trim()) {
-        params.append('price_max', maxPrice);
-      }
-      
-      const response = await axios.get(`/api/properties?${params.toString()}`);
-      setProperties(response.data);
-      setCurrentStep('swipe');
-    } catch (err) {
-      setError('Failed to load properties. Please try again.');
-      setProperties([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    enabled: !!selectedCountry && currentStep === 'swipe',
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
 
-  const handleSwipe = (direction: 'left' | 'right') => {
-    // Handle like/dislike logic here
-    if (direction === 'right') {
-      // Save to liked properties
-      console.log('Liked property:', properties[currentIndex]);
-    }
-    
-    // Move to next property
-    if (currentIndex < properties.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const handleCountrySelect = (country: Country) => {
+  const handleCountrySelect = (country: { code: string; name: string }) => {
     setSelectedCountry(country);
-    setCurrentStep('price');
-  };
-
-  const handleSkipPriceFilter = () => {
-    loadProperties();
-  };
-
-  const handleApplyPriceFilter = () => {
-    loadProperties();
-  };
-
-  const resetSelection = () => {
-    setSelectedCountry(null);
-    setMinPrice('');
-    setMaxPrice('');
-    setCurrentStep('country');
-    setProperties([]);
     setCurrentIndex(0);
+    setCurrentStep('swipe');
+    setLikedProperties([]);
+    setPassedProperties([]);
+    setError(null);
   };
 
-  // Country Selection Step
-  if (currentStep === 'country') {
-  return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        <div className="max-w-4xl mx-auto">
+  const handleLike = () => {
+    if (currentIndex < properties.length) {
+      const property = properties[currentIndex];
+      setLikedProperties(prev => [...prev, property]);
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePass = () => {
+    if (currentIndex < properties.length) {
+      const property = properties[currentIndex];
+      setPassedProperties(prev => [...prev, property]);
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const handleBackToCountrySelect = () => {
+    setCurrentStep('country-select');
+    setSelectedCountry(null);
+    setCurrentIndex(0);
+    setLikedProperties([]);
+    setPassedProperties([]);
+  };
+
+  if (currentStep === 'country-select') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              🏠 Find Your Dream Home
-          </h1>
-            <p className="text-xl text-gray-600">
-              Choose a country to start exploring properties
-            </p>
+            <Heart className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Choose Your Location</h1>
+            <p className="text-gray-600">Select a country to start swiping through properties</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableCountries.map((country) => (
-              <Card 
+          <div className="space-y-3">
+            {countries.map((country) => (
+              <button
                 key={country.code}
-                className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-blue-500"
                 onClick={() => handleCountrySelect(country)}
+                className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
               >
-                <CardHeader className="text-center">
-                  <div className="text-6xl mb-2">{country.flag}</div>
-                  <CardTitle className="text-xl">{country.name}</CardTitle>
-                  <CardDescription className="text-sm">
-                    {country.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <Badge variant="secondary" className="text-sm">
-                    Currency: {country.currency}
-                  </Badge>
-                </CardContent>
-              </Card>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-800">{country.name}</span>
+                  <span className="text-blue-600">→</span>
+                </div>
+              </button>
             ))}
           </div>
         </div>
@@ -146,189 +111,185 @@ export default function SwipePage() {
     );
   }
 
-  // Price Filter Step
-  if (currentStep === 'price') {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <Button
-              variant="ghost"
-              onClick={resetSelection}
-              className="mb-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Countries
-            </Button>
-            
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="text-4xl">{selectedCountry?.flag}</span>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-800">
-                  {selectedCountry?.name}
-                </h1>
-                <p className="text-gray-600">Set your price range (optional)</p>
-              </div>
-            </div>
-          </div>
-
-          <Card className="p-6">
-            <CardHeader className="text-center pb-4">
-              <CardTitle className="flex items-center justify-center gap-2">
-                <DollarSign className="h-6 w-6" />
-                Price Filter
-              </CardTitle>
-              <CardDescription>
-                Filter properties by price range, or skip to see all properties
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Minimum Price ({selectedCountry?.currency})
-                  </label>
-            <Input
-              type="number"
-                    placeholder="e.g. 100000"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full"
-            />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Maximum Price ({selectedCountry?.currency})
-                  </label>
-            <Input
-              type="number"
-                    placeholder="e.g. 500000"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={handleSkipPriceFilter}
-                  className="flex-1"
-                  disabled={loading}
-                >
-                  Skip Price Filter
-                </Button>
-                <Button
-                  onClick={handleApplyPriceFilter}
-              className="flex-1"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      Apply Filter
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading properties from {selectedCountry?.name}...</p>
         </div>
       </div>
     );
   }
 
-  // Swipe Step
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white shadow-sm p-4">
-        <div className="max-w-xl mx-auto flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={resetSelection}
-            size="sm"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Change Country
-          </Button>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{selectedCountry?.flag}</span>
-            <div className="text-center">
-              <h1 className="text-lg font-bold text-primary">
-                {selectedCountry?.name}
-              </h1>
-              {(minPrice || maxPrice) && (
-                <p className="text-xs text-gray-500">
-                  {minPrice && `Min: ${minPrice} ${selectedCountry?.currency}`}
-                  {minPrice && maxPrice && ' - '}
-                  {maxPrice && `Max: ${maxPrice} ${selectedCountry?.currency}`}
-                </p>
-              )}
-            </div>
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="text-red-500 mb-4">
+            <X className="h-16 w-16 mx-auto" />
           </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Oops!</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={handleBackToCountrySelect}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Try Another Country
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (properties.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="text-gray-400 mb-4">
+            <Home className="h-16 w-16 mx-auto" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Properties Found</h2>
+          <p className="text-gray-600 mb-6">No properties available in {selectedCountry?.name} with the current filters.</p>
+          <button
+            onClick={handleBackToCountrySelect}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+          >
+            Choose Another Country
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentIndex >= properties.length) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <div className="text-green-500 mb-4">
+            <Heart className="h-16 w-16 mx-auto" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">All Done!</h2>
+          <p className="text-gray-600 mb-6">
+            You've seen all {properties.length} properties in {selectedCountry?.name}
+          </p>
           
-          <div className="text-sm text-gray-500">
-            {currentIndex + 1} / {properties.length}
+          <div className="mb-6 text-sm text-gray-600">
+            <p>Liked: {likedProperties.length}</p>
+            <p>Passed: {passedProperties.length}</p>
+          </div>
+
+          <div className="space-y-3">
+            <button
+              onClick={handleBackToCountrySelect}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              Choose Another Country
+            </button>
+            
+            {likedProperties.length > 0 && (
+              <button
+                onClick={() => {
+                  // Show liked properties (you can implement a modal here)
+                  console.log('Liked properties:', likedProperties);
+                }}
+                className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              >
+                View Liked Properties ({likedProperties.length})
+              </button>
+            )}
           </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Main content */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        {loading ? (
-          <div className="flex items-center gap-2 text-blue-600">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span>Loading properties...</span>
-          </div>
-        ) : error ? (
-          <Alert variant="destructive" className="max-w-md mx-auto">
-            {error}
-          </Alert>
-        ) : properties.length > 0 && currentIndex < properties.length ? (
-          <SwipeCard
-            property={properties[currentIndex]}
-            onSwipe={handleSwipe}
-          />
-        ) : properties.length > 0 ? (
-          <div className="text-center text-gray-600">
-            <p className="text-xl mb-4">🎉 No more properties to show!</p>
-            <div className="space-y-2">
-              <Button
-              onClick={() => setCurrentIndex(0)}
-                variant="outline"
-                className="mr-2"
+  const currentProperty = properties[currentIndex];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handleBackToCountrySelect}
+              className="text-white hover:text-blue-200 transition-colors"
             >
-              Start Over
-              </Button>
-              <Button
-                onClick={resetSelection}
-                variant="default"
-              >
-                Choose Different Country
-              </Button>
+              ← Back
+            </button>
+            <div className="text-center">
+              <h1 className="font-semibold">{selectedCountry?.name}</h1>
+              <p className="text-sm opacity-90">
+                {currentIndex + 1} of {properties.length}
+              </p>
+            </div>
+            <div className="w-8"></div>
+          </div>
+        </div>
+
+        {/* Property Card */}
+        <div className="relative">
+          <img
+            src={currentProperty.img_url}
+            alt={currentProperty.title}
+            className="w-full h-80 object-cover"
+          />
+          
+          {/* Property Info Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
+            <h2 className="text-xl font-bold mb-2">{currentProperty.title}</h2>
+            <div className="flex items-center mb-2">
+              <MapPin className="h-4 w-4 mr-2" />
+              <span className="text-sm">{currentProperty.location}</span>
+            </div>
+            <p className="text-2xl font-bold text-yellow-400 mb-2">{currentProperty.price}</p>
+            <p className="text-sm opacity-90 line-clamp-2">{currentProperty.description}</p>
+            
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {currentProperty.tags.slice(0, 3).map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-white/20 text-white px-2 py-1 rounded-full text-xs"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
-        ) : (
-          <div className="text-center text-gray-600">
-            <p className="text-xl mb-2">No properties found</p>
-            <p className="text-gray-500 mb-4">Try adjusting your price range</p>
-            <Button
-              onClick={() => setCurrentStep('price')}
-              variant="outline"
+        </div>
+
+        {/* Action Buttons */}
+        <div className="p-6">
+          <div className="flex justify-center space-x-6">
+            <button
+              onClick={handlePass}
+              className="w-16 h-16 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
             >
-              Adjust Filters
-            </Button>
+              <X className="h-8 w-8" />
+            </button>
+            
+            <button
+              onClick={handleLike}
+              className="w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+            >
+              <Heart className="h-8 w-8" />
+            </button>
           </div>
-        )}
+          
+          {/* View Details Button */}
+          <div className="mt-6">
+            <a
+              href={currentProperty.contactUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-medium transition-colors"
+            >
+              View Details & Contact Agent
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

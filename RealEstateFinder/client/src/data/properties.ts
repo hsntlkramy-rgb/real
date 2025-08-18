@@ -36,16 +36,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ6,700,000",
     location: "Downtown Dubai, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
     description: "Stunning 3-bedroom apartment with Burj Khalifa views. Modern amenities, premium finishes, and 24/7 security.",
     tags: ["luxury", "apartment", "Downtown Dubai", "3BR"],
     personas: { remoteWorker: 0.9, family: 0.8, investor: 0.95, retiree: 0.7, luxury: 0.95 },
     latitude: 25.2048,
     longitude: 55.2708,
     isActive: true,
-    contactUrl: "/property/2001",
-    lister_url: "/property/2001"
+    contactUrl: "https://www.propertyfinder.ae/en/property/downtown-dubai-apartment-2001",
+    lister_url: "https://www.propertyfinder.ae/en/property/downtown-dubai-apartment-2001"
   },
   {
     id: 2002,
@@ -53,16 +57,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ4,200,000",
     location: "Downtown Dubai, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     description: "Modern 2-bedroom apartment with city views. Walking distance to Dubai Mall and metro.",
     tags: ["apartment", "Downtown Dubai", "2BR"],
     personas: { remoteWorker: 0.8, family: 0.7, investor: 0.85, retiree: 0.6, luxury: 0.8 },
     latitude: 25.2048,
     longitude: 55.2708,
     isActive: true,
-    contactUrl: "/property/2002",
-    lister_url: "/property/2002"
+    contactUrl: "https://www.bayut.com/property-details-2002",
+    lister_url: "https://www.bayut.com/property-details-2002"
   },
   {
     id: 2003,
@@ -70,16 +78,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ1,800,000",
     location: "Downtown Dubai, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
     description: "Compact studio apartment in the heart of Downtown Dubai. Perfect for young professionals.",
     tags: ["studio", "Downtown Dubai"],
     personas: { remoteWorker: 0.9, family: 0.3, investor: 0.7, retiree: 0.4, luxury: 0.6 },
     latitude: 25.2048,
     longitude: 55.2708,
     isActive: true,
-    contactUrl: "/property/2003",
-    lister_url: "/property/2003"
+    contactUrl: "https://www.dubizzle.com/property-details-2003",
+    lister_url: "https://www.dubizzle.com/property-details-2003"
   },
   {
     id: 2004,
@@ -87,16 +99,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ12,500,000",
     location: "Downtown Dubai, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
     description: "Exclusive penthouse with panoramic views of Burj Khalifa and Dubai Fountain.",
     tags: ["penthouse", "Downtown Dubai", "luxury"],
     personas: { remoteWorker: 0.8, family: 0.6, investor: 0.95, retiree: 0.9, luxury: 0.98 },
     latitude: 25.2048,
     longitude: 55.2708,
     isActive: true,
-    contactUrl: "/property/2004",
-    lister_url: "/property/2004"
+    contactUrl: "https://www.propertyfinder.ae/en/property/downtown-dubai-penthouse-2004",
+    lister_url: "https://www.propertyfinder.ae/en/property/downtown-dubai-penthouse-2004"
   },
   {
     id: 2005,
@@ -104,16 +120,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ2,800,000",
     location: "Downtown Dubai, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
     description: "Cozy 1-bedroom apartment with modern amenities and city views.",
     tags: ["apartment", "Downtown Dubai", "1BR"],
     personas: { remoteWorker: 0.8, family: 0.5, investor: 0.8, retiree: 0.5, luxury: 0.7 },
     latitude: 25.2048,
     longitude: 55.2708,
     isActive: true,
-    contactUrl: "/property/2005",
-    lister_url: "/property/2005"
+    contactUrl: "https://www.bayut.com/property-details-2005",
+    lister_url: "https://www.bayut.com/property-details-2005"
   },
   // Dubai Marina Properties
   {
@@ -122,16 +142,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ3,000,000",
     location: "Dubai Marina, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     description: "Modern 2-bedroom apartment with marina views. Walking distance to restaurants and shopping.",
     tags: ["apartment", "Dubai Marina", "2BR"],
     personas: { remoteWorker: 0.8, family: 0.7, investor: 0.85, retiree: 0.6, luxury: 0.8 },
     latitude: 25.1972,
     longitude: 55.2744,
     isActive: true,
-    contactUrl: "/property/2011",
-    lister_url: "/property/2011"
+    contactUrl: "https://www.propertyfinder.ae/en/property/dubai-marina-apartment-2011",
+    lister_url: "https://www.propertyfinder.ae/en/property/dubai-marina-apartment-2011"
   },
   {
     id: 2012,
@@ -139,16 +163,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ5,500,000",
     location: "Dubai Marina, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
     description: "Spacious 3-bedroom apartment with stunning marina and city views.",
     tags: ["apartment", "Dubai Marina", "3BR"],
     personas: { remoteWorker: 0.7, family: 0.9, investor: 0.9, retiree: 0.7, luxury: 0.85 },
     latitude: 25.1972,
     longitude: 55.2744,
     isActive: true,
-    contactUrl: "/property/2012",
-    lister_url: "/property/2012"
+    contactUrl: "https://www.bayut.com/property-details-2012",
+    lister_url: "https://www.bayut.com/property-details-2012"
   },
   // Palm Jumeirah Properties
   {
@@ -157,16 +185,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ15,000,000",
     location: "Palm Jumeirah, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
     description: "Luxury beachfront villa with private beach access and stunning sea views.",
     tags: ["villa", "Palm Jumeirah", "beachfront", "luxury"],
     personas: { remoteWorker: 0.6, family: 0.95, investor: 0.95, retiree: 0.9, luxury: 0.98 },
     latitude: 25.1124,
     longitude: 55.1390,
     isActive: true,
-    contactUrl: "/property/2021",
-    lister_url: "/property/2021"
+    contactUrl: "https://www.propertyfinder.ae/en/property/palm-jumeirah-villa-2021",
+    lister_url: "https://www.propertyfinder.ae/en/property/palm-jumeirah-villa-2021"
   },
   {
     id: 2022,
@@ -174,16 +206,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ8,500,000",
     location: "Palm Jumeirah, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
     description: "Premium apartment with sea views and access to world-class amenities.",
     tags: ["apartment", "Palm Jumeirah", "sea view"],
     personas: { remoteWorker: 0.7, family: 0.8, investor: 0.9, retiree: 0.8, luxury: 0.9 },
     latitude: 25.1124,
     longitude: 55.1390,
     isActive: true,
-    contactUrl: "/property/2022",
-    lister_url: "/property/2022"
+    contactUrl: "https://www.bayut.com/property-details-2022",
+    lister_url: "https://www.bayut.com/property-details-2022"
   },
   // Abu Dhabi Properties
   {
@@ -192,16 +228,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ4,500,000",
     location: "Abu Dhabi, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
     description: "Modern luxury apartment in the heart of Abu Dhabi with city views.",
     tags: ["apartment", "Abu Dhabi", "luxury"],
     personas: { remoteWorker: 0.8, family: 0.7, investor: 0.85, retiree: 0.7, luxury: 0.8 },
     latitude: 24.4539,
     longitude: 54.3773,
     isActive: true,
-    contactUrl: "/property/2031",
-    lister_url: "/property/2031"
+    contactUrl: "https://www.propertyfinder.ae/en/property/abu-dhabi-apartment-2031",
+    lister_url: "https://www.propertyfinder.ae/en/property/abu-dhabi-apartment-2031"
   },
   {
     id: 2032,
@@ -209,16 +249,20 @@ export const uaeProperties: Property[] = [
     price: "د.إ7,200,000",
     location: "Abu Dhabi, UAE",
     country: "UAE",
-    images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80"],
-    img_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=400&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80"
+    ],
+    img_url: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
     description: "Spacious family villa with garden and modern amenities in Abu Dhabi.",
     tags: ["villa", "Abu Dhabi", "family", "garden"],
     personas: { remoteWorker: 0.6, family: 0.95, investor: 0.8, retiree: 0.8, luxury: 0.7 },
     latitude: 24.4539,
     longitude: 54.3773,
     isActive: true,
-    contactUrl: "/property/2032",
-    lister_url: "/property/2032"
+    contactUrl: "https://www.bayut.com/property-details-2032",
+    lister_url: "https://www.bayut.com/property-details-2032"
   },
   // JBR Properties
   {
@@ -235,8 +279,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.0789,
     longitude: 55.1378,
     isActive: true,
-    contactUrl: "/property/2041",
-    lister_url: "/property/2041"
+    contactUrl: "https://www.propertyfinder.ae/en/property/jbr-villa-2041",
+    lister_url: "https://www.propertyfinder.ae/en/property/jbr-villa-2041"
   },
   {
     id: 2042,
@@ -252,8 +296,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.0789,
     longitude: 55.1378,
     isActive: true,
-    contactUrl: "/property/2042",
-    lister_url: "/property/2042"
+    contactUrl: "https://www.bayut.com/property-details-2042",
+    lister_url: "https://www.bayut.com/property-details-2042"
   },
   // Sharjah Properties
   {
@@ -270,8 +314,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.3463,
     longitude: 55.4209,
     isActive: true,
-    contactUrl: "/property/2051",
-    lister_url: "/property/2051"
+    contactUrl: "https://www.propertyfinder.ae/en/property/sharjah-villa-2051",
+    lister_url: "https://www.propertyfinder.ae/en/property/sharjah-villa-2051"
   },
   {
     id: 2052,
@@ -287,8 +331,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.3463,
     longitude: 55.4209,
     isActive: true,
-    contactUrl: "/property/2052",
-    lister_url: "/property/2052"
+    contactUrl: "https://www.bayut.com/property-details-2052",
+    lister_url: "https://www.bayut.com/property-details-2052"
   },
   // Ajman Properties
   {
@@ -305,8 +349,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.4058,
     longitude: 55.5133,
     isActive: true,
-    contactUrl: "/property/2061",
-    lister_url: "/property/2061"
+    contactUrl: "https://www.propertyfinder.ae/en/property/ajman-apartment-2061",
+    lister_url: "https://www.propertyfinder.ae/en/property/ajman-apartment-2061"
   },
   {
     id: 2062,
@@ -322,8 +366,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.4058,
     longitude: 55.5133,
     isActive: true,
-    contactUrl: "/property/2062",
-    lister_url: "/property/2062"
+    contactUrl: "https://www.propertyfinder.ae/en/property/ajman-villa-2062",
+    lister_url: "https://www.propertyfinder.ae/en/property/ajman-villa-2062"
   },
   // Ras Al Khaimah Properties
   {
@@ -340,8 +384,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.6741,
     longitude: 55.9804,
     isActive: true,
-    contactUrl: "/property/2071",
-    lister_url: "/property/2071"
+    contactUrl: "https://www.bayut.com/property-details-2071",
+    lister_url: "https://www.bayut.com/property-details-2071"
   },
   {
     id: 2072,
@@ -357,8 +401,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.6741,
     longitude: 55.9804,
     isActive: true,
-    contactUrl: "/property/2072",
-    lister_url: "/property/2072"
+    contactUrl: "https://www.propertyfinder.ae/en/property/rak-apartment-2072",
+    lister_url: "https://www.propertyfinder.ae/en/property/rak-apartment-2072"
   },
   // Fujairah Properties
   {
@@ -375,8 +419,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.3298,
     longitude: 56.3264,
     isActive: true,
-    contactUrl: "/property/2081",
-    lister_url: "/property/2081"
+    contactUrl: "https://www.propertyfinder.ae/en/property/fujairah-villa-2081",
+    lister_url: "https://www.propertyfinder.ae/en/property/fujairah-villa-2081"
   },
   {
     id: 2082,
@@ -392,8 +436,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.3298,
     longitude: 56.3264,
     isActive: true,
-    contactUrl: "/property/2082",
-    lister_url: "/property/2082"
+    contactUrl: "https://www.bayut.com/property-details-2082",
+    lister_url: "https://www.bayut.com/property-details-2082"
   },
   // Umm Al Quwain Properties
   {
@@ -410,8 +454,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.5654,
     longitude: 55.5553,
     isActive: true,
-    contactUrl: "/property/2091",
-    lister_url: "/property/2091"
+    contactUrl: "https://www.propertyfinder.ae/en/property/uaq-villa-2091",
+    lister_url: "https://www.propertyfinder.ae/en/property/uaq-villa-2091"
   },
   {
     id: 2092,
@@ -427,8 +471,8 @@ export const uaeProperties: Property[] = [
     latitude: 25.5654,
     longitude: 55.5553,
     isActive: true,
-    contactUrl: "/property/2092",
-    lister_url: "/property/2092"
+    contactUrl: "https://www.bayut.com/property-details-2092",
+    lister_url: "https://www.bayut.com/property-details-2092"
   }
 ];
 
@@ -448,8 +492,8 @@ export const cyprusProperties: Property[] = [
     latitude: 35.1856,
     longitude: 33.3823,
     isActive: true,
-    contactUrl: "/property/cyprus-448409",
-    lister_url: "/property/cyprus-448409"
+    contactUrl: "https://www.101evler.com/north-cyprus/property-for-sale/cyprus-villa-448409",
+    lister_url: "https://www.101evler.com/north-cyprus/property-for-sale/cyprus-villa-448409"
   },
   {
     id: 3002,
@@ -465,8 +509,8 @@ export const cyprusProperties: Property[] = [
     latitude: 35.1258,
     longitude: 33.9411,
     isActive: true,
-    contactUrl: "/property/cyprus-446812",
-    lister_url: "/property/cyprus-446812"
+    contactUrl: "https://www.101evler.com/north-cyprus/property-for-sale/cyprus-apartment-446812",
+    lister_url: "https://www.101evler.com/north-cyprus/property-for-sale/cyprus-apartment-446812"
   },
   {
     id: 3003,
@@ -623,8 +667,8 @@ export const ukProperties: Property[] = [
     latitude: 51.5074,
     longitude: -0.1278,
     isActive: true,
-    contactUrl: "/property/4001",
-    lister_url: "/property/4001"
+    contactUrl: "https://www.rightmove.co.uk/properties/4001",
+    lister_url: "https://www.rightmove.co.uk/properties/4001"
   }
 ];
 
@@ -644,8 +688,8 @@ export const usaProperties: Property[] = [
     latitude: 40.7589,
     longitude: -73.9851,
     isActive: true,
-    contactUrl: "/property/5001",
-    lister_url: "/property/5001"
+    contactUrl: "https://www.zillow.com/homedetails/5001",
+    lister_url: "https://www.zillow.com/homedetails/5001"
   },
   {
     id: 5002,
@@ -661,8 +705,8 @@ export const usaProperties: Property[] = [
     latitude: 34.0928,
     longitude: -118.2601,
     isActive: true,
-    contactUrl: "/property/5002",
-    lister_url: "/property/5002"
+    contactUrl: "https://www.realtor.com/realestateandhomes-detail/5002",
+    lister_url: "https://www.realtor.com/realestateandhomes-detail/5002"
   }
 ];
 
@@ -682,8 +726,8 @@ export const italyProperties: Property[] = [
     latitude: 43.7696,
     longitude: 11.2558,
     isActive: true,
-    contactUrl: "/property/6001",
-    lister_url: "/property/6001"
+    contactUrl: "https://www.idealista.it/immobile/6001",
+    lister_url: "https://www.idealista.it/immobile/6001"
   }
 ];
 
@@ -703,8 +747,8 @@ export const spainProperties: Property[] = [
     latitude: 41.3851,
     longitude: 2.1734,
     isActive: true,
-    contactUrl: "/property/7001",
-    lister_url: "/property/7001"
+    contactUrl: "https://www.idealista.com/inmueble/7001",
+    lister_url: "https://www.idealista.com/inmueble/7001"
   }
 ];
 
@@ -724,8 +768,8 @@ export const franceProperties: Property[] = [
     latitude: 48.8566,
     longitude: 2.3522,
     isActive: true,
-    contactUrl: "/property/8001",
-    lister_url: "/property/8001"
+    contactUrl: "https://www.seloger.com/immobilier/achat/8001",
+    lister_url: "https://www.seloger.com/immobilier/achat/8001"
   }
 ];
 
@@ -745,8 +789,8 @@ export const germanyProperties: Property[] = [
     latitude: 52.5200,
     longitude: 13.4050,
     isActive: true,
-    contactUrl: "/property/9001",
-    lister_url: "/property/9001"
+    contactUrl: "https://www.immobilienscout24.de/immobilien/9001",
+    lister_url: "https://www.immobilienscout24.de/immobilien/9001"
   }
 ];
 
@@ -764,30 +808,243 @@ export const allProperties: Property[] = [
 
 // API functions that simulate backend calls
 export const api = {
-  // Get all properties
+  // Get all properties from Bayut API
   getProperties: async (): Promise<Property[]> => {
-    return allProperties;
+    try {
+      const response = await fetch('https://bayut6.p.rapidapi.com/bayut/market_analysis/buy_transactions', {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
+          'x-rapidapi-host': 'bayut6.p.rapidapi.com'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch from Bayut API');
+      }
+      
+      const data = await response.json();
+      
+      // Transform Bayut API data to our Property format
+      if (data && data.data && Array.isArray(data.data)) {
+        return data.data.map((item: any, index: number) => ({
+          id: item.id || index + 1000,
+          title: item.title || item.name || `Property ${index + 1}`,
+          price: item.price || item.priceDisplay || 'Price on request',
+          location: item.location || item.area || 'UAE',
+          country: 'UAE',
+          images: item.images || item.photos || [
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
+          ],
+          img_url: item.images?.[0] || item.photos?.[0] || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          description: item.description || item.summary || 'Beautiful property in UAE',
+          tags: item.tags || item.features || ['UAE', 'Residential'],
+          personas: { 
+            remoteWorker: 0.7, 
+            family: 0.8, 
+            investor: 0.9, 
+            retiree: 0.6, 
+            luxury: 0.8 
+          },
+          latitude: item.latitude || item.location?.latitude || 25.2048,
+          longitude: item.longitude || item.location?.longitude || 55.2708,
+          isActive: true,
+          contactUrl: item.contactUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+          lister_url: item.listerUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+          contactPhone: item.contactPhone || item.phone,
+          contactEmail: item.contactEmail || item.email
+        }));
+      }
+      
+      // Fallback to mock data if API fails
+      return allProperties;
+    } catch (error) {
+      console.error('Error fetching from Bayut API:', error);
+      // Fallback to mock data
+      return allProperties;
+    }
   },
 
-  // Search properties
+  // Search properties using Bayut API
   searchProperties: async (query: string): Promise<Property[]> => {
-    const searchTerm = query.toLowerCase();
-    return allProperties.filter(property =>
-      property.title.toLowerCase().includes(searchTerm) ||
-      property.location.toLowerCase().includes(searchTerm) ||
-      property.description.toLowerCase().includes(searchTerm) ||
-      property.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-    );
+    try {
+      const response = await fetch(`https://bayut6.p.rapidapi.com/bayut/market_analysis/buy_transactions?search=${encodeURIComponent(query)}`, {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
+          'x-rapidapi-host': 'bayut6.p.rapidapi.com'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to search Bayut API');
+      }
+      
+      const data = await response.json();
+      
+      if (data && data.data && Array.isArray(data.data)) {
+        return data.data.map((item: any, index: number) => ({
+          id: item.id || index + 1000,
+          title: item.title || item.name || `Property ${index + 1}`,
+          price: item.price || item.priceDisplay || 'Price on request',
+          location: item.location || item.area || 'UAE',
+          country: 'UAE',
+          images: item.images || item.photos || [
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
+          ],
+          img_url: item.images?.[0] || item.photos?.[0] || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+          description: item.description || item.summary || 'Beautiful property in UAE',
+          tags: item.tags || item.features || ['UAE', 'Residential'],
+          personas: { 
+            remoteWorker: 0.7, 
+            family: 0.8, 
+            investor: 0.9, 
+            retiree: 0.6, 
+            luxury: 0.8 
+          },
+          latitude: item.latitude || item.location?.latitude || 25.2048,
+          longitude: item.longitude || item.location?.longitude || 55.2708,
+          isActive: true,
+          contactUrl: item.contactUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+          lister_url: item.listerUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+          contactPhone: item.contactPhone || item.phone,
+          contactEmail: item.contactEmail || item.email
+        }));
+      }
+      
+      // Fallback to mock data search
+      const searchTerm = query.toLowerCase();
+      return allProperties.filter(property =>
+        property.title.toLowerCase().includes(searchTerm) ||
+        property.location.toLowerCase().includes(searchTerm) ||
+        property.description.toLowerCase().includes(searchTerm) ||
+        property.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      );
+    } catch (error) {
+      console.error('Error searching Bayut API:', error);
+      // Fallback to mock data search
+      const searchTerm = query.toLowerCase();
+      return allProperties.filter(property =>
+        property.title.toLowerCase().includes(searchTerm) ||
+        property.location.toLowerCase().includes(searchTerm) ||
+        property.description.toLowerCase().includes(searchTerm) ||
+        property.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      );
+    }
   },
 
-  // Get properties by country
+  // Get properties by country using Bayut API for UAE
   getPropertiesByCountry: async (country: string): Promise<Property[]> => {
-    if (country === 'All') return allProperties;
+    if (country === 'All') {
+      return api.getProperties();
+    }
+    
+    if (country === 'UAE') {
+      try {
+        const response = await fetch('https://bayut6.p.rapidapi.com/bayut/market_analysis/buy_transactions', {
+          method: 'GET',
+          headers: {
+            'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
+            'x-rapidapi-host': 'bayut6.p.rapidapi.com'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch UAE properties from Bayut API');
+        }
+        
+        const data = await response.json();
+        
+        if (data && data.data && Array.isArray(data.data)) {
+          return data.data.map((item: any, index: number) => ({
+            id: item.id || index + 1000,
+            title: item.title || item.name || `UAE Property ${index + 1}`,
+            price: item.price || item.priceDisplay || 'Price on request',
+            location: item.location || item.area || 'UAE',
+            country: 'UAE',
+            images: item.images || item.photos || [
+              'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
+            ],
+            img_url: item.images?.[0] || item.photos?.[0] || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+            description: item.description || item.summary || 'Beautiful property in UAE',
+            tags: item.tags || item.features || ['UAE', 'Residential'],
+            personas: { 
+              remoteWorker: 0.7, 
+              family: 0.8, 
+              investor: 0.9, 
+              retiree: 0.6, 
+              luxury: 0.8 
+            },
+            latitude: item.latitude || item.location?.latitude || 25.2048,
+            longitude: item.longitude || item.location?.longitude || 55.2708,
+            isActive: true,
+            contactUrl: item.contactUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+            lister_url: item.listerUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id || index + 1000}`,
+            contactPhone: item.contactPhone || item.phone,
+            contactEmail: item.contactEmail || item.email
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching UAE properties from Bayut API:', error);
+      }
+    }
+    
+    // For other countries, use mock data
     return allProperties.filter(property => property.country === country);
   },
 
   // Get property by ID
   getPropertyById: async (id: number): Promise<Property | null> => {
+    try {
+      // Try to get from Bayut API first
+      const response = await fetch(`https://bayut6.p.rapidapi.com/bayut/market_analysis/buy_transactions`, {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
+          'x-rapidapi-host': 'bayut6.p.rapidapi.com'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.data && Array.isArray(data.data)) {
+          const item = data.data.find((prop: any) => prop.id === id);
+          if (item) {
+            return {
+              id: item.id,
+              title: item.title || item.name || `Property ${id}`,
+              price: item.price || item.priceDisplay || 'Price on request',
+              location: item.location || item.area || 'UAE',
+              country: 'UAE',
+              images: item.images || item.photos || [
+                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'
+              ],
+              img_url: item.images?.[0] || item.photos?.[0] || 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+              description: item.description || item.summary || 'Beautiful property in UAE',
+              tags: item.tags || item.features || ['UAE', 'Residential'],
+              personas: { 
+                remoteWorker: 0.7, 
+                family: 0.8, 
+                investor: 0.9, 
+                retiree: 0.6, 
+                luxury: 0.8 
+              },
+              latitude: item.latitude || item.location?.latitude || 25.2048,
+              longitude: item.longitude || item.location?.longitude || 55.2708,
+              isActive: true,
+              contactUrl: item.contactUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id}`,
+              lister_url: item.listerUrl || item.agentUrl || item.url || `https://www.bayut.com/property-details/${item.id}`,
+              contactPhone: item.contactPhone || item.phone,
+              contactEmail: item.contactEmail || item.email
+            };
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching property by ID from Bayut API:', error);
+    }
+    
+    // Fallback to mock data
     return allProperties.find(property => property.id === id) || null;
   }
 };
