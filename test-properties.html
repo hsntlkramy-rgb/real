@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Property Count Test</title>
+</head>
+<body>
+    <h1>Property Count Test</h1>
+    <div id="output"></div>
+    
+    <script type="module">
+        // Import the properties data
+        import { api, allProperties, generatedUAEProperties } from './RealEstateFinder/client/src/data/properties.ts';
+        
+        const output = document.getElementById('output');
+        
+        // Test the data
+        output.innerHTML = `
+            <h2>Property Counts:</h2>
+            <p>Total properties: ${allProperties.length}</p>
+            <p>Generated UAE properties: ${generatedUAEProperties.length}</p>
+            <p>UAE properties in allProperties: ${allProperties.filter(p => p.country === 'UAE').length}</p>
+            
+            <h3>First 10 properties:</h3>
+            <ul>
+                ${allProperties.slice(0, 10).map(p => `<li>${p.id}: ${p.title} (${p.country})</li>`).join('')}
+            </ul>
+        `;
+        
+        // Test the API
+        api.getProperties().then(properties => {
+            console.log('API returned:', properties.length, 'properties');
+            output.innerHTML += `<h3>API Test:</h3><p>API returned: ${properties.length} properties</p>`;
+        });
+    </script>
+</body>
+</html>

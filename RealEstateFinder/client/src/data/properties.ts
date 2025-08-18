@@ -892,12 +892,19 @@ export const allProperties: Property[] = [
   ...germanyProperties
 ];
 
+// Remove the old uaeProperties export to avoid confusion
+// export const uaeProperties: Property[] = [ ... ];
+
 // API functions that simulate backend calls
 export const api = {
   // Get all properties - returns 400+ UAE properties immediately
   getProperties: async (): Promise<Property[]> => {
-    console.log('API getProperties called, returning', allProperties.length, 'properties');
-    console.log('UAE properties count:', generatedUAEProperties.length);
+    console.log('=== DEBUG: API getProperties called ===');
+    console.log('Total properties in allProperties:', allProperties.length);
+    console.log('Generated UAE properties count:', generatedUAEProperties.length);
+    console.log('First 5 properties:', allProperties.slice(0, 5).map(p => ({ id: p.id, title: p.title, country: p.country })));
+    console.log('UAE properties sample:', allProperties.filter(p => p.country === 'UAE').slice(0, 3).map(p => ({ id: p.id, title: p.title })));
+    console.log('=== END DEBUG ===');
     return allProperties;
   },
 
