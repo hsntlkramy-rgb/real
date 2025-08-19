@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PropertyWithScore } from '../lib/types';
-import { api } from '../data/properties';
-import { Heart, X, MapPin, Home, Star, ArrowLeft, ArrowRight } from 'lucide-react';
+import { PropertyCard } from '../components/property-card';
+import { api } from '../data/properties-simple';
+import { MapPin, Heart, X, ArrowLeft, Eye, Home, ArrowRight } from 'lucide-react';
 
 export default function SwipePage() {
-  const [selectedCountry, setSelectedCountry] = useState<{ code: string; name: string } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>('UAE');
+  const [currentStep, setCurrentStep] = useState<'select' | 'swipe'>('select');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentStep, setCurrentStep] = useState<'country-select' | 'swipe'>('country-select');
-  const [likedProperties, setLikedProperties] = useState<PropertyWithScore[]>([]);
-  const [passedProperties, setPassedProperties] = useState<PropertyWithScore[]>([]);
+  const [likedProperties, setLikedProperties] = useState<Set<number>>(new Set());
+  const [passedProperties, setPassedProperties] = useState<Set<number>>(new Set());
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +22,9 @@ export default function SwipePage() {
   const touchStartY = useRef<number>(0);
 
   const countries = [
-    { code: 'UAE', name: 'United Arab Emirates' },
-    { code: 'CY', name: 'Cyprus' },
     { code: 'UK', name: 'United Kingdom' },
+    { code: 'UAE', name: 'United Arab Emirates' },
+    { code: 'Cyprus', name: 'Cyprus' },
     { code: 'US', name: 'United States' },
     { code: 'IT', name: 'Italy' },
     { code: 'ES', name: 'Spain' },
@@ -31,51 +32,62 @@ export default function SwipePage() {
     { code: 'DE', name: 'Germany' }
   ];
 
-  // Fetch properties for selected country using Bayut API
-  const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
-    queryKey: ['swipe-properties', selectedCountry?.code, minPrice, maxPrice],
+  // Fetch properties based on selected country
+  const { data: properties = [], isLoading } = useQuery({
+    queryKey: ['swipe-properties', selectedCountry],
     queryFn: async () => {
-      if (!selectedCountry) return [];
+      console.log('=== SWIPE PAGE DEBUG ===');
+      console.log('Selected country:', selectedCountry);
       
       try {
-        if (selectedCountry.code === 'UAE') {
-          // Use Bayut API for UAE
+        if (selectedCountry === 'UAE') {
+          // Use UAE API
           return api.getPropertiesByCountry('UAE');
+        } else if (selectedCountry === 'UK') {
+          // Use UK API
+          return api.getPropertiesByCountry('UK');
         } else {
           // Use mock data for other countries
-          return api.getPropertiesByCountry(selectedCountry.code);
+          return api.getPropertiesByCountry(selectedCountry);
         }
       } catch (error) {
-        console.error('Error loading properties:', error);
+        console.error('Error fetching properties:', error);
         return [];
       }
     },
-    enabled: !!selectedCountry && currentStep === 'swipe',
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
   });
 
+  // Get properties for current country
+  const currentCountryProperties = useMemo(() => {
+    if (selectedCountry === 'UAE') {
+      return properties.filter(p => p.country === 'UAE');
+    } else if (selectedCountry === 'UK') {
+      return properties.filter(p => p.country === 'UK');
+    }
+    return properties;
+  }, [properties, selectedCountry]);
+
   const handleCountrySelect = (country: { code: string; name: string }) => {
-    setSelectedCountry(country);
-    setCurrentIndex(0);
+    setSelectedCountry(country.code);
     setCurrentStep('swipe');
-    setLikedProperties([]);
-    setPassedProperties([]);
-    setError(null);
+    setCurrentIndex(0);
+    setLikedProperties(new Set());
+    setPassedProperties(new Set());
   };
 
   const handleLike = () => {
-    if (currentIndex < properties.length) {
-      const property = properties[currentIndex];
-      setLikedProperties(prev => [...prev, property]);
+    if (currentIndex < currentCountryProperties.length) {
+      const property = currentCountryProperties[currentIndex];
+      setLikedProperties(prev => new Set([...Array.from(prev), property.id]));
       setCurrentIndex(prev => prev + 1);
     }
   };
 
   const handlePass = () => {
-    if (currentIndex < properties.length) {
-      const property = properties[currentIndex];
-      setPassedProperties(prev => [...prev, property]);
+    if (currentIndex < currentCountryProperties.length) {
+      const property = currentCountryProperties[currentIndex];
+      setPassedProperties(prev => new Set([...Array.from(prev), property.id]));
       setCurrentIndex(prev => prev + 1);
     }
   };
@@ -138,7 +150,7 @@ export default function SwipePage() {
   // Keyboard handlers
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (currentStep !== 'swipe' || currentIndex >= properties.length) return;
+      if (currentStep !== 'swipe' || currentIndex >= currentCountryProperties.length) return;
       
       switch (e.key) {
         case 'ArrowLeft':
@@ -170,17 +182,23 @@ export default function SwipePage() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentStep, currentIndex, properties.length]);
+  }, [currentStep, currentIndex, currentCountryProperties.length]);
 
   const handleBackToCountrySelect = () => {
-    setCurrentStep('country-select');
-    setSelectedCountry(null);
+    setCurrentStep('select');
+    setSelectedCountry('UAE'); // Reset to default
     setCurrentIndex(0);
-    setLikedProperties([]);
-    setPassedProperties([]);
+    setLikedProperties(new Set());
+    setPassedProperties(new Set());
   };
 
-  if (currentStep === 'country-select') {
+  // Get country name for display
+  const getCountryName = (countryCode: string) => {
+    const country = countries.find(c => c.code === countryCode);
+    return country ? country.name : countryCode;
+  };
+
+  if (currentStep === 'select') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
@@ -209,12 +227,12 @@ export default function SwipePage() {
     );
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading properties from {selectedCountry?.name}...</p>
+          <p className="text-gray-600">Loading properties from {getCountryName(selectedCountry)}...</p>
         </div>
       </div>
     );
@@ -240,7 +258,7 @@ export default function SwipePage() {
     );
   }
 
-  if (properties.length === 0) {
+  if (currentCountryProperties.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
@@ -248,7 +266,7 @@ export default function SwipePage() {
             <Home className="h-16 w-16 mx-auto" />
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">No Properties Found</h2>
-          <p className="text-gray-600 mb-6">No properties available in {selectedCountry?.name} with the current filters.</p>
+          <p className="text-gray-600 mb-6">No properties available in {getCountryName(selectedCountry)} with the current filters.</p>
           <button
             onClick={handleBackToCountrySelect}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
@@ -260,7 +278,7 @@ export default function SwipePage() {
     );
   }
 
-  if (currentIndex >= properties.length) {
+  if (currentIndex >= currentCountryProperties.length) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
@@ -269,12 +287,12 @@ export default function SwipePage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">All Done!</h2>
           <p className="text-gray-600 mb-6">
-            You've seen all {properties.length} properties in {selectedCountry?.name}
+            You've seen all {currentCountryProperties.length} properties in {getCountryName(selectedCountry)}
           </p>
           
           <div className="mb-6 text-sm text-gray-600">
-            <p>Liked: {likedProperties.length}</p>
-            <p>Passed: {passedProperties.length}</p>
+            <p>Liked: {likedProperties.size}</p>
+            <p>Passed: {passedProperties.size}</p>
           </div>
 
           <div className="space-y-3">
@@ -285,7 +303,7 @@ export default function SwipePage() {
               Choose Another Country
             </button>
             
-            {likedProperties.length > 0 && (
+            {likedProperties.size > 0 && (
               <button
                 onClick={() => {
                   // Show liked properties (you can implement a modal here)
@@ -293,7 +311,7 @@ export default function SwipePage() {
                 }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
               >
-                View Liked Properties ({likedProperties.length})
+                View Liked Properties ({likedProperties.size})
               </button>
             )}
           </div>
@@ -302,7 +320,7 @@ export default function SwipePage() {
     );
   }
 
-  const currentProperty = properties[currentIndex];
+  const currentProperty = currentCountryProperties[currentIndex];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
@@ -317,54 +335,42 @@ export default function SwipePage() {
               ← Back
             </button>
             <div className="text-center">
-              <h1 className="font-semibold">{selectedCountry?.name}</h1>
+              <h1 className="font-semibold">{getCountryName(selectedCountry)}</h1>
               <p className="text-sm opacity-90">
-                {currentIndex + 1} of {properties.length}
+                {currentIndex + 1} of {currentCountryProperties.length}
               </p>
             </div>
             <div className="w-8"></div>
           </div>
         </div>
 
-        {/* Property Card */}
-        <div 
-          ref={cardRef}
-          className={`relative transition-transform duration-300 ${
-            swipeDirection === 'left' ? 'transform -translate-x-full opacity-0' :
-            swipeDirection === 'right' ? 'transform translate-x-full opacity-0' : ''
-          }`}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          <img
-            src={currentProperty.img_url}
-            alt={currentProperty.title}
-            className="w-full h-80 object-cover"
-          />
-          
-          {/* Property Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
-            <h2 className="text-xl font-bold mb-2">{currentProperty.title}</h2>
-            <div className="flex items-center mb-2">
-              <MapPin className="h-4 w-4 mr-2" />
-              <span className="text-sm">{currentProperty.location}</span>
-            </div>
-            <p className="text-2xl font-bold text-yellow-400 mb-2">{currentProperty.price}</p>
-            <p className="text-sm opacity-90 line-clamp-2">{currentProperty.description}</p>
-            
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mt-3">
-              {currentProperty.tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="bg-white/20 text-white px-2 py-1 rounded-full text-xs"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+        {/* Stats Section */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
+            <div className="text-2xl font-bold text-blue-600">{currentCountryProperties.length}</div>
+            <div className="text-sm text-gray-600">Total Properties</div>
           </div>
+          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
+            <div className="text-2xl font-bold text-green-600">{likedProperties.size}</div>
+            <div className="text-sm text-gray-600">❤️ Liked</div>
+          </div>
+          <div className="bg-white rounded-lg p-4 text-center shadow-sm border">
+            <div className="text-2xl font-bold text-red-600">{passedProperties.size}</div>
+            <div className="text-sm text-gray-600">❌ Passed</div>
+          </div>
+        </div>
+
+        {/* Property Card */}
+        <div className="relative max-w-md mx-auto">
+          <PropertyCard
+            property={currentProperty}
+            onLike={handleLike}
+            onPass={handlePass}
+            onDetails={() => {
+              // Handle property details view
+              console.log('View details for:', currentProperty.title);
+            }}
+          />
         </div>
 
         {/* Action Buttons */}
