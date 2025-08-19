@@ -2,7 +2,6 @@ import { Route, Switch } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import HomePage from './pages/home';
 import MapPage from './pages/map';
 import SwipePage from './pages/swipe';
 import PropertyDetailPage from './pages/property-detail';
