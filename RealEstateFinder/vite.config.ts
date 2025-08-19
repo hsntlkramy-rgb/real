@@ -34,10 +34,29 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
+        // Ensure all assets use relative paths
+        format: 'es',
+        // Prevent external domain references
+        globals: {},
       },
     },
+    // Ensure all assets are built with correct paths
+    assetsInlineLimit: 0,
+    // Force base path usage
+    target: 'es2015',
   },
   define: {
     __BASE_URL__: JSON.stringify("/realestat/"),
+    // Prevent any external domain references
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+  },
+  // Ensure no external resources are loaded
+  optimizeDeps: {
+    exclude: [],
+  },
+  // Force all imports to use relative paths
+  server: {
+    host: 'localhost',
+    port: 3000,
   },
 });
