@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealEstateFinder - WORKING WEBSITE</title>
-    <meta name="version" content="9.0.0">
-    <meta name="cache-control" content="no-cache, no-store, must-revalidate">
-    <meta name="pragma" content="no-cache">
-    <meta name="expires" content="0">
     <style>
         * {
             margin: 0;
@@ -39,7 +35,6 @@
             font-weight: bold;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            animation: fadeInDown 1s ease-out;
         }
         
         .subtitle {
@@ -55,7 +50,6 @@
             padding: 30px;
             text-align: center;
             margin: 40px 0;
-            animation: slideInUp 1s ease-out 0.5s both;
         }
         
         .success-text {
@@ -74,18 +68,10 @@
         
         .feature-card {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 15px;
             padding: 30px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: fadeInUp 1s ease-out 1s both;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         
         .feature-icon {
@@ -112,7 +98,6 @@
             padding: 40px;
             margin: 40px 0;
             text-align: center;
-            animation: fadeInUp 1s ease-out 1.5s both;
         }
         
         .stats-grid {
@@ -141,7 +126,6 @@
         .cta-section {
             text-align: center;
             margin: 50px 0;
-            animation: fadeInUp 1s ease-out 2s both;
         }
         
         .cta-button {
@@ -153,13 +137,7 @@
             text-decoration: none;
             font-size: 1.3rem;
             font-weight: bold;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.6);
         }
         
         .footer {
@@ -168,39 +146,6 @@
             margin-top: 50px;
             border-top: 1px solid rgba(255,255,255,0.2);
             opacity: 0.8;
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
         
         @media (max-width: 768px) {
@@ -285,7 +230,7 @@
         </div>
         
         <div class="footer">
-            <p><strong>Status:</strong> ✅ All systems operational | <strong>Version:</strong> 9.0.0</p>
+            <p><strong>Status:</strong> ✅ All systems operational</p>
             <p style="margin-top: 10px;">© 2025 RealEstateFinder. All rights reserved.</p>
         </div>
     </div>
