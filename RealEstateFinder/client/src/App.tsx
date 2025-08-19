@@ -9,6 +9,7 @@ import TestUKPage from './pages/test-uk';
 import AuthPage from './pages/auth';
 import HomeSimplePage from './pages/home-simple';
 import TestMinimalPage from './pages/test-minimal';
+import TestBarePage from './pages/test-bare';
 
 const queryClient = new QueryClient();
 
@@ -17,8 +18,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Switch>
-          {/* Use minimal test page to isolate the issue */}
-          <Route path="/" component={TestMinimalPage} />
+          {/* Use bare test page to isolate the issue */}
+          <Route path="/" component={TestBarePage} />
           <Route path="/map" component={MapPage} />
           <Route path="/swipe" component={SwipePage} />
           <Route path="/property/:id" component={PropertyDetailPage} />
