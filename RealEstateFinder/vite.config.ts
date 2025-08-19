@@ -44,6 +44,8 @@ export default defineConfig({
     assetsInlineLimit: 0,
     // Force base path usage
     target: 'es2015',
+    // Prevent external resource loading
+    cssCodeSplit: false,
   },
   define: {
     __BASE_URL__: JSON.stringify("/realestat/"),
@@ -58,5 +60,13 @@ export default defineConfig({
   server: {
     host: 'localhost',
     port: 3000,
+  },
+  // Completely disable external resource loading
+  css: {
+    preprocessorOptions: {
+      css: {
+        additionalData: '/* No external resources */',
+      },
+    },
   },
 });
