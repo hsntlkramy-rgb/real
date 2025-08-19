@@ -8,6 +8,7 @@ import SwipePage from './pages/swipe';
 import PropertyDetailPage from './pages/property-detail';
 import TestUKPage from './pages/test-uk';
 import AuthPage from './pages/auth';
+import HomeSimplePage from './pages/home-simple';
 
 const queryClient = new QueryClient();
 
@@ -16,14 +17,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Switch>
-          {/* Temporarily comment out home page to avoid build errors */}
-          {/* <Route path="/" component={HomePage} /> */}
-                            <Route path="/" component={TestUKPage} />
-                  <Route path="/map" component={MapPage} />
-                  <Route path="/swipe" component={SwipePage} />
-                  <Route path="/property/:id" component={PropertyDetailPage} />
-                  <Route path="/test-uk" component={TestUKPage} />
-                  <Route path="/auth" component={AuthPage} />
+          {/* Use simple home page to avoid build errors */}
+          <Route path="/" component={HomeSimplePage} />
+          <Route path="/map" component={MapPage} />
+          <Route path="/swipe" component={SwipePage} />
+          <Route path="/property/:id" component={PropertyDetailPage} />
+          <Route path="/test-uk" component={TestUKPage} />
+          <Route path="/auth" component={AuthPage} />
         </Switch>
         <Toaster />
       </TooltipProvider>
