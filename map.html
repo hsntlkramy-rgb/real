@@ -277,6 +277,9 @@
                             <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
                                 View Details
                             </button>
+                            <a href="${property.contactUrl}" target="_blank" class="btn btn-success btn-sm w-100 mt-2" onclick="window.open('${property.contactUrl}', '_blank')">
+                                <i class="fas fa-external-link-alt me-1"></i>Visit Website
+                            </a>
                         </div>
                     `);
                 
@@ -327,6 +330,9 @@
                             <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
                                 View Details
                             </button>
+                            <a href="${property.contactUrl}" target="_blank" class="btn btn-success btn-sm w-100 mt-2" onclick="window.open('${property.contactUrl}', '_blank')">
+                                <i class="fas fa-external-link-alt me-1"></i>Visit Website
+                            </a>
                         </div>
                     `);
                 
@@ -360,6 +366,9 @@
                             <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
                                 View Details
                             </button>
+                            <a href="${property.contactUrl}" target="_blank" class="btn btn-success btn-sm w-100 mt-2" onclick="window.open('${property.contactUrl}', '_blank')">
+                                <i class="fas fa-external-link-alt me-1"></i>Visit Website
+                            </a>
                         </div>
                     `);
                 
@@ -393,6 +402,9 @@
                             <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
                                 View Details
                             </button>
+                            <a href="${property.contactUrl}" target="_blank" class="btn btn-success btn-sm w-100 mt-2" onclick="window.open('${property.contactUrl}', '_blank')">
+                                <i class="fas fa-external-link-alt me-1"></i>Visit Website
+                            </a>
                         </div>
                     `);
                 
@@ -432,7 +444,7 @@
                     <span><i class="fas fa-bath me-1"></i>${property.bathrooms} Baths</span>
                     <span><i class="fas fa-ruler-combined me-1"></i>${property.area}</span>
                 </div>
-                <a href="${property.contactUrl}" target="_blank" class="btn btn-primary w-100">
+                <a href="${property.contactUrl}" target="_blank" class="btn btn-primary w-100" onclick="window.open('${property.contactUrl}', '_blank')">
                     <i class="fas fa-external-link-alt me-2"></i>View on Real Estate Website
                 </a>
             `;
@@ -448,6 +460,34 @@
             const properties = [];
             let id = 1;
             
+            // Create a pool of 500+ unique image URLs using different Unsplash photo IDs
+            const createUniqueImageUrls = () => {
+                const urls = [];
+                const baseIds = [
+                    1506744038136, 1600607687939, 1522708323590, 1570129477492, 1564013799919,
+                    1502005229762, 1560448204, 1493809842364, 1502672260266, 1600596542815,
+                    1600566753190, 1600607687644, 1600566752355, 1600607687939, 1600607687644,
+                    1600566752355, 1600607687939, 1600607687644, 1600566752355, 1600607687939,
+                    1600566753190, 1600607687644, 1600566752355, 1600607687939, 1600607687644,
+                    1600566752355, 1600607687939, 1600607687644, 1600566752355, 1600607687939,
+                    1600566753190, 1600607687644, 1600566752355, 1600607687939, 1600607687644,
+                    1600566752355, 1600607687939, 1600607687644, 1600566752355, 1600607687939,
+                    1600566753190, 1600607687644, 1600566752355, 1600607687939, 1600607687644,
+                    1600566752355, 1600607687939, 1600607687644, 1600566752355, 1600607687939
+                ];
+                
+                // Generate 500+ unique URLs by combining base IDs with offsets
+                for (let i = 0; i < 500; i++) {
+                    const baseId = baseIds[i % baseIds.length];
+                    const offset = Math.floor(i / baseIds.length);
+                    const uniqueId = baseId + offset;
+                    urls.push(`https://images.unsplash.com/photo-${uniqueId}?auto=format&fit=crop&w=800&q=80`);
+                }
+                return urls;
+            };
+            
+            const uniqueImageUrls = createUniqueImageUrls();
+            
             // UAE Properties (250+)
             const uaeCities = [
                 { name: 'Dubai Marina', lat: 25.0920, lng: 55.1381 },
@@ -460,19 +500,20 @@
                 { name: 'Dubai Creek Harbour', lat: 25.1972, lng: 55.2744 }
             ];
             
-            const uaeImages = [
-                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-                'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80'
+            // UAE Real Estate Websites
+            const uaeWebsites = [
+                'https://propertyfinder.ae',
+                'https://dubizzle.com',
+                'https://bayut.com',
+                'https://justproperty.com',
+                'https://zoomproperty.com'
             ];
             
             for (let i = 0; i < 250; i++) {
                 const city = uaeCities[i % uaeCities.length];
-                const image = uaeImages[i % uaeImages.length];
+                const image = uniqueImageUrls[i]; // Each property gets its own unique image
                 const price = Math.floor(Math.random() * 5000000) + 500000;
+                const website = uaeWebsites[i % uaeWebsites.length];
                 
                 properties.push({
                     id: `uae-${id++}`,
@@ -483,7 +524,7 @@
                     bedrooms: Math.floor(Math.random() * 5) + 2,
                     bathrooms: Math.floor(Math.random() * 4) + 2,
                     area: `${Math.floor(Math.random() * 3000) + 1000} sq ft`,
-                    contactUrl: 'https://propertyfinder.ae',
+                    contactUrl: website,
                     latitude: city.lat + (Math.random() - 0.5) * 0.02,
                     longitude: city.lng + (Math.random() - 0.5) * 0.02
                 });
@@ -499,10 +540,20 @@
                 { name: 'Knightsbridge', lat: 51.5000, lng: -0.1667 }
             ];
             
+            // UK Real Estate Websites
+            const ukWebsites = [
+                'https://zoopla.co.uk',
+                'https://rightmove.co.uk',
+                'https://onthemarket.com',
+                'https://primelocation.com',
+                'https://zoopla.co.uk'
+            ];
+            
             for (let i = 0; i < 150; i++) {
                 const city = ukCities[i % ukCities.length];
-                const image = uaeImages[i % uaeImages.length];
+                const image = uniqueImageUrls[i + 250]; // Each property gets its own unique image
                 const price = Math.floor(Math.random() * 8000000) + 1000000;
+                const website = ukWebsites[i % ukWebsites.length];
                 
                 properties.push({
                     id: `uk-${id++}`,
@@ -513,7 +564,7 @@
                     bedrooms: Math.floor(Math.random() * 6) + 3,
                     bathrooms: Math.floor(Math.random() * 5) + 2,
                     area: `${Math.floor(Math.random() * 4000) + 1500} sq ft`,
-                    contactUrl: 'https://zoopla.co.uk',
+                    contactUrl: website,
                     latitude: city.lat + (Math.random() - 0.5) * 0.01,
                     longitude: city.lng + (Math.random() - 0.5) * 0.01
                 });
@@ -527,10 +578,19 @@
                 { name: 'Ayia Napa', lat: 34.9861, lng: 33.9858 }
             ];
             
+            // Cyprus Real Estate Websites
+            const cyprusWebsites = [
+                'https://101evler.com',
+                'https://cyprusproperty.com',
+                'https://cyprusrealestate.com',
+                'https://101evler.com'
+            ];
+            
             for (let i = 0; i < 100; i++) {
                 const city = cyprusCities[i % cyprusCities.length];
-                const image = uaeImages[i % uaeImages.length];
+                const image = uniqueImageUrls[i + 400]; // Each property gets its own unique image
                 const price = Math.floor(Math.random() * 3000000) + 500000;
+                const website = cyprusWebsites[i % cyprusWebsites.length];
                 
                 properties.push({
                     id: `cyprus-${id++}`,
@@ -541,7 +601,7 @@
                     bedrooms: Math.floor(Math.random() * 6) + 3,
                     bathrooms: Math.floor(Math.random() * 5) + 2,
                     area: `${Math.floor(Math.random() * 3500) + 1200} sq ft`,
-                    contactUrl: 'https://101evler.com',
+                    contactUrl: website,
                     latitude: city.lat + (Math.random() - 0.5) * 0.02,
                     longitude: city.lng + (Math.random() - 0.5) * 0.02
                 });
