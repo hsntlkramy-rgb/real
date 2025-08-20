@@ -27,10 +27,13 @@ jobs:
           node-version: '18'
           cache: 'npm'
       
-      - name: Install dependencies
+      - name: Install root dependencies
+        run: npm install
+      
+      - name: Install app dependencies
         run: |
           cd RealEstateFinder
-          npm install
+          npm ci --prefer-offline --no-audit
       
       - name: Build
         run: |
