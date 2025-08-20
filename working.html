@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealEstateFinder - Working Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: rgba(255,255,255,0.1); 
+            padding: 30px; 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px);
+        }
+        h1 { 
+            text-align: center; 
+            color: #fff; 
+            margin-bottom: 30px; 
+            font-size: 2.5em;
+        }
+        .status { 
+            background: #4CAF50; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+        .info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            text-align: left;
+        }
+        .button {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 10px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #45a049;
+        }
+        .debug {
+            background: #f0f0f0;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 RealEstateFinder</h1>
+        
+        <div class="status">
+            ✅ GitHub Pages is working! This page loaded successfully.
+        </div>
+        
+        <div class="info">
+            <h3>🎯 Current Status:</h3>
+            <p><strong>✅ This test page works</strong> - GitHub Pages is functioning</p>
+            <p><strong>❌ Main app doesn't work</strong> - There's an issue with the build/deployment</p>
+        </div>
+        
+        <div class="info">
+            <h3>🔧 What We Know:</h3>
+            <ul>
+                <li>GitHub Pages is working (you can see this page)</li>
+                <li>Repository: hsntlkramy-rgb/real</li>
+                <li>Expected URL: https://hsntlkramy-rgb.github.io/real/</li>
+                <li>Issue: Main app assets not loading</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <h3>🚀 Next Steps:</h3>
+            <p>Since this test page works, the issue is with the main application build. We need to:</p>
+            <ol>
+                <li>Check if GitHub Actions workflow is running</li>
+                <li>Verify the build process is working</li>
+                <li>Ensure files are uploaded to the correct location</li>
+                <li>Fix any asset path issues</li>
+            </ol>
+        </div>
+        
+        <div class="debug">
+            <strong>Debug Info:</strong><br>
+            Page loaded at: <span id="time"></span><br>
+            User Agent: <span id="useragent"></span><br>
+            Page URL: <span id="url"></span>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" class="button">Try Main App</a>
+            <a href="test-simple.html" class="button">View Simple Test</a>
+        </div>
+    </div>
+    
+    <script>
+        // Display debug information
+        document.getElementById('time').textContent = new Date().toLocaleString();
+        document.getElementById('useragent').textContent = navigator.userAgent;
+        document.getElementById('url').textContent = window.location.href;
+        
+        console.log('✅ Test page loaded successfully!');
+        console.log('GitHub Pages is working correctly');
+        console.log('The issue is with the main app build/deployment');
+    </script>
+</body>
+</html>
