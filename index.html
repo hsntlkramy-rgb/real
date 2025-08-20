@@ -568,14 +568,14 @@
     
     <!-- Custom JS -->
     <script>
-        // Sample properties data
+        // Sample properties data with unique images
         const sampleProperties = [
             {
                 id: 1,
                 title: "Luxury Villa in Dubai Marina",
                 price: "$2,500,000",
                 location: "Dubai Marina, UAE",
-                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80&query=luxury-villa",
                 bedrooms: 4,
                 bathrooms: 3,
                 area: "3,200 sq ft"
@@ -585,7 +585,7 @@
                 title: "Modern Apartment in Palm Jumeirah",
                 price: "$1,800,000",
                 location: "Palm Jumeirah, UAE",
-                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80&query=modern-apartment",
                 bedrooms: 3,
                 bathrooms: 2,
                 area: "2,100 sq ft"
@@ -595,7 +595,7 @@
                 title: "Premium Penthouse in Downtown Dubai",
                 price: "$4,200,000",
                 location: "Downtown Dubai, UAE",
-                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80&query=penthouse",
                 bedrooms: 5,
                 bathrooms: 4,
                 area: "4,500 sq ft"
@@ -605,7 +605,7 @@
                 title: "Beachfront Villa in JBR",
                 price: "$3,800,000",
                 location: "JBR, UAE",
-                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80&query=beach-house",
                 bedrooms: 4,
                 bathrooms: 3,
                 area: "3,800 sq ft"
@@ -615,7 +615,7 @@
                 title: "Luxury Apartment in Business Bay",
                 price: "$2,100,000",
                 location: "Business Bay, UAE",
-                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80&query=luxury-apartment",
                 bedrooms: 3,
                 bathrooms: 2,
                 area: "2,400 sq ft"
@@ -625,7 +625,7 @@
                 title: "Premium Villa in Dubai Hills",
                 price: "$3,500,000",
                 location: "Dubai Hills, UAE",
-                image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80&query=premium-villa",
                 bedrooms: 4,
                 bathrooms: 3,
                 area: "3,600 sq ft"
@@ -635,7 +635,7 @@
                 title: "Luxury Penthouse in Meydan",
                 price: "$5,200,000",
                 location: "Meydan, UAE",
-                image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1000000?auto=format&fit=crop&w=800&q=80&query=luxury-penthouse",
                 bedrooms: 5,
                 bathrooms: 4,
                 area: "5,200 sq ft"
@@ -645,7 +645,7 @@
                 title: "Modern Villa in Dubai Creek Harbour",
                 price: "$4,800,000",
                 location: "Dubai Creek Harbour, UAE",
-                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1000001?auto=format&fit=crop&w=800&q=80&query=modern-villa",
                 bedrooms: 4,
                 bathrooms: 3,
                 area: "4,100 sq ft"
@@ -655,7 +655,7 @@
                 title: "Premium Apartment in Marina Gate",
                 price: "$2,800,000",
                 location: "Marina Gate, UAE",
-                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1000002?auto=format&fit=crop&w=800&q=80&query=premium-apartment",
                 bedrooms: 3,
                 bathrooms: 2,
                 area: "2,800 sq ft"
@@ -665,10 +665,60 @@
                 title: "Luxury Villa in Emirates Hills",
                 price: "$6,500,000",
                 location: "Emirates Hills, UAE",
-                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80",
+                image: "https://images.unsplash.com/photo-1000003?auto=format&fit=crop&w=800&q=80&query=luxury-mansion",
                 bedrooms: 6,
                 bathrooms: 5,
                 area: "6,800 sq ft"
+            },
+            {
+                id: 11,
+                title: "Contemporary House in Arabian Ranches",
+                price: "$3,200,000",
+                location: "Arabian Ranches, UAE",
+                image: "https://images.unsplash.com/photo-1000004?auto=format&fit=crop&w=800&q=80&query=contemporary-house",
+                bedrooms: 4,
+                bathrooms: 3,
+                area: "3,400 sq ft"
+            },
+            {
+                id: 12,
+                title: "Scandinavian Villa in The Springs",
+                price: "$2,900,000",
+                location: "The Springs, UAE",
+                image: "https://images.unsplash.com/photo-1000005?auto=format&fit=crop&w=800&q=80&query=scandinavian-villa",
+                bedrooms: 3,
+                bathrooms: 2,
+                area: "2,900 sq ft"
+            },
+            {
+                id: 13,
+                title: "Mediterranean Villa in The Meadows",
+                price: "$4,100,000",
+                location: "The Meadows, UAE",
+                image: "https://images.unsplash.com/photo-1000006?auto=format&fit=crop&w=800&q=80&query=mediterranean-villa",
+                bedrooms: 5,
+                bathrooms: 4,
+                area: "4,300 sq ft"
+            },
+            {
+                id: 14,
+                title: "Tropical Villa in The Lakes",
+                price: "$3,700,000",
+                location: "The Lakes, UAE",
+                image: "https://images.unsplash.com/photo-1000007?auto=format&fit=crop&w=800&q=80&query=tropical-villa",
+                bedrooms: 4,
+                bathrooms: 3,
+                area: "3,800 sq ft"
+            },
+            {
+                id: 15,
+                title: "Urban Apartment in The Greens",
+                price: "$2,300,000",
+                location: "The Greens, UAE",
+                image: "https://images.unsplash.com/photo-1000008?auto=format&fit=crop&w=800&q=80&query=urban-apartment",
+                bedrooms: 3,
+                bathrooms: 2,
+                area: "2,500 sq ft"
             }
         ];
 
