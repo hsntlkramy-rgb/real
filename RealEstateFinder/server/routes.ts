@@ -19,7 +19,8 @@ import fallbackUSProperties from './mock/usProperties';
 import { fallbackITProperties } from './mock/itProperties';
 import fallbackUKProperties from './mock/ukProperties';
 import fallbackUAEPropertiesData from './mock/uaeProperties';
-import realUAEProperties from './mock/realUaeProperties';
+// import realUAEProperties from './mock/realUaeProperties'; // Commented out to use real API data
+import enhancedUAEProperties from './mock/enhancedUaeProperties';
 import fallbackSpainProperties from './mock/spainProperties';
 import fallbackFranceProperties from './mock/franceProperties';
 import fallbackGermanyProperties from './mock/germanyProperties';
@@ -78,7 +79,8 @@ async function loadAllPropertiesData(): Promise<any[]> {
     const ukProperties = fallbackUKProperties;
     const usProperties = fallbackUSProperties;
     const itProperties = fallbackITProperties;
-    const uaeProperties = realUAEProperties;
+    // const uaeProperties = realUAEProperties; // Commented out to use real API data
+    const uaeProperties: any[] = []; // Empty array since we'll fetch from API
     const spainProperties = fallbackSpainProperties;
     const franceProperties = fallbackFranceProperties;
     const germanyProperties = fallbackGermanyProperties;
@@ -666,51 +668,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // --- UAE Properties via Bayut RapidAPI (Updated) ---
+  // --- UAE Properties via Realty-in-UAE RapidAPI (Updated) ---
   app.get('/api/uae-properties', async (req, res) => {
     try {
       let allProperties: any[] = [];
-      let page = 0;
-      const maxProperties = 300; // Fetch more than 250 to ensure we have enough
-      const pageSize = 30; // Using your API's page size
-      const maxPages = Math.ceil(maxProperties / pageSize);
+      let page = 1;
+      const maxProperties = 250;
+      const pageSize = 25;
 
       console.log('[UAE API] Starting to fetch properties...');
 
-      while (allProperties.length < maxProperties && page < maxPages) {
+      while (allProperties.length < maxProperties && page <= 10) {
         try {
           const response = await axios.request({
             method: 'GET',
-            url: 'https://bayut-com1.p.rapidapi.com/agencies/get-listings',
+            url: 'https://realty-in-uae.p.rapidapi.com/properties/list',
             params: {
-              agencySlug: 'patriot-real-estate-7737',
-              hitsPerPage: pageSize.toString(),
-              page: page.toString()
+              city: 'Dubai',
+              sort: 'Relevance',
+              page: page.toString(),
+              pageSize: pageSize.toString()
             },
             headers: {
-              'x-rapidapi-key': '29ab6001ffmsh00d0be7a4829957p1e3501jsn0c0182578f54',
-              'x-rapidapi-host': 'bayut-com1.p.rapidapi.com'
+              'x-rapidapi-key': 'a92aa1eeb4msh7bbffa51f405f9dp1b970cjsn5e5f66090ae7',
+              'x-rapidapi-host': 'realty-in-uae.p.rapidapi.com'
             }
           });
 
           const listings = response.data?.data?.listings || [];
           if (listings.length > 0) {
             allProperties = allProperties.concat(listings);
-            console.log(`[UAE API] Fetched page ${page + 1}, got ${listings.length} properties, total: ${allProperties.length}`);
+            console.log(`[UAE API] Fetched page ${page}, got ${listings.length} properties, total: ${allProperties.length}`);
           }
 
           if (listings.length < pageSize) break; // No more pages
           page++;
 
-          // Small delay to avoid rate limiting but keep it fast
-          await new Promise(resolve => setTimeout(resolve, 200));
+          // Add delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 1000));
         } catch (error: unknown) {
           if (error instanceof AxiosError) {
-            console.error(`[UAE API] Error fetching page ${page + 1}:`, error.response?.data || error.message);
+            console.error(`[UAE API] Error fetching page ${page}:`, error.response?.data || error.message);
           } else if (error instanceof Error) {
-            console.error(`[UAE API] Error fetching page ${page + 1}:`, error.message);
+            console.error(`[UAE API] Error fetching page ${page}:`, error.message);
           } else {
-            console.error(`[UAE API] Error fetching page ${page + 1}:`, error);
+            console.error(`[UAE API] Error fetching page ${page}:`, error);
           }
           break;
         }
@@ -719,45 +721,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`[UAE API] Total properties fetched: ${allProperties.length}`);
 
       const formatted = allProperties.slice(0, maxProperties).map((item: any, idx: number) => {
-        // Generate the best possible URL for the property
-        let propertyUrl = '';
-        if (item.externalID) {
-          propertyUrl = `https://www.bayut.com/property/details-${item.externalID}.html`;
-        } else if (item.url) {
-          propertyUrl = item.url;
-        } else if (item.listingUrl) {
-          propertyUrl = item.listingUrl;
-        } else if (item.propertyUrl) {
-          propertyUrl = item.propertyUrl;
-        }
-
         return {
           id: item.id || idx + 30000,
-          latitude: item.geography?.lat || item.latitude,
-          longitude: item.geography?.lng || item.longitude,
-          title: item.title || item.name || 'UAE Property',
-          price: item.price ? `د.إ${item.price.toLocaleString()}` : 'Price on request',
-          price_formatted: item.price ? `د.إ${item.price.toLocaleString()}` : 'Price on request',
-          images: item.coverPhoto ? [item.coverPhoto.url] : (item.images || []),
-          img_url: item.coverPhoto?.url || item.images?.[0] || '',
-          location: item.location?.[0]?.name || item.address || 'UAE',
-          keywords: item.purpose || item.propertyType || '',
-          lister_url: propertyUrl,
-          contactUrl: propertyUrl,
-          contact: item.agent?.phone || item.contact || '',
-          description: item.description || item.summary || '',
+          latitude: item.property?.address?.latitude || item.latitude,
+          longitude: item.property?.address?.longitude || item.longitude,
+          title: item.property?.name || item.title || 'UAE Property',
+          price: item.listPrice ? `د.إ${item.listPrice.toLocaleString()}` : 'Price on request',
+          price_formatted: item.listPrice ? `د.إ${item.listPrice.toLocaleString()}` : 'Price on request',
+          images: item.property?.photos?.map((photo: any) => photo.href) || item.images || [],
+          img_url: item.property?.photos?.[0]?.href || item.images?.[0] || '',
+          location: [
+            item.property?.address?.city || item.location,
+            'UAE'
+          ].filter(Boolean).join(', '),
+          keywords: item.property?.propertyType || item.propertyType || '',
+          lister_url: item.property?.href || item.url || '',
+          contactUrl: item.property?.href || item.url || '',
+          contact: item.property?.agent?.phone || item.contact || '',
+          description: item.property?.description || item.description || '',
           tags: [
-            item.propertyType,
-            item.purpose,
-            `${item.bedrooms || 0} bed`,
-            `${item.bedrooms || 0} bath`
+            item.property?.propertyType || item.propertyType,
+            `${item.property?.bedrooms || item.bedrooms || 0} bed`,
+            `${item.property?.bathrooms || item.bathrooms || 0} bath`
           ].filter(Boolean),
           personas: {
             remoteWorker: 0.6,
-            family: (item.bedrooms || 0) > 2 ? 0.8 : 0.4,
+            family: (item.property?.bedrooms || item.bedrooms || 0) > 2 ? 0.8 : 0.4,
             investor: 0.7,
             retiree: 0.5,
-            luxury: parseFloat(item.price?.toString().replace(/[^0-9.]/g, '')) > 3000000 ? 0.8 : 0.4
+            luxury: parseFloat((item.listPrice || item.price || '0').toString().replace(/[^0-9.]/g, '')) > 3000000 ? 0.8 : 0.4
           },
           isActive: true,
         };
@@ -778,8 +770,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         console.error('[UAE API] Error fetching UAE properties:', error);
       }
-      console.log('[UAE API] Falling back to mock data');
-      res.json(fallbackUAEProperties);
+      console.log('[UAE API] Falling back to enhanced mock data');
+      res.json(enhancedUAEProperties);
     }
   });
 
