@@ -191,11 +191,23 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             margin-bottom: 30px;
-            transition: transform 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
+            user-select: none;
+            touch-action: pan-y;
         }
         
         .swipe-card:hover {
             transform: scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+        
+        .swipe-card:active {
+            cursor: grabbing;
+        }
+        
+        .swipe-card.dragging {
+            transition: none;
+            cursor: grabbing;
         }
         
         .swipe-image-container {
@@ -673,14 +685,21 @@
             if (currentSwipeIndex >= sampleProperties.length) {
                 currentSwipeIndex = 0;
             }
-            loadSwipeProperty();
             
-            // Add swipe animation
+            // Enhanced swipe animation
             const card = document.getElementById('swipeCard');
-            card.style.transform = 'translateX(-100px) rotate(-10deg)';
+            card.style.transition = 'all 0.5s ease';
+            card.style.transform = 'translateX(-500px) rotate(-30deg)';
+            card.style.opacity = '0';
+            
+            // Show "PASSED" indicator
+            showSwipeIndicator('PASSED', 'danger');
+            
             setTimeout(() => {
+                loadSwipeProperty();
                 card.style.transform = 'translateX(0) rotate(0deg)';
-            }, 300);
+                card.style.opacity = '1';
+            }, 500);
         }
         
         function swipeRight() {
@@ -689,38 +708,164 @@
             if (currentSwipeIndex >= sampleProperties.length) {
                 currentSwipeIndex = 0;
             }
-            loadSwipeProperty();
             
-            // Add swipe animation
+            // Enhanced swipe animation
             const card = document.getElementById('swipeCard');
-            card.style.transform = 'translateX(100px) rotate(10deg)';
+            card.style.transition = 'all 0.5s ease';
+            card.style.transform = 'translateX(500px) rotate(30deg)';
+            card.style.opacity = '0';
+            
+            // Show "LIKED" indicator
+            showSwipeIndicator('LIKED!', 'success');
+            
             setTimeout(() => {
+                loadSwipeProperty();
                 card.style.transform = 'translateX(0) rotate(0deg)';
-            }, 300);
+                card.style.opacity = '1';
+            }, 500);
+        }
+        
+        function showSwipeIndicator(message, type) {
+            // Remove existing indicator
+            const existingIndicator = document.querySelector('.swipe-indicator');
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+            
+            // Create new indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'swipe-indicator';
+            indicator.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; min-width: 200px; text-align: center; font-weight: bold; font-size: 1.2rem;">
+                    <i class="fas fa-${type === 'success' ? 'heart' : 'times'} me-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(indicator);
+            
+            // Remove indicator after 2 seconds
+            setTimeout(() => {
+                if (indicator) {
+                    indicator.remove();
+                }
+            }, 2000);
         }
         
         function initializeMap() {
             const mapContainer = document.getElementById('propertyMap');
-            mapContainer.innerHTML = `
-                <div style="background: linear-gradient(135deg, #667eea, #764ba2); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; text-align: center; padding: 20px;">
-                    <div>
-                        <i class="fas fa-map-marked-alt fa-3x mb-3"></i>
-                        <h3>Interactive Property Map</h3>
-                        <p>This map would show all 400+ properties with their locations</p>
-                        <p>Properties would be clustered by area and show details on click</p>
-                        <div class="mt-3">
-                            <span class="badge bg-primary me-2">UAE: 200+ properties</span>
-                            <span class="badge bg-success me-2">Cyprus: 100+ properties</span>
-                            <span class="badge bg-info me-2">Other: 100+ properties</span>
+            
+            // Create interactive map with property markers
+            const mapHTML = `
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); height: 100%; position: relative; overflow: hidden; border-radius: 15px;">
+                    <!-- Map Header -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; background: rgba(0,0,0,0.3); padding: 15px; z-index: 10;">
+                        <h4 style="color: white; margin: 0; text-align: center;">
+                            <i class="fas fa-map-marked-alt me-2"></i>Interactive Property Map
+                        </h4>
+                    </div>
+                    
+                    <!-- Map Content -->
+                    <div style="height: 100%; padding-top: 70px; padding: 70px 20px 20px 20px;">
+                        <!-- Property Clusters -->
+                        <div class="row g-3">
+                            <!-- UAE Properties Cluster -->
+                            <div class="col-md-4">
+                                <div class="property-cluster" style="background: rgba(255,255,255,0.15); border-radius: 15px; padding: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="cluster-header" style="text-align: center; margin-bottom: 15px;">
+                                        <i class="fas fa-map-marker-alt fa-2x" style="color: #ff6b6b;"></i>
+                                        <h5 style="color: white; margin: 10px 0;">UAE Properties</h5>
+                                        <span class="badge bg-primary" style="font-size: 1rem;">200+ Properties</span>
+                                    </div>
+                                    <div class="cluster-properties" style="max-height: 200px; overflow-y: auto;">
+                                        ${sampleProperties.filter(p => p.location.includes('UAE')).slice(0, 5).map(property => `
+                                            <div class="property-marker" style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-bottom: 10px; border-left: 4px solid #ff6b6b;">
+                                                <div style="color: white; font-size: 0.9rem; font-weight: 600;">${property.title}</div>
+                                                <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;">${property.price} • ${property.location}</div>
+                                                <a href="${property.contactUrl}" target="_blank" style="color: #ff6b6b; text-decoration: none; font-size: 0.8rem;">
+                                                    <i class="fas fa-external-link-alt me-1"></i>View Details
+                                                </a>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cyprus Properties Cluster -->
+                            <div class="col-md-4">
+                                <div class="property-cluster" style="background: rgba(255,255,255,0.15); border-radius: 15px; padding: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="cluster-header" style="text-align: center; margin-bottom: 15px;">
+                                        <i class="fas fa-map-marker-alt fa-2x" style="color: #4ecdc4;"></i>
+                                        <h5 style="color: white; margin: 10px 0;">Cyprus Properties</h5>
+                                        <span class="badge bg-success" style="font-size: 1rem;">100+ Properties</span>
+                                    </div>
+                                    <div class="cluster-properties" style="max-height: 200px; overflow-y: auto;">
+                                        ${sampleProperties.filter(p => p.location.includes('Cyprus')).slice(0, 5).map(property => `
+                                            <div class="property-marker" style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-bottom: 10px; border-left: 4px solid #4ecdc4;">
+                                                <div style="color: white; font-size: 0.9rem; font-weight: 600;">${property.title}</div>
+                                                <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;">${property.price} • ${property.location}</div>
+                                                <a href="${property.contactUrl}" target="_blank" style="color: #4ecdc4; text-decoration: none; font-size: 0.8rem;">
+                                                    <i class="fas fa-external-link-alt me-1"></i>View Details
+                                                </a>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Other Properties Cluster -->
+                            <div class="col-md-4">
+                                <div class="property-cluster" style="background: rgba(255,255,255,0.15); border-radius: 15px; padding: 20px; margin-bottom: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                                    <div class="cluster-header" style="text-align: center; margin-bottom: 15px;">
+                                        <i class="fas fa-map-marker-alt fa-2x" style="color: #45b7d1;"></i>
+                                        <h5 style="color: white; margin: 10px 0;">Other Locations</h5>
+                                        <span class="badge bg-info" style="font-size: 1rem;">100+ Properties</span>
+                                    </div>
+                                    <div class="cluster-properties" style="max-height: 200px; overflow-y: auto;">
+                                        ${sampleProperties.filter(p => !p.location.includes('UAE') && !p.location.includes('Cyprus')).slice(0, 5).map(property => `
+                                            <div class="property-marker" style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; margin-bottom: 10px; border-left: 4px solid #45b7d1;">
+                                                <div style="color: white; font-size: 0.9rem; font-weight: 600;">${property.title}</div>
+                                                <div style="color: rgba(255,255,255,0.8); font-size: 0.8rem;">${property.price} • ${property.location}</div>
+                                                <a href="${property.contactUrl}" target="_blank" style="color: #45b7d1; text-decoration: none; font-size: 0.8rem;">
+                                                    <i class="fas fa-external-link-alt me-1"></i>View Details
+                                                </a>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Map Legend -->
+                        <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 10px; font-size: 0.9rem;">
+                            <div style="margin-bottom: 10px;"><strong>Map Legend:</strong></div>
+                            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                <div style="width: 12px; height: 12px; background: #ff6b6b; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>UAE Properties</span>
+                            </div>
+                            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                                <div style="width: 12px; height: 12px; background: #4ecdc4; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>Cyprus Properties</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div style="width: 12px; height: 12px; background: #45b7d1; border-radius: 50%; margin-right: 8px;"></div>
+                                <span>Other Locations</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
+            
+            mapContainer.innerHTML = mapHTML;
         }
         
         // Touch swipe functionality
         let touchStartX = 0;
         let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let isDragging = false;
+        let currentTranslateX = 0;
         
         document.addEventListener('DOMContentLoaded', function() {
             loadProperties();
@@ -728,14 +873,130 @@
             // Add touch swipe to swipe card
             const swipeCard = document.getElementById('swipeCard');
             if (swipeCard) {
+                // Touch events for mobile
                 swipeCard.addEventListener('touchstart', function(e) {
                     touchStartX = e.changedTouches[0].screenX;
+                    touchStartY = e.changedTouches[0].screenY;
+                    isDragging = true;
+                    currentTranslateX = 0;
+                    
+                    // Add dragging class
+                    swipeCard.style.transition = 'none';
+                    swipeCard.style.cursor = 'grabbing';
+                });
+                
+                swipeCard.addEventListener('touchmove', function(e) {
+                    if (!isDragging) return;
+                    
+                    e.preventDefault();
+                    const currentX = e.changedTouches[0].screenX;
+                    const currentY = e.changedTouches[0].screenY;
+                    
+                    // Calculate drag distance
+                    const deltaX = currentX - touchStartX;
+                    const deltaY = currentY - touchStartY;
+                    
+                    // Only allow horizontal swiping if it's more horizontal than vertical
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        currentTranslateX = deltaX;
+                        
+                        // Add rotation based on drag distance
+                        const rotation = (deltaX / 10) * (deltaX > 0 ? 1 : -1);
+                        
+                        swipeCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+                        
+                        // Change opacity based on drag distance
+                        const opacity = 1 - Math.abs(deltaX) / 300;
+                        swipeCard.style.opacity = Math.max(0.3, opacity);
+                    }
                 });
                 
                 swipeCard.addEventListener('touchend', function(e) {
+                    if (!isDragging) return;
+                    
+                    isDragging = false;
                     touchEndX = e.changedTouches[0].screenX;
-                    handleSwipe();
+                    
+                    // Reset transition
+                    swipeCard.style.transition = 'all 0.3s ease';
+                    swipeCard.style.cursor = 'grab';
+                    
+                    // Determine swipe direction and distance
+                    const swipeThreshold = 100;
+                    const deltaX = touchEndX - touchStartX;
+                    
+                    if (Math.abs(deltaX) > swipeThreshold) {
+                        if (deltaX > 0) {
+                            // Swipe right - like
+                            swipeRight();
+                        } else {
+                            // Swipe left - pass
+                            swipeLeft();
+                        }
+                    } else {
+                        // Return to center if not enough distance
+                        swipeCard.style.transform = 'translateX(0) rotate(0deg)';
+                        swipeCard.style.opacity = '1';
+                    }
                 });
+                
+                // Mouse events for desktop
+                swipeCard.addEventListener('mousedown', function(e) {
+                    touchStartX = e.clientX;
+                    touchStartY = e.clientY;
+                    isDragging = true;
+                    currentTranslateX = 0;
+                    
+                    swipeCard.style.transition = 'none';
+                    swipeCard.style.cursor = 'grabbing';
+                });
+                
+                document.addEventListener('mousemove', function(e) {
+                    if (!isDragging) return;
+                    
+                    const currentX = e.clientX;
+                    const currentY = e.clientY;
+                    
+                    const deltaX = currentX - touchStartX;
+                    const deltaY = currentY - touchStartY;
+                    
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        currentTranslateX = deltaX;
+                        const rotation = (deltaX / 10) * (deltaX > 0 ? 1 : -1);
+                        
+                        swipeCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+                        
+                        const opacity = 1 - Math.abs(deltaX) / 300;
+                        swipeCard.style.opacity = Math.max(0.3, opacity);
+                    }
+                });
+                
+                document.addEventListener('mouseup', function(e) {
+                    if (!isDragging) return;
+                    
+                    isDragging = false;
+                    touchEndX = e.clientX;
+                    
+                    swipeCard.style.transition = 'all 0.3s ease';
+                    swipeCard.style.cursor = 'grab';
+                    
+                    const swipeThreshold = 100;
+                    const deltaX = touchEndX - touchStartX;
+                    
+                    if (Math.abs(deltaX) > swipeThreshold) {
+                        if (deltaX > 0) {
+                            swipeRight();
+                        } else {
+                            swipeLeft();
+                        }
+                    } else {
+                        swipeCard.style.transform = 'translateX(0) rotate(0deg)';
+                        swipeCard.style.opacity = '1';
+                    }
+                });
+                
+                // Add grab cursor
+                swipeCard.style.cursor = 'grab';
             }
             
             // Smooth scrolling for navigation links
