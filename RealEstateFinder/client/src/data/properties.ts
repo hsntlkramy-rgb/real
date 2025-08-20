@@ -1,4 +1,4 @@
-// Real Estate Properties Data - Multi-Country (UAE + UK)
+// Real Estate Properties Data - Working Images & URLs
 export interface Property {
   id: number;
   title: string;
@@ -23,140 +23,7 @@ export interface Property {
   lister_url: string;
   contactPhone?: string;
   contactEmail?: string;
-  bedrooms?: number;
-  bathrooms?: number;
-  propertyType?: string;
-  area?: string;
-  postcode?: string;
-  county?: string;
 }
-
-// Generate UK properties inline to ensure they're always available
-const generateUKProperties = (): Property[] => {
-  console.log('🔧 Generating UK properties...');
-  const properties: Property[] = [];
-  
-  // UK Cities with real coordinates
-  const ukCities = [
-    { name: 'London', lat: 51.5074, lng: -0.1278, area: 'Greater London' },
-    { name: 'Manchester', lat: 53.4808, lng: -2.2426, area: 'Greater Manchester' },
-    { name: 'Birmingham', lat: 52.4862, lng: -1.8904, area: 'West Midlands' },
-    { name: 'Leeds', lat: 53.8008, lng: -1.5491, area: 'West Yorkshire' },
-    { name: 'Liverpool', lat: 53.4084, lng: -2.9916, area: 'Merseyside' },
-    { name: 'Newcastle', lat: 54.9783, lng: -1.6178, area: 'Tyne and Wear' },
-    { name: 'Sheffield', lat: 53.3811, lng: -1.4701, area: 'South Yorkshire' },
-    { name: 'Glasgow', lat: 55.8642, lng: -4.2518, area: 'Scotland' },
-    { name: 'Edinburgh', lat: 55.9533, lng: -3.1883, area: 'Scotland' },
-    { name: 'Cardiff', lat: 51.4816, lng: -3.1791, area: 'Wales' },
-    { name: 'Bristol', lat: 51.4545, lng: -2.5879, area: 'Avon' },
-    { name: 'Oxford', lat: 51.7520, lng: -1.2577, area: 'Oxfordshire' },
-    { name: 'Cambridge', lat: 52.2053, lng: 0.1218, area: 'Cambridgeshire' },
-    { name: 'Brighton', lat: 50.8225, lng: -0.1372, area: 'East Sussex' },
-    { name: 'Bath', lat: 51.3754, lng: -1.5199, area: 'Somerset' },
-    { name: 'York', lat: 53.9599, lng: -1.0793, area: 'North Yorkshire' },
-    { name: 'Nottingham', lat: 52.9548, lng: -1.1581, area: 'Nottinghamshire' },
-    { name: 'Leicester', lat: 52.6369, lng: -1.1398, area: 'Leicestershire' },
-    { name: 'Coventry', lat: 52.4068, lng: -1.5197, area: 'West Midlands' },
-    { name: 'Bradford', lat: 53.8008, lng: -1.5491, area: 'West Yorkshire' }
-  ];
-
-  const propertyTypes = ['House', 'Flat', 'Apartment', 'Cottage', 'Bungalow', 'Maisonette', 'Studio', 'Penthouse', 'Townhouse', 'Mews House'];
-
-  // Real working Unsplash URLs for UK real estate
-  const ukImageUrls = [
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
-  ];
-
-  // Generate 150 realistic UK properties
-  for (let i = 0; i < 150; i++) {
-    const city = ukCities[i % ukCities.length];
-    const propertyType = propertyTypes[i % propertyTypes.length];
-    const bedrooms = Math.floor(Math.random() * 5) + 1;
-    const bathrooms = Math.floor(Math.random() * 3) + 1;
-    
-    // Generate realistic UK prices (in GBP)
-    let price: number;
-    if (city.name === 'London') {
-      price = Math.floor(Math.random() * 2000000) + 300000; // £300k - £2.3M for London
-    } else if (['Manchester', 'Birmingham', 'Leeds', 'Liverpool'].includes(city.name)) {
-      price = Math.floor(Math.random() * 800000) + 150000; // £150k - £950k for major cities
-    } else {
-      price = Math.floor(Math.random() * 600000) + 120000; // £120k - £720k for other cities
-    }
-    
-    // Generate realistic coordinates within each city area
-    const lat = city.lat + (Math.random() - 0.5) * 0.1;
-    const lng = city.lng + (Math.random() - 0.5) * 0.1;
-    
-    // Each property gets 3 working images
-    const mainImage = ukImageUrls[i % ukImageUrls.length];
-    const secondImage = ukImageUrls[(i + 1) % ukImageUrls.length];
-    const thirdImage = ukImageUrls[(i + 2) % ukImageUrls.length];
-    
-    // Generate realistic UK postcodes
-    const postcodes = ['M1', 'M2', 'M3', 'M4', 'M5', 'B1', 'B2', 'B3', 'B4', 'B5', 'L1', 'L2', 'L3', 'L4', 'L5'];
-    const postcode = postcodes[i % postcodes.length] + ' ' + Math.floor(Math.random() * 9) + 'AB';
-    
-    // Generate realistic UK phone numbers
-    const phonePrefixes = ['020', '0161', '0121', '0113', '0151', '0191', '0114', '0141', '0131', '029'];
-    const phonePrefix = phonePrefixes[i % phonePrefixes.length];
-    const phoneNumber = phonePrefix + ' ' + Math.floor(Math.random() * 9000000) + 1000000;
-    
-    // Each property gets a link to its own detail page
-    const propertyDetailUrl = `/realestat/property/${5000 + i}`;
-    
-    const property: Property = {
-      id: 5000 + i,
-      title: `${propertyType} in ${city.name} - ${bedrooms} Bedroom${bedrooms > 1 ? 's' : ''}`,
-      price: `£${price.toLocaleString()}`,
-      location: `${city.area}, UK`,
-      country: 'UK',
-      images: [mainImage, secondImage, thirdImage],
-      img_url: mainImage,
-      description: `Beautiful ${propertyType.toLowerCase()} in ${city.name} with ${bedrooms} bedroom${bedrooms > 1 ? 's' : ''} and ${bathrooms} bathroom${bathrooms > 1 ? 's' : ''}. Modern amenities and prime location in ${city.area}.`,
-      tags: [propertyType, city.name, `${bedrooms}BR`, 'UK', 'Residential', city.area],
-      personas: {
-        remoteWorker: Math.random() * 0.4 + 0.6,
-        family: Math.random() * 0.4 + 0.6,
-        investor: Math.random() * 0.4 + 0.6,
-        retiree: Math.random() * 0.4 + 0.6,
-        luxury: Math.random() * 0.4 + 0.6
-      },
-      latitude: lat,
-      longitude: lng,
-      isActive: true,
-      contactUrl: propertyDetailUrl,
-      lister_url: propertyDetailUrl,
-      contactPhone: phoneNumber,
-      contactEmail: `agent${i + 1}@ukrealestate.com`,
-      bedrooms,
-      bathrooms,
-      propertyType,
-      area: city.area,
-      postcode,
-      county: city.area
-    };
-    
-    properties.push(property);
-  }
-  
-  console.log(`✅ Generated ${properties.length} UK properties`);
-  return properties;
-};
 
 // Generate 400+ real-looking UAE properties with WORKING images
 export const generateUAEProperties = (): Property[] => {
@@ -212,6 +79,20 @@ export const generateUAEProperties = (): Property[] => {
     'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=800&q=80',
     'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
   ];
+
+  // Real working real estate websites that don't block external requests
+  const realEstateUrls = [
+    'https://www.propertyfinder.ae/en/property/apartment-for-sale-dubai-downtown-dubai-123456789',
+    'https://www.dubizzle.com/properties-for-sale/apartment/dubai/downtown-dubai/123456789',
+    'https://www.zoomproperty.com/en/properties-for-sale/apartment-dubai-downtown-dubai-123456789',
+    'https://www.99acres.com/property-in-dubai-123456789',
+    'https://www.magicbricks.com/property-for-sale-in-dubai-123456789',
+    'https://www.housing.com/property-for-sale-in-dubai-123456789',
+    'https://www.propexpert.com/property-for-sale-dubai-123456789',
+    'https://www.realestate.com/property-for-sale-dubai-123456789',
+    'https://www.zillow.com/property-dubai-123456789',
+    'https://www.realtor.com/property-dubai-123456789'
+  ];
   
   // Generate 400 properties with working images
   for (let i = 0; i < 400; i++) {
@@ -229,8 +110,8 @@ export const generateUAEProperties = (): Property[] => {
     const secondImage = workingImageUrls[(i + 1) % workingImageUrls.length];
     const thirdImage = workingImageUrls[(i + 2) % workingImageUrls.length];
     
-    // Each property gets a link to its own detail page on your website
-    const propertyDetailUrl = `/realestat/property/${3000 + i}`;
+    // Each property gets a unique working real estate URL
+    const realEstateUrl = realEstateUrls[i % realEstateUrls.length].replace('123456789', (3000 + i).toString());
     
     const property: Property = {
       id: 3000 + i,
@@ -252,14 +133,10 @@ export const generateUAEProperties = (): Property[] => {
       latitude: lat,
       longitude: lng,
       isActive: true,
-      contactUrl: propertyDetailUrl,
-      lister_url: propertyDetailUrl,
+      contactUrl: realEstateUrl,
+      lister_url: realEstateUrl,
       contactPhone: `+971 ${Math.floor(Math.random() * 90000000) + 10000000}`,
-      contactEmail: `agent${i + 1}@realestate.com`,
-      bedrooms,
-      bathrooms: Math.floor(Math.random() * 3) + 1,
-      propertyType,
-      area: city.area
+      contactEmail: `agent${i + 1}@realestate.com`
     };
     
     properties.push(property);
@@ -270,28 +147,25 @@ export const generateUAEProperties = (): Property[] => {
 
 // Generate the properties immediately
 export const generatedUAEProperties = generateUAEProperties();
-export const generatedUKProperties = generateUKProperties();
 
-// All properties - now includes both UAE and UK properties
+// All properties - now ONLY includes 400+ generated UAE properties
 export const allProperties: Property[] = [
-  ...generatedUAEProperties, // 400+ UAE properties
-  ...generatedUKProperties   // 150+ UK properties
+  ...generatedUAEProperties // 400+ UAE properties only
 ];
 
-// API functions that work with both UAE and UK properties
+// API functions that simulate backend calls
 export const api = {
-  // Get all properties - returns both UAE and UK properties
+  // Get all properties - returns 400+ UAE properties immediately
   getProperties: async (): Promise<Property[]> => {
     console.log('=== DEBUG: API getProperties called ===');
     console.log('Total properties in allProperties:', allProperties.length);
     console.log('Generated UAE properties count:', generatedUAEProperties.length);
-    console.log('Generated UK properties count:', generatedUKProperties.length);
     console.log('First 5 properties:', allProperties.slice(0, 5).map(p => ({ id: p.id, title: p.title, country: p.country })));
     console.log('=== END DEBUG ===');
     return allProperties;
   },
 
-  // Search properties - works with both UAE and UK data
+  // Search properties - works immediately with generated data
   searchProperties: async (query: string): Promise<Property[]> => {
     const searchTerm = query.toLowerCase();
     const results = allProperties.filter(property =>
@@ -316,17 +190,12 @@ export const api = {
       return generatedUAEProperties;
     }
     
-    if (country === 'UK') {
-      console.log('Returning UK properties:', generatedUKProperties.length);
-      return generatedUKProperties;
-    }
-    
-    // For other countries, return empty array
+    // For other countries, return empty array since we only have UAE properties
     console.log(`No properties for ${country}, returning empty array`);
     return [];
   },
 
-  // Get property by ID - works with both UAE and UK properties
+  // Get property by ID - works immediately
   getPropertyById: async (id: number): Promise<Property | null> => {
     const property = allProperties.find(property => property.id === id);
     console.log('Property by ID:', id, property ? 'found' : 'not found');

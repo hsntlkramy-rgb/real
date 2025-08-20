@@ -1,35 +1,46 @@
-import { Route, Switch } from 'wouter';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import MapPage from './pages/map';
-import SwipePage from './pages/swipe';
-import PropertyDetailPage from './pages/property-detail';
-import TestUKPage from './pages/test-uk';
-import AuthPage from './pages/auth';
-import HomeSimplePage from './pages/home-simple';
-import TestMinimalPage from './pages/test-minimal';
-import TestBarePage from './pages/test-bare';
-import HomeWorkingPage from './pages/home-working';
+import { Switch, Route, Router as WouterRouter } from "wouter";
+import { queryClient } from "./lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "./contexts/AuthContext";
+import HomePage from "@/pages/home";
+import SwipePage from "@/pages/swipe";
+import MapPage from "@/pages/map";
+import LoginPage from "@/pages/login";
+import RegisterPage from "@/pages/register";
+import DashboardPage from "@/pages/dashboard";
+import PostPropertyPage from "@/pages/post-property";
+import PropertyDetailPage from "@/pages/property-detail";
+import NotFound from "@/pages/not-found";
 
-const queryClient = new QueryClient();
+function AppRouter() {
+  return (
+    <Switch>
+      <Route path="/" component={HomePage} />
+      <Route path="/swipe" component={SwipePage} />
+      <Route path="/map" component={MapPage} />
+      <Route path="/login" component={LoginPage} />
+      <Route path="/register" component={RegisterPage} />
+      <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/post-property" component={PostPropertyPage} />
+      <Route path="/property/:id" component={PropertyDetailPage} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Switch>
-          {/* Use working home page to ensure functionality */}
-          <Route path="/" component={HomeWorkingPage} />
-          <Route path="/map" component={MapPage} />
-          <Route path="/swipe" component={SwipePage} />
-          <Route path="/property/:id" component={PropertyDetailPage} />
-          <Route path="/test-uk" component={TestUKPage} />
-          <Route path="/auth" component={AuthPage} />
-          <Route path="/home" component={HomeSimplePage} />
-        </Switch>
-        <Toaster />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <WouterRouter base="/realestat">
+            <AppRouter />
+          </WouterRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
