@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test - RealEstateFinder</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container { 
+            background: rgba(255,255,255,0.1); 
+            padding: 30px; 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px);
+        }
+        h1 { color: #fff; margin-bottom: 20px; }
+        .status { 
+            background: #4CAF50; 
+            color: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 RealEstateFinder Test Page</h1>
+        
+        <div class="status">
+            ✅ GitHub Pages is working!
+        </div>
+        
+        <div class="info">
+            <strong>Repository:</strong> hsntlkramy-rgb/real<br>
+            <strong>Base Path:</strong> /real/<br>
+            <strong>Test Time:</strong> <span id="time"></span><br>
+            <strong>Assets Path:</strong> /real/assets/
+        </div>
+        
+        <div class="info">
+            <strong>If you see this page:</strong><br>
+            • GitHub Pages is working correctly<br>
+            • The issue is with the main app build<br>
+            • We need to fix the asset loading
+        </div>
+        
+        <div class="info">
+            <strong>Next Steps:</strong><br>
+            • Check if assets are loading<br>
+            • Verify the main app JavaScript<br>
+            • Test the property data
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString();
+        
+        // Test if we can load assets
+        console.log('Testing asset loading...');
+        
+        // Try to load the main app JS
+        const script = document.createElement('script');
+        script.src = '/real/assets/index-Ch8emVYD.js';
+        script.onload = () => console.log('✅ Main app JS loaded successfully!');
+        script.onerror = () => console.log('❌ Failed to load main app JS');
+        document.head.appendChild(script);
+        
+        // Try to load the CSS
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/real/assets/index-D5CxSvU_.css';
+        link.onload = () => console.log('✅ CSS loaded successfully!');
+        link.onerror = () => console.log('❌ Failed to load CSS');
+        document.head.appendChild(link);
+    </script>
+</body>
+</html>
