@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Map - RealEstateFinder</title>
+    <meta name="description" content="Interactive property map with 500+ properties across UAE, UK, and Cyprus">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS for real map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+        }
+        
+        .map-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .map-container {
+            height: calc(100vh - 200px);
+            width: 100%;
+            position: relative;
+        }
+        
+        #propertyMap {
+            height: 100%;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .btn-group-vertical .btn {
+            margin-bottom: 10px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .property-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-height: 80%;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .stats-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f093fb;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-home me-2"></i>RealEstateFinder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#properties">Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="map.html">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#swipe">Swipe</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Map Header -->
+    <div class="map-header" style="margin-top: 76px;">
+        <div class="container">
+            <h1 style="margin: 0; font-size: 2.5rem; font-weight: 700;">
+                <i class="fas fa-map-marked-alt me-3"></i>Interactive Property Map
+            </h1>
+            <p style="margin: 10px 0 0 0; font-size: 1.2rem; opacity: 0.9;">
+                Discover 500+ properties across UAE, UK, and Cyprus
+            </p>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">250+</div>
+                        <div class="stat-label">UAE Properties</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">UK Properties</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">100+</div>
+                        <div class="stat-label">Cyprus Properties</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Total Properties</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="map-container">
+        <div id="propertyMap"></div>
+        
+        <!-- Map Controls -->
+        <div class="map-controls">
+            <div class="btn-group-vertical">
+                <button class="btn btn-primary btn-lg" onclick="showAllProperties()">
+                    <i class="fas fa-globe me-2"></i>All Properties
+                </button>
+                <button class="btn btn-danger btn-lg" onclick="showUAEProperties()">
+                    <i class="fas fa-map-marker-alt me-2"></i>UAE (250+)
+                </button>
+                <button class="btn btn-success btn-lg" onclick="showUKProperties()">
+                    <i class="fas fa-map-marker-alt me-2"></i>UK (150+)
+                </button>
+                <button class="btn btn-info btn-lg" onclick="showCyprusProperties()">
+                    <i class="fas fa-map-marker-alt me-2"></i>Cyprus (100+)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Property Details Modal -->
+        <div id="propertyModal" class="property-modal">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 id="modalTitle" style="margin: 0; color: #333;"></h5>
+                <button onclick="closePropertyModal()" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalContent">
+                <!-- Property details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS for real map -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        let propertyMap;
+        let currentMarkers = [];
+        
+        // Initialize the map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+        });
+        
+        function initializeMap() {
+            // Create real map using Leaflet.js
+            propertyMap = L.map('propertyMap').setView([25.2048, 55.2708], 10); // Center on Dubai
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(propertyMap);
+            
+            // Load all properties on the map
+            loadAllPropertiesOnMap();
+        }
+        
+        function loadAllPropertiesOnMap() {
+            if (!propertyMap) return;
+            
+            // Clear existing markers
+            clearMapMarkers();
+            
+            // Generate more properties for UAE, UK, and Cyprus
+            const allProperties = generateExtendedProperties();
+            
+            // Add markers for each property
+            allProperties.forEach(property => {
+                const marker = L.marker([property.latitude, property.longitude])
+                    .addTo(propertyMap)
+                    .bindPopup(`
+                        <div style="text-align: center; min-width: 200px;">
+                            <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                            <h6 style="margin: 5px 0; color: #333;">${property.title}</h6>
+                            <div style="color: #e74c3c; font-weight: 600; margin: 5px 0;">${property.price}</div>
+                            <div style="color: #666; font-size: 0.9rem; margin: 5px 0;">
+                                <i class="fas fa-map-marker-alt me-1"></i>${property.location}
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
+                                View Details
+                            </button>
+                        </div>
+                    `);
+                
+                // Store marker reference
+                currentMarkers.push(marker);
+                
+                // Add click event to show detailed modal
+                marker.on('click', () => {
+                    showPropertyDetails(property.id);
+                });
+            });
+            
+            // Fit map to show all markers
+            if (currentMarkers.length > 0) {
+                const group = new L.featureGroup(currentMarkers);
+                propertyMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        function clearMapMarkers() {
+            if (currentMarkers) {
+                currentMarkers.forEach(marker => {
+                    if (propertyMap) {
+                        propertyMap.removeLayer(marker);
+                    }
+                });
+                currentMarkers = [];
+            }
+        }
+        
+        function showUAEProperties() {
+            if (!propertyMap) return;
+            
+            clearMapMarkers();
+            const uaeProperties = generateExtendedProperties().filter(p => p.location.includes('UAE'));
+            
+            uaeProperties.forEach(property => {
+                const marker = L.marker([property.latitude, property.longitude])
+                    .addTo(propertyMap)
+                    .bindPopup(`
+                        <div style="text-align: center; min-width: 200px;">
+                            <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                            <h6 style="margin: 5px 0; color: #333;">${property.title}</h6>
+                            <div style="color: #e74c3c; font-weight: 600; margin: 5px 0;">${property.price}</div>
+                            <div style="color: #666; font-size: 0.9rem; margin: 5px 0;">
+                                <i class="fas fa-map-marker-alt me-1"></i>${property.location}
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
+                                View Details
+                            </button>
+                        </div>
+                    `);
+                
+                currentMarkers.push(marker);
+                marker.on('click', () => showPropertyDetails(property.id));
+            });
+            
+            if (currentMarkers.length > 0) {
+                const group = new L.featureGroup(currentMarkers);
+                propertyMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        function showUKProperties() {
+            if (!propertyMap) return;
+            
+            clearMapMarkers();
+            const ukProperties = generateExtendedProperties().filter(p => p.location.includes('UK') || p.location.includes('London'));
+            
+            ukProperties.forEach(property => {
+                const marker = L.marker([property.latitude, property.longitude])
+                    .addTo(propertyMap)
+                    .bindPopup(`
+                        <div style="text-align: center; min-width: 200px;">
+                            <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                            <h6 style="margin: 5px 0; color: #333;">${property.title}</h6>
+                            <div style="color: #e74c3c; font-weight: 600; margin: 5px 0;">${property.price}</div>
+                            <div style="color: #666; font-size: 0.9rem; margin: 5px 0;">
+                                <i class="fas fa-map-marker-alt me-1"></i>${property.location}
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
+                                View Details
+                            </button>
+                        </div>
+                    `);
+                
+                currentMarkers.push(marker);
+                marker.on('click', () => showPropertyDetails(property.id));
+            });
+            
+            if (currentMarkers.length > 0) {
+                const group = new L.featureGroup(currentMarkers);
+                propertyMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        function showCyprusProperties() {
+            if (!propertyMap) return;
+            
+            clearMapMarkers();
+            const cyprusProperties = generateExtendedProperties().filter(p => p.location.includes('Cyprus'));
+            
+            cyprusProperties.forEach(property => {
+                const marker = L.marker([property.latitude, property.longitude])
+                    .addTo(propertyMap)
+                    .bindPopup(`
+                        <div style="text-align: center; min-width: 200px;">
+                            <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+                            <h6 style="margin: 5px 0; color: #333;">${property.title}</h6>
+                            <div style="color: #e74c3c; font-weight: 600; margin: 5px 0;">${property.price}</div>
+                            <div style="color: #666; font-size: 0.9rem; margin: 5px 0;">
+                                <i class="fas fa-map-marker-alt me-1"></i>${property.location}
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showPropertyDetails('${property.id}')">
+                                View Details
+                            </button>
+                        </div>
+                    `);
+                
+                currentMarkers.push(marker);
+                marker.on('click', () => showPropertyDetails(property.id));
+            });
+            
+            if (currentMarkers.length > 0) {
+                const group = new L.featureGroup(currentMarkers);
+                propertyMap.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+        
+        function showAllProperties() {
+            loadAllPropertiesOnMap();
+        }
+        
+        function showPropertyDetails(propertyId) {
+            const allProperties = generateExtendedProperties();
+            const property = allProperties.find(p => p.id === propertyId);
+            
+            if (!property) return;
+            
+            const modal = document.getElementById('propertyModal');
+            const title = document.getElementById('modalTitle');
+            const content = document.getElementById('modalContent');
+            
+            title.textContent = property.title;
+            content.innerHTML = `
+                <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
+                <div style="color: #e74c3c; font-size: 1.5rem; font-weight: 700; margin-bottom: 10px;">${property.price}</div>
+                <div style="color: #666; margin-bottom: 15px;">
+                    <i class="fas fa-map-marker-alt me-2"></i>${property.location}
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; color: #666;">
+                    <span><i class="fas fa-bed me-1"></i>${property.bedrooms} Beds</span>
+                    <span><i class="fas fa-bath me-1"></i>${property.bathrooms} Baths</span>
+                    <span><i class="fas fa-ruler-combined me-1"></i>${property.area}</span>
+                </div>
+                <a href="${property.contactUrl}" target="_blank" class="btn btn-primary w-100">
+                    <i class="fas fa-external-link-alt me-2"></i>View on Real Estate Website
+                </a>
+            `;
+            
+            modal.style.display = 'block';
+        }
+        
+        function closePropertyModal() {
+            document.getElementById('propertyModal').style.display = 'none';
+        }
+        
+        function generateExtendedProperties() {
+            const properties = [];
+            let id = 1;
+            
+            // UAE Properties (250+)
+            const uaeCities = [
+                { name: 'Dubai Marina', lat: 25.0920, lng: 55.1381 },
+                { name: 'Palm Jumeirah', lat: 25.1124, lng: 55.1390 },
+                { name: 'Downtown Dubai', lat: 25.1972, lng: 55.2744 },
+                { name: 'JBR', lat: 25.0852, lng: 55.1374 },
+                { name: 'Business Bay', lat: 25.1867, lng: 55.2667 },
+                { name: 'Dubai Hills', lat: 25.0589, lng: 55.2389 },
+                { name: 'Meydan', lat: 25.2219, lng: 55.2847 },
+                { name: 'Dubai Creek Harbour', lat: 25.1972, lng: 55.2744 }
+            ];
+            
+            const uaeImages = [
+                'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
+                'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80'
+            ];
+            
+            for (let i = 0; i < 250; i++) {
+                const city = uaeCities[i % uaeCities.length];
+                const image = uaeImages[i % uaeImages.length];
+                const price = Math.floor(Math.random() * 5000000) + 500000;
+                
+                properties.push({
+                    id: `uae-${id++}`,
+                    title: `Luxury Property ${i + 1} in ${city.name}`,
+                    price: `$${price.toLocaleString()}`,
+                    location: `${city.name}, Dubai, UAE`,
+                    image: image,
+                    bedrooms: Math.floor(Math.random() * 5) + 2,
+                    bathrooms: Math.floor(Math.random() * 4) + 2,
+                    area: `${Math.floor(Math.random() * 3000) + 1000} sq ft`,
+                    contactUrl: 'https://propertyfinder.ae',
+                    latitude: city.lat + (Math.random() - 0.5) * 0.02,
+                    longitude: city.lng + (Math.random() - 0.5) * 0.02
+                });
+            }
+            
+            // UK Properties (150+)
+            const ukCities = [
+                { name: 'Mayfair', lat: 51.5136, lng: -0.1495 },
+                { name: 'Chelsea', lat: 51.4875, lng: -0.1687 },
+                { name: 'Kensington', lat: 51.5007, lng: -0.1936 },
+                { name: 'Notting Hill', lat: 51.5167, lng: -0.2000 },
+                { name: 'Belgravia', lat: 51.4975, lng: -0.1536 },
+                { name: 'Knightsbridge', lat: 51.5000, lng: -0.1667 }
+            ];
+            
+            for (let i = 0; i < 150; i++) {
+                const city = ukCities[i % ukCities.length];
+                const image = uaeImages[i % uaeImages.length];
+                const price = Math.floor(Math.random() * 8000000) + 1000000;
+                
+                properties.push({
+                    id: `uk-${id++}`,
+                    title: `Premium Property ${i + 1} in ${city.name}`,
+                    price: `£${price.toLocaleString()}`,
+                    location: `${city.name}, London, UK`,
+                    image: image,
+                    bedrooms: Math.floor(Math.random() * 6) + 3,
+                    bathrooms: Math.floor(Math.random() * 5) + 2,
+                    area: `${Math.floor(Math.random() * 4000) + 1500} sq ft`,
+                    contactUrl: 'https://zoopla.co.uk',
+                    latitude: city.lat + (Math.random() - 0.5) * 0.01,
+                    longitude: city.lng + (Math.random() - 0.5) * 0.01
+                });
+            }
+            
+            // Cyprus Properties
+            const cyprusCities = [
+                { name: 'Limassol', lat: 34.7071, lng: 33.0226 },
+                { name: 'Paphos', lat: 34.7720, lng: 32.4297 },
+                { name: 'Larnaca', lat: 34.9229, lng: 33.6233 },
+                { name: 'Ayia Napa', lat: 34.9861, lng: 33.9858 }
+            ];
+            
+            for (let i = 0; i < 100; i++) {
+                const city = cyprusCities[i % cyprusCities.length];
+                const image = uaeImages[i % uaeImages.length];
+                const price = Math.floor(Math.random() * 3000000) + 500000;
+                
+                properties.push({
+                    id: `cyprus-${id++}`,
+                    title: `Beachfront Property ${i + 1} in ${city.name}`,
+                    price: `€${price.toLocaleString()}`,
+                    location: `${city.name}, Cyprus`,
+                    image: image,
+                    bedrooms: Math.floor(Math.random() * 6) + 3,
+                    bathrooms: Math.floor(Math.random() * 5) + 2,
+                    area: `${Math.floor(Math.random() * 3500) + 1200} sq ft`,
+                    contactUrl: 'https://101evler.com',
+                    latitude: city.lat + (Math.random() - 0.5) * 0.02,
+                    longitude: city.lng + (Math.random() - 0.5) * 0.02
+                });
+            }
+            
+            return properties;
+        }
+        
+        console.log('✅ RealEstateFinder Map Page loaded successfully!');
+        console.log('Interactive map with 500+ properties ready!');
+    </script>
+</body>
+</html>
