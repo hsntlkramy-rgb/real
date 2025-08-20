@@ -433,6 +433,27 @@
             const content = document.getElementById('modalContent');
             
             title.textContent = property.title;
+            
+            let contactButton = '';
+            if (property.isUserPosted) {
+                // User-posted property
+                contactButton = `
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-user me-2"></i>Posted by: ${property.postedByName}
+                    </div>
+                    <a href="mailto:${property.contactUrl.replace('mailto:', '')}" class="btn btn-primary w-100">
+                        <i class="fas fa-envelope me-2"></i>Contact Owner
+                    </a>
+                `;
+            } else {
+                // Regular property
+                contactButton = `
+                    <a href="${property.contactUrl}" target="_blank" class="btn btn-primary w-100" onclick="window.open('${property.contactUrl}', '_blank')">
+                        <i class="fas fa-external-link-alt me-2"></i>View on Real Estate Website
+                    </a>
+                `;
+            }
+            
             content.innerHTML = `
                 <img src="${property.image}" alt="${property.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
                 <div style="color: #e74c3c; font-size: 1.5rem; font-weight: 700; margin-bottom: 10px;">${property.price}</div>
@@ -444,9 +465,8 @@
                     <span><i class="fas fa-bath me-1"></i>${property.bathrooms} Baths</span>
                     <span><i class="fas fa-ruler-combined me-1"></i>${property.area}</span>
                 </div>
-                <a href="${property.contactUrl}" target="_blank" class="btn btn-primary w-100" onclick="window.open('${property.contactUrl}', '_blank')">
-                    <i class="fas fa-external-link-alt me-2"></i>View on Real Estate Website
-                </a>
+                ${property.description ? `<div style="color: #666; margin-bottom: 20px; font-style: italic;">"${property.description}"</div>` : ''}
+                ${contactButton}
             `;
             
             modal.style.display = 'block';
@@ -606,6 +626,29 @@
                     longitude: city.lng + (Math.random() - 0.5) * 0.02
                 });
             }
+            
+            // Add user-posted properties
+            const userProperties = JSON.parse(localStorage.getItem('userProperties') || '[]');
+            userProperties.forEach(userProp => {
+                if (userProp.latitude && userProp.longitude) {
+                    properties.push({
+                        id: `user-${userProp.id}`,
+                        title: userProp.title,
+                        price: `${userProp.currency === 'USD' ? '$' : userProp.currency === 'EUR' ? '€' : userProp.currency === 'GBP' ? '£' : 'د.إ'}${userProp.price.toLocaleString()}`,
+                        location: `${userProp.city}, ${userProp.country}`,
+                        image: userProp.image,
+                        bedrooms: userProp.bedrooms,
+                        bathrooms: userProp.bathrooms,
+                        area: `${userProp.area} sq ft`,
+                        contactUrl: `mailto:${userProp.contactEmail}`,
+                        latitude: userProp.latitude,
+                        longitude: userProp.longitude,
+                        isUserPosted: true,
+                        postedByName: userProp.postedByName,
+                        description: userProp.description
+                    });
+                }
+            });
             
             return properties;
         }

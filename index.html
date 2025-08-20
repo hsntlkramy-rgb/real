@@ -377,6 +377,20 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#swipe" onclick="showSwipe()">Swipe</a>
                     </li>
+                    <li class="nav-item" id="loginNav" style="display: none;">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    <li class="nav-item" id="userNav" style="display: none;">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i><span id="userName">User</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="post-property.html"><i class="fas fa-plus me-2"></i>Post Property</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -448,6 +462,63 @@
             <h2 class="text-center text-white mb-5" style="font-size: 2.5rem; font-weight: 700;">
                 <i class="fas fa-heart me-3"></i>Swipe Properties
             </h2>
+            
+            <!-- Filter Controls -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8">
+                    <div class="filter-controls" style="background: rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <h5 class="text-white text-center mb-3"><i class="fas fa-filter me-2"></i>Filter Properties</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-white">Country</label>
+                                <select class="form-select" id="countryFilter" onchange="applyFilters()">
+                                    <option value="">All Countries</option>
+                                    <option value="UAE">UAE</option>
+                                    <option value="UK">UK</option>
+                                    <option value="Cyprus">Cyprus</option>
+                                    <option value="USA">USA</option>
+                                    <option value="Spain">Spain</option>
+                                    <option value="France">France</option>
+                                    <option value="Germany">Germany</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-white">Price Range</label>
+                                <select class="form-select" id="priceFilter" onchange="applyFilters()">
+                                    <option value="">All Prices</option>
+                                    <option value="0-100000">$0 - $100,000</option>
+                                    <option value="100000-500000">$100,000 - $500,000</option>
+                                    <option value="500000-1000000">$500,000 - $1,000,000</option>
+                                    <option value="1000000-5000000">$1,000,000 - $5,000,000</option>
+                                    <option value="5000000+">$5,000,000+</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-white">Property Type</label>
+                                <select class="form-select" id="typeFilter" onchange="applyFilters()">
+                                    <option value="">All Types</option>
+                                    <option value="Apartment">Apartment</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="House">House</option>
+                                    <option value="Penthouse">Penthouse</option>
+                                    <option value="Studio">Studio</option>
+                                    <option value="Townhouse">Townhouse</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button class="btn btn-outline-light btn-sm" onclick="clearFilters()">
+                                <i class="fas fa-times me-2"></i>Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="swipe-container">
                 <div class="swipe-card" id="swipeCard">
                     <div class="swipe-image-container">
@@ -637,61 +708,66 @@
         }
         
         function loadSwipeProperty() {
-            if (currentSwipeIndex >= sampleProperties.length) {
-                currentSwipeIndex = 0;
+            const propertiesToUse = filteredProperties.length > 0 ? filteredProperties : sampleProperties;
+            
+            if (currentFilteredIndex >= propertiesToUse.length) {
+                // Reset to beginning if we've gone through all properties
+                currentFilteredIndex = 0;
             }
             
-            const property = sampleProperties[currentSwipeIndex];
-            document.getElementById('swipeImage').src = property.image;
-            document.getElementById('swipeTitle').textContent = property.title;
-            document.getElementById('swipePrice').textContent = property.price;
-            document.getElementById('swipeLocation').textContent = property.location;
+            const property = propertiesToUse[currentFilteredIndex];
+            if (property) {
+                document.getElementById('swipeImage').src = property.image;
+                document.getElementById('swipeTitle').textContent = property.title;
+                document.getElementById('swipePrice').textContent = property.price;
+                document.getElementById('swipeLocation').textContent = property.location;
+                
+                // Reset card position
+                const swipeCard = document.getElementById('swipeCard');
+                if (swipeCard) {
+                    swipeCard.style.transform = 'translateX(0) rotate(0deg)';
+                    swipeCard.style.opacity = '1';
+                }
+            }
         }
         
         function swipeLeft() {
-            passedProperties.push(sampleProperties[currentSwipeIndex]);
-            currentSwipeIndex++;
-            if (currentSwipeIndex >= sampleProperties.length) {
-                currentSwipeIndex = 0;
+            // Pass on this property
+            currentFilteredIndex++;
+            loadSwipeProperty();
+            
+            // Add animation
+            const swipeCard = document.getElementById('swipeCard');
+            if (swipeCard) {
+                swipeCard.style.transform = 'translateX(-100vw) rotate(-20deg)';
+                swipeCard.style.opacity = '0';
+                
+                setTimeout(() => {
+                    loadSwipeProperty();
+                }, 300);
             }
-            
-            // Enhanced swipe animation
-            const card = document.getElementById('swipeCard');
-            card.style.transition = 'all 0.5s ease';
-            card.style.transform = 'translateX(-500px) rotate(-30deg)';
-            card.style.opacity = '0';
-            
-            // Show "PASSED" indicator
-            showSwipeIndicator('PASSED', 'danger');
-            
-            setTimeout(() => {
-                loadSwipeProperty();
-                card.style.transform = 'translateX(0) rotate(0deg)';
-                card.style.opacity = '1';
-            }, 500);
         }
         
         function swipeRight() {
-            likedProperties.push(sampleProperties[currentSwipeIndex]);
-            currentSwipeIndex++;
-            if (currentSwipeIndex >= sampleProperties.length) {
-                currentSwipeIndex = 0;
+            // Like this property
+            const propertiesToUse = filteredProperties.length > 0 ? filteredProperties : sampleProperties;
+            const property = propertiesToUse[currentFilteredIndex];
+            
+            if (property) {
+                // Show like animation
+                const swipeCard = document.getElementById('swipeCard');
+                if (swipeCard) {
+                    swipeCard.style.transform = 'translateX(100vw) rotate(20deg)';
+                    swipeCard.style.opacity = '0';
+                    
+                    // Show like message
+                    setTimeout(() => {
+                        alert(`You liked: ${property.title}\nPrice: ${property.price}\nLocation: ${property.location}`);
+                        currentFilteredIndex++;
+                        loadSwipeProperty();
+                    }, 300);
+                }
             }
-            
-            // Enhanced swipe animation
-            const card = document.getElementById('swipeCard');
-            card.style.transition = 'all 0.5s ease';
-            card.style.transform = 'translateX(500px) rotate(30deg)';
-            card.style.opacity = '0';
-            
-            // Show "LIKED" indicator
-            showSwipeIndicator('LIKED!', 'success');
-            
-            setTimeout(() => {
-                loadSwipeProperty();
-                card.style.transform = 'translateX(0) rotate(0deg)';
-                card.style.opacity = '1';
-            }, 500);
         }
         
         function showSwipeIndicator(message, type) {
@@ -729,8 +805,15 @@
         let isDragging = false;
         let currentTranslateX = 0;
         
+        // Filtered properties for swipe
+        let filteredProperties = [];
+        let currentFilteredIndex = 0;
+        
+        // Check user authentication on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadProperties();
+            checkUserAuth();
+            loadUserProperties();
             
             // Add touch swipe to swipe card
             const swipeCard = document.getElementById('swipeCard');
@@ -876,13 +959,102 @@
             });
         });
         
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            if (touchEndX < touchStartX - swipeThreshold) {
-                swipeLeft();
-            } else if (touchEndX > touchStartX + swipeThreshold) {
-                swipeRight();
+        // Check user authentication
+        function checkUserAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            const loginNav = document.getElementById('loginNav');
+            const userNav = document.getElementById('userNav');
+            const userName = document.getElementById('userName');
+            
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                loginNav.style.display = 'none';
+                userNav.style.display = 'block';
+                userName.textContent = user.name;
+            } else {
+                loginNav.style.display = 'block';
+                userNav.style.display = 'none';
             }
+        }
+        
+        // Load user properties
+        function loadUserProperties() {
+            const userProperties = JSON.parse(localStorage.getItem('userProperties') || '[]');
+            if (userProperties.length > 0) {
+                // Add user properties to the main properties array
+                sampleProperties.push(...userProperties);
+            }
+        }
+        
+        // Apply filters to swipe properties
+        function applyFilters() {
+            const countryFilter = document.getElementById('countryFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            
+            // Filter properties based on selected criteria
+            filteredProperties = sampleProperties.filter(property => {
+                let matches = true;
+                
+                // Country filter
+                if (countryFilter && !property.location.includes(countryFilter)) {
+                    matches = false;
+                }
+                
+                // Price filter
+                if (priceFilter) {
+                    const price = parseFloat(property.price.replace(/[$,€£]/g, ''));
+                    if (priceFilter === '0-100000' && (price < 0 || price > 100000)) {
+                        matches = false;
+                    } else if (priceFilter === '100000-500000' && (price < 100000 || price > 500000)) {
+                        matches = false;
+                    } else if (priceFilter === '500000-1000000' && (price < 500000 || price > 1000000)) {
+                        matches = false;
+                    } else if (priceFilter === '1000000-5000000' && (price < 1000000 || price > 5000000)) {
+                        matches = false;
+                    } else if (priceFilter === '5000000+' && price < 5000000) {
+                        matches = false;
+                    }
+                }
+                
+                // Type filter (if property has type field)
+                if (typeFilter && property.type && property.type !== typeFilter) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+            
+            // Reset swipe index and load first filtered property
+            currentFilteredIndex = 0;
+            if (filteredProperties.length > 0) {
+                loadSwipeProperty();
+            } else {
+                // Show no properties message
+                document.getElementById('swipeImage').src = '';
+                document.getElementById('swipeTitle').textContent = 'No properties match your filters';
+                document.getElementById('swipePrice').textContent = '';
+                document.getElementById('swipeLocation').textContent = 'Try adjusting your filters';
+            }
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('countryFilter').value = '';
+            document.getElementById('priceFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            
+            // Reset to show all properties
+            filteredProperties = [];
+            currentFilteredIndex = 0;
+            loadSwipeProperty();
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            alert('Logged out successfully!');
+            checkUserAuth();
         }
         
         console.log('✅ RealEstateFinder enhanced version loaded successfully!');

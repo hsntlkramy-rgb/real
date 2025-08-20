@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Property - RealEstateFinder</title>
+    <meta name="description" content="Post your property for sale or rent on RealEstateFinder">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: white !important;
+        }
+        
+        .post-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            margin: 100px auto 40px;
+            max-width: 800px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .image-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .back-home:hover {
+            color: #f093fb;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+    </a>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-home me-2"></i>RealEstateFinder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#properties">Properties</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="map.html">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#swipe">Swipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="post-property.html">Post Property</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="post-container">
+            <div class="text-center mb-4">
+                <h2><i class="fas fa-plus-circle me-2"></i>Post Your Property</h2>
+                <p class="text-muted">Share your property with potential buyers and renters</p>
+            </div>
+            
+            <form onsubmit="handlePostProperty(event)">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyTitle" class="form-label">Property Title *</label>
+                        <input type="text" class="form-control" id="propertyTitle" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyType" class="form-label">Property Type *</label>
+                        <select class="form-select" id="propertyType" required>
+                            <option value="">Select Type</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Villa">Villa</option>
+                            <option value="House">House</option>
+                            <option value="Penthouse">Penthouse</option>
+                            <option value="Studio">Studio</option>
+                            <option value="Townhouse">Townhouse</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyCountry" class="form-label">Country *</label>
+                        <select class="form-select" id="propertyCountry" required onchange="updateCities()">
+                            <option value="">Select Country</option>
+                            <option value="UAE">UAE</option>
+                            <option value="UK">UK</option>
+                            <option value="Cyprus">Cyprus</option>
+                            <option value="USA">USA</option>
+                            <option value="Spain">Spain</option>
+                            <option value="France">France</option>
+                            <option value="Germany">Germany</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyCity" class="form-label">City *</label>
+                        <select class="form-select" id="propertyCity" required>
+                            <option value="">Select Country First</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyPrice" class="form-label">Price *</label>
+                        <input type="number" class="form-control" id="propertyPrice" required min="0">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyCurrency" class="form-label">Currency *</label>
+                        <select class="form-select" id="propertyCurrency" required>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="AED">AED (د.إ)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="propertyBedrooms" class="form-label">Bedrooms *</label>
+                        <input type="number" class="form-control" id="propertyBedrooms" required min="0" max="20">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="propertyBathrooms" class="form-label">Bathrooms *</label>
+                        <input type="number" class="form-control" id="propertyBathrooms" required min="0" max="20">
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label for="propertyArea" class="form-label">Area (sq ft) *</label>
+                        <input type="number" class="form-control" id="propertyArea" required min="0">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="propertyDescription" class="form-label">Description *</label>
+                    <textarea class="form-control" id="propertyDescription" rows="4" required placeholder="Describe your property..."></textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="propertyImage" class="form-label">Property Image *</label>
+                    <input type="file" class="form-control" id="propertyImage" accept="image/*" required onchange="previewImage(event)">
+                    <div class="image-preview" id="imagePreview">
+                        <i class="fas fa-image fa-3x text-muted"></i>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyLatitude" class="form-label">Latitude</label>
+                        <input type="number" class="form-control" id="propertyLatitude" step="any" placeholder="e.g., 25.2048">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="propertyLongitude" class="form-label">Longitude</label>
+                        <input type="number" class="form-control" id="propertyLongitude" step="any" placeholder="e.g., 55.2708">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="contactPhone" class="form-label">Contact Phone</label>
+                    <input type="tel" class="form-control" id="contactPhone" placeholder="+1 234 567 8900">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="contactEmail" class="form-label">Contact Email</label>
+                    <input type="email" class="form-control" id="contactEmail" placeholder="your@email.com">
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Post Property
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert('Please login to post properties!');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Set contact email to current user's email
+            const user = JSON.parse(currentUser);
+            document.getElementById('contactEmail').value = user.email;
+        });
+        
+        // Update cities based on selected country
+        function updateCities() {
+            const country = document.getElementById('propertyCountry').value;
+            const citySelect = document.getElementById('propertyCity');
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            
+            const cities = {
+                'UAE': ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'],
+                'UK': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield', 'Bristol', 'Glasgow'],
+                'Cyprus': ['Limassol', 'Paphos', 'Larnaca', 'Ayia Napa', 'Nicosia', 'Protaras'],
+                'USA': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio'],
+                'Spain': ['Madrid', 'Barcelona', 'Valencia', 'Seville', 'Zaragoza', 'Málaga'],
+                'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes'],
+                'Germany': ['Berlin', 'Hamburg', 'Munich', 'Cologne', 'Frankfurt', 'Stuttgart']
+            };
+            
+            if (cities[country]) {
+                cities[country].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+        
+        // Preview image
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Property Preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Handle property posting
+        function handlePostProperty(event) {
+            event.preventDefault();
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please login to post properties!');
+                return;
+            }
+            
+            // Get form data
+            const propertyData = {
+                id: Date.now(),
+                title: document.getElementById('propertyTitle').value,
+                type: document.getElementById('propertyType').value,
+                country: document.getElementById('propertyCountry').value,
+                city: document.getElementById('propertyCity').value,
+                price: parseFloat(document.getElementById('propertyPrice').value),
+                currency: document.getElementById('propertyCurrency').value,
+                bedrooms: parseInt(document.getElementById('propertyBedrooms').value),
+                bathrooms: parseInt(document.getElementById('propertyBathrooms').value),
+                area: parseInt(document.getElementById('propertyArea').value),
+                description: document.getElementById('propertyDescription').value,
+                latitude: parseFloat(document.getElementById('propertyLatitude').value) || 0,
+                longitude: parseFloat(document.getElementById('propertyLongitude').value) || 0,
+                contactPhone: document.getElementById('contactPhone').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                postedBy: currentUser.id,
+                postedByName: currentUser.name,
+                postedAt: new Date().toISOString(),
+                isUserPosted: true
+            };
+            
+            // Handle image (convert to base64 for storage)
+            const imageFile = document.getElementById('propertyImage').files[0];
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    propertyData.image = e.target.result;
+                    saveProperty(propertyData);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                // Use a default image if none provided
+                propertyData.image = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80';
+                saveProperty(propertyData);
+            }
+        }
+        
+        // Save property to localStorage
+        function saveProperty(propertyData) {
+            // Get existing properties
+            const properties = JSON.parse(localStorage.getItem('userProperties') || '[]');
+            
+            // Add new property
+            properties.push(propertyData);
+            
+            // Save back to localStorage
+            localStorage.setItem('userProperties', JSON.stringify(properties));
+            
+            // Show success message
+            alert('Property posted successfully! It will appear on the map and in listings.');
+            
+            // Reset form
+            document.querySelector('form').reset();
+            document.getElementById('imagePreview').innerHTML = '<i class="fas fa-image fa-3x text-muted"></i>';
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('currentUser');
+            alert('Logged out successfully!');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
