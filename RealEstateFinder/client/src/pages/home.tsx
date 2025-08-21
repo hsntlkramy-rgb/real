@@ -76,12 +76,14 @@ export default function HomePage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-6 py-4 text-gray-800 focus:outline-none"
               />
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 px-8 py-4 text-white font-semibold transition-colors"
-              >
-                <Search className="h-5 w-5" />
-              </button>
+              <Link href={`/map?search=${encodeURIComponent(searchQuery)}`}>
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 px-8 py-4 text-white font-semibold transition-colors"
+                >
+                  <Search className="h-5 w-5" />
+                </button>
+              </Link>
             </div>
           </form>
         </div>
@@ -112,16 +114,16 @@ export default function HomePage() {
       {/* Quick Actions */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/map">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
-              <MapPin className="h-4 w-4 mr-2" />
-              Map View
-            </button>
-          </Link>
           <Link href="/swipe">
             <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
               <Heart className="h-4 w-4 mr-2" />
-              Swipe & Match
+              Start Swiping
+            </button>
+          </Link>
+          <Link href="/map">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
+              <MapPin className="h-4 w-4 mr-2" />
+              Browse Properties
             </button>
           </Link>
         </div>
