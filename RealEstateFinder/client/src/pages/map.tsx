@@ -1,14 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { PropertyMap } from '../components/property-map';
 import { PropertyWithScore } from '../lib/types';
-import { api } from '../data/properties';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import cyprusProperties from '../cyprus-properties.json';
+
+// Function to convert Cyprus properties to PropertyWithScore format
+const convertToPropertyWithScore = (cyprusProperty: any): PropertyWithScore => {
+  return {
+    id: Math.random(), // Generate random ID since Cyprus properties don't have one
+    title: cyprusProperty.title,
+    description: cyprusProperty.description,
+    price: cyprusProperty.price,
+    location: cyprusProperty.location,
+    country: 'CY',
+    images: cyprusProperty.images || [],
+    img_url: cyprusProperty.img_url || (cyprusProperty.images && cyprusProperty.images[0]) || '',
+    tags: cyprusProperty.tags || [],
+    personas: cyprusProperty.personas || {},
+    latitude: cyprusProperty.latitude,
+    longitude: cyprusProperty.longitude,
+    isActive: cyprusProperty.isActive || true,
+    coordinates: {
+      lat: cyprusProperty.latitude,
+      lng: cyprusProperty.longitude
+    },
+    contactUrl: cyprusProperty.contactUrl || cyprusProperty.lister_url,
+    lister_url: cyprusProperty.lister_url,
+    contactPhone: cyprusProperty.contactPhone,
+    contactEmail: cyprusProperty.contactEmail
+  };
+};
 
 export default function MapPage() {
   const [location, setLocation] = useLocation();
-  const [selectedCountry, setSelectedCountry] = useState('All');
+  const [selectedCountry, setSelectedCountry] = useState('CY'); // Default to Cyprus
   const [searchQuery, setSearchQuery] = useState('');
+  const [properties, setProperties] = useState<PropertyWithScore[]>([]);
+  const [loading, setLoading] = useState(false);
   
   // Get search query from URL
   useEffect(() => {
@@ -19,53 +47,47 @@ export default function MapPage() {
     }
   }, []);
   
-  // Fetch real properties from Bayut API
-  const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
-    queryKey: ['map-properties', selectedCountry, searchQuery],
-    queryFn: async () => {
-      console.log('=== MAP PAGE DEBUG ===');
-      console.log('Selected country:', selectedCountry);
-      console.log('Search query:', searchQuery);
-      
-      let result;
-      if (searchQuery.trim()) {
-        // If there's a search query, search across all properties
-        result = await api.searchProperties(searchQuery);
-        console.log('Search results:', result.length);
-      } else if (selectedCountry === 'All') {
-        result = await api.getProperties();
-      } else {
-        result = await api.getPropertiesByCountry(selectedCountry);
-      }
-      
-      console.log('API returned properties:', result.length);
-      console.log('First 3 properties:', result.slice(0, 3).map(p => ({ id: p.id, title: p.title, country: p.country })));
-      console.log('=== END MAP PAGE DEBUG ===');
-      
-      return result;
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
-  
-  // Debug: Log when properties change
+  // Load Cyprus properties and filter based on search
   useEffect(() => {
-    console.log('=== MAP PAGE: Properties changed ===');
-    console.log('Properties array length:', properties.length);
-    console.log('Properties array:', properties);
-    console.log('=== END MAP PAGE: Properties changed ===');
-  }, [properties]);
+    setLoading(true);
+    
+    let filteredProperties = cyprusProperties as any[];
+    
+    console.log('=== MAP PAGE: Loading Cyprus Properties ===');
+    console.log('Total Cyprus properties:', filteredProperties.length);
+    console.log('First property:', filteredProperties[0]);
+    
+    // Filter by search query if provided
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filteredProperties = filteredProperties.filter(property => 
+        property.title.toLowerCase().includes(query) ||
+        property.location.toLowerCase().includes(query) ||
+        property.description.toLowerCase().includes(query) ||
+        (property.tags && property.tags.some((tag: string) => tag.toLowerCase().includes(query)))
+      );
+      console.log('After search filter:', filteredProperties.length);
+    }
+    
+    // Filter by country (though we're only showing Cyprus properties)
+    if (selectedCountry !== 'All' && selectedCountry !== 'CY') {
+      filteredProperties = [];
+    }
+    
+    // Convert to PropertyWithScore format
+    const convertedProperties = filteredProperties.map(convertToPropertyWithScore);
+    
+    console.log('Converted properties:', convertedProperties.length);
+    console.log('First converted property:', convertedProperties[0]);
+    console.log('=== END MAP PAGE: Loading Cyprus Properties ===');
+    
+    setProperties(convertedProperties);
+    setLoading(false);
+  }, [searchQuery, selectedCountry]);
 
   const countries = [
-    { code: 'All', name: 'All Countries' },
-    { code: 'UAE', name: 'United Arab Emirates' },
     { code: 'CY', name: 'Cyprus' },
-    { code: 'UK', name: 'United Kingdom' },
-    { code: 'US', name: 'United States' },
-    { code: 'IT', name: 'Italy' },
-    { code: 'ES', name: 'Spain' },
-    { code: 'FR', name: 'France' },
-    { code: 'DE', name: 'Germany' }
+    { code: 'All', name: 'All Countries' }
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -85,7 +107,7 @@ export default function MapPage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">Property Map</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Cyprus Property Map</h1>
             
             <div className="flex items-center gap-4">
               {/* Search Bar */}
@@ -140,8 +162,8 @@ export default function MapPage() {
 
       <div className="h-[calc(100vh-120px)]">
         <PropertyMap 
-          initialCenter={[25.2048, 55.2708]} // UAE center
-          initialZoom={6}
+          initialCenter={[35.1264, 33.4299]} // Cyprus center
+          initialZoom={8}
           properties={properties}
           loading={loading}
         />
