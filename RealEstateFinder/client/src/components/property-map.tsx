@@ -194,15 +194,19 @@ export function PropertyMap({
                             <p className="mt-2 text-xs">{description}</p>
                           )}
                         </div>
-                        {property.contactUrl && (
+                        {property.contactPhone && (
+                          <div className="mt-2 text-xs text-gray-600">
+                            <p><strong>Phone:</strong> {property.contactPhone}</p>
+                          </div>
+                        )}
+                        {property.contactEmail && (
+                          <div className="mt-2 text-xs text-gray-600">
+                            <p><strong>Email:</strong> {property.contactEmail}</p>
+                          </div>
+                        )}
+                        {property.contactUrl && property.contactUrl.startsWith('http') && (
                           <button 
-                            onClick={() => {
-                              if (property.contactUrl && property.contactUrl.startsWith('/property/')) {
-                                window.location.href = property.contactUrl;
-                              } else {
-                                window.open(property.contactUrl, '_blank', 'noopener,noreferrer');
-                              }
-                            }}
+                            onClick={() => window.open(property.contactUrl, '_blank', 'noopener,noreferrer')}
                             className="block mt-2 text-xs text-blue-600 hover:underline cursor-pointer"
                           >
                             View Details
