@@ -25,91 +25,6 @@ export interface Property {
   contactEmail?: string;
 }
 
-// Generate Cyprus properties with working images
-export const generateCyprusProperties = (): Property[] => {
-  const properties: Property[] = [];
-  
-  // Cyprus cities with real coordinates
-  const cyprusCities = [
-    { name: 'Nicosia', lat: 35.1856, lng: 33.3823, area: 'Nicosia' },
-    { name: 'Famagusta', lat: 35.1258, lng: 33.9411, area: 'Famagusta' },
-    { name: 'Kyrenia', lat: 35.3403, lng: 33.3191, area: 'Kyrenia' },
-    { name: 'Larnaca', lat: 34.9229, lng: 33.6233, area: 'Larnaca' },
-    { name: 'Limassol', lat: 34.7071, lng: 33.0226, area: 'Limassol' },
-    { name: 'Paphos', lat: 34.7720, lng: 32.4297, area: 'Paphos' },
-    { name: 'Yeni Boğaziçi', lat: 35.1631, lng: 33.8722, area: 'Famagusta' },
-    { name: 'Çanakkale', lat: 35.1406, lng: 33.9111, area: 'Famagusta' },
-    { name: 'Sakarya', lat: 35.1400, lng: 33.9200, area: 'Famagusta' },
-    { name: 'Tatlısu', lat: 35.4131, lng: 33.7772, area: 'Famagusta' }
-  ];
-
-  const propertyTypes = ['Apartment', 'Villa', 'Townhouse', 'Penthouse', 'Studio', 'Duplex', 'Loft', 'Garden Apartment'];
-  
-  // Real working Unsplash URLs for Cyprus properties
-  const workingImageUrls = [
-    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
-  ];
-
-  // Generate 100 Cyprus properties with working images
-  for (let i = 0; i < 100; i++) {
-    const city = cyprusCities[i % cyprusCities.length];
-    const propertyType = propertyTypes[i % propertyTypes.length];
-    const bedrooms = Math.floor(Math.random() * 4) + 1;
-    const price = Math.floor(Math.random() * 200000) + 50000; // £50k - £250k
-    
-    // Add some randomness to coordinates
-    const lat = city.lat + (Math.random() - 0.5) * 0.1;
-    const lng = city.lng + (Math.random() - 0.5) * 0.1;
-    
-    // Each property gets 3 working images
-    const mainImage = workingImageUrls[i % workingImageUrls.length];
-    const secondImage = workingImageUrls[(i + 1) % workingImageUrls.length];
-    const thirdImage = workingImageUrls[(i + 2) % workingImageUrls.length];
-    
-    // Each property gets a unique working Cyprus real estate URL
-    const cyprusUrl = `https://www.101evler.com/north-cyprus/property-for-sale/${city.name.toLowerCase().replace(' ', '-')}-${propertyType.toLowerCase()}-${4000 + i}.html`;
-    
-    const property: Property = {
-      id: 4000 + i,
-      title: `${propertyType} in ${city.name} - ${bedrooms}+1`,
-      price: `£${price.toLocaleString()}`,
-      location: `${city.area}, Cyprus`,
-      country: 'CY',
-      images: [mainImage, secondImage, thirdImage],
-      img_url: mainImage,
-      description: `Beautiful ${propertyType.toLowerCase()} in ${city.name} with ${bedrooms}+1 layout. Modern amenities and prime location in Cyprus.`,
-      tags: [propertyType, city.name, `${bedrooms}+1`, 'Cyprus', 'Residential'],
-      personas: {
-        remoteWorker: Math.random() * 0.4 + 0.6,
-        family: Math.random() * 0.4 + 0.6,
-        investor: Math.random() * 0.4 + 0.6,
-        retiree: Math.random() * 0.4 + 0.6,
-        luxury: Math.random() * 0.4 + 0.6
-      },
-      latitude: lat,
-      longitude: lng,
-      isActive: true,
-      contactUrl: cyprusUrl,
-      lister_url: cyprusUrl,
-      contactPhone: `+90 ${Math.floor(Math.random() * 90000000) + 10000000}`,
-      contactEmail: `agent${i + 1}@cyprusrealestate.com`
-    };
-    
-    properties.push(property);
-  }
-  
-  return properties;
-};
-
 // Generate 400+ real-looking UAE properties with WORKING images
 export const generateUAEProperties = (): Property[] => {
   const properties: Property[] = [];
@@ -232,22 +147,19 @@ export const generateUAEProperties = (): Property[] => {
 
 // Generate the properties immediately
 export const generatedUAEProperties = generateUAEProperties();
-export const generatedCyprusProperties = generateCyprusProperties();
 
-// All properties - now includes both UAE and Cyprus properties
+// All properties - now only includes UAE properties (Cyprus properties come from server)
 export const allProperties: Property[] = [
-  ...generatedUAEProperties, // 400+ UAE properties
-  ...generatedCyprusProperties // 100+ Cyprus properties
+  ...generatedUAEProperties // 400+ UAE properties
 ];
 
 // API functions that simulate backend calls
 export const api = {
-  // Get all properties - returns UAE + Cyprus properties immediately
+  // Get all properties - returns UAE properties immediately
   getProperties: async (): Promise<Property[]> => {
     console.log('=== DEBUG: API getProperties called ===');
     console.log('Total properties in allProperties:', allProperties.length);
     console.log('Generated UAE properties count:', generatedUAEProperties.length);
-    console.log('Generated Cyprus properties count:', generatedCyprusProperties.length);
     console.log('First 5 properties:', allProperties.slice(0, 5).map(p => ({ id: p.id, title: p.title, country: p.country })));
     console.log('=== END DEBUG ===');
     return allProperties;
@@ -266,7 +178,7 @@ export const api = {
     return results;
   },
 
-  // Get properties by country - returns data immediately
+  // Get properties by country - returns data immediately for UAE, fetches from server for Cyprus
   getPropertiesByCountry: async (country: string): Promise<Property[]> => {
     if (country === 'All') {
       console.log('Returning all properties:', allProperties.length);
@@ -288,7 +200,7 @@ export const api = {
           const serverProperties = await response.json();
           console.log('=== CYPRUS DEBUG: Server returned properties ===');
           console.log('Server properties count:', serverProperties.length);
-          console.log('First 3 server properties:', serverProperties.slice(0, 3).map(p => ({ 
+          console.log('First 3 server properties:', serverProperties.slice(0, 3).map((p: any) => ({ 
             id: p.id, 
             title: p.title, 
             country: p.country,
@@ -301,12 +213,12 @@ export const api = {
           }
         }
       } catch (error) {
-        console.log('Failed to fetch from server, using generated properties:', error);
+        console.log('Failed to fetch from server:', error);
       }
       
-      // Fallback to generated properties if server fails
-      console.log('Using generated Cyprus properties as fallback');
-      return generatedCyprusProperties;
+      // Return empty array if server fails - no more fake properties
+      console.log('No Cyprus properties available from server');
+      return [];
     }
     
     // For other countries, return empty array since we only have UAE and Cyprus properties
