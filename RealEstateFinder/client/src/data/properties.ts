@@ -148,6 +148,9 @@ export const generateUAEProperties = (): Property[] => {
 // Generate the properties immediately
 export const generatedUAEProperties = generateUAEProperties();
 
+// Import Cyprus properties directly since we can't run the server on GitHub Pages
+import cyprusPropertiesData from '../cyprus-properties.json';
+
 // All properties - now only includes UAE properties (Cyprus properties come from server)
 export const allProperties: Property[] = [
   ...generatedUAEProperties // 400+ UAE properties
@@ -191,34 +194,44 @@ export const api = {
     }
     
     if (country === 'CY') {
-      console.log('=== CYPRUS DEBUG: Attempting to fetch real Cyprus properties ===');
+      console.log('=== CYPRUS DEBUG: Loading Cyprus properties from local data ===');
       
       try {
-        // Try to fetch real Cyprus properties from the server first
-        const response = await fetch('/api/cyprus-properties');
-        if (response.ok) {
-          const serverProperties = await response.json();
-          console.log('=== CYPRUS DEBUG: Server returned properties ===');
-          console.log('Server properties count:', serverProperties.length);
-          console.log('First 3 server properties:', serverProperties.slice(0, 3).map((p: any) => ({ 
-            id: p.id, 
-            title: p.title, 
-            country: p.country,
-            img_url: p.img_url 
-          })));
-          
-          if (serverProperties && serverProperties.length > 0) {
-            console.log('Using real Cyprus properties from server');
-            return serverProperties;
-          }
-        }
+        // Use local Cyprus properties data since server won't run on GitHub Pages
+        const cyprusProperties = cyprusPropertiesData.map((property: any, index: number) => ({
+          id: index + 1,
+          country: 'CY',
+          title: property.title,
+          price: property.price,
+          location: property.location,
+          images: property.images,
+          img_url: property.images[0], // Use first image as main image
+          description: property.description,
+          tags: property.tags,
+          personas: property.personas || {},
+          latitude: property.latitude,
+          longitude: property.longitude,
+          isActive: property.isActive !== false,
+          contactUrl: property.contactUrl,
+          lister_url: property.lister_url,
+          contactPhone: property.contactPhone || '',
+          contactEmail: property.contactEmail || ''
+        }));
+        
+        console.log('=== CYPRUS DEBUG: Loaded Cyprus properties ===');
+        console.log('Cyprus properties count:', cyprusProperties.length);
+        console.log('First 3 Cyprus properties:', cyprusProperties.slice(0, 3).map((p: any) => ({ 
+          id: p.id, 
+          title: p.title, 
+          country: p.country,
+          img_url: p.img_url 
+        })));
+        
+        return cyprusProperties;
       } catch (error) {
-        console.log('Failed to fetch from server:', error);
+        console.log('Failed to load Cyprus properties:', error);
+        return [];
       }
-      
-      // Return empty array if server fails - no more fake properties
-      console.log('No Cyprus properties available from server');
-      return [];
     }
     
     // For other countries, return empty array since we only have UAE and Cyprus properties
