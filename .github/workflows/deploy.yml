@@ -31,7 +31,11 @@ jobs:
       - name: Install dependencies
         run: |
           cd RealEstateFinder
-          npm ci
+          echo "Installing dependencies..."
+          npm ci --verbose
+          echo "Dependencies installed successfully"
+          echo "Available scripts:"
+          npm run
       
       - name: Build React app
         run: |
@@ -41,8 +45,10 @@ jobs:
           ls -la
           echo "Contents of client directory:"
           ls -la client/ || echo "Client directory not found"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
           echo "Running build command..."
-          npm run build:client
+          npm run build:client || (echo "Build failed with exit code $?" && exit 1)
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
