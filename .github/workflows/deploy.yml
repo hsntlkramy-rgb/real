@@ -26,15 +26,22 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: 'RealEstateFinder/package-lock.json'
       
       - name: Install dependencies
         run: |
           cd RealEstateFinder
-          npm ci --prefer-offline --no-audit
+          npm ci
       
       - name: Build React app
         run: |
           cd RealEstateFinder
+          echo "Current directory: $(pwd)"
+          echo "Contents of RealEstateFinder:"
+          ls -la
+          echo "Contents of client directory:"
+          ls -la client/ || echo "Client directory not found"
+          echo "Running build command..."
           npm run build:client
       
       - name: Setup Pages
