@@ -36,7 +36,7 @@ function App() {
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
-          <WouterRouter base="/realestat">
+          <WouterRouter base="/real">
             <AppRouter />
           </WouterRouter>
         </TooltipProvider>

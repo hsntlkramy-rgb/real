@@ -76,7 +76,7 @@ export default function HomePage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-6 py-4 text-gray-800 focus:outline-none"
               />
-              <Link href={`/realestat/map?search=${encodeURIComponent(searchQuery)}`}>
+              <Link href={`/map?search=${encodeURIComponent(searchQuery)}`}>
                 <button
                   type="submit"
                   className="bg-blue-600 hover:bg-blue-700 px-8 py-4 text-white font-semibold transition-colors"
@@ -114,11 +114,11 @@ export default function HomePage() {
       {/* Quick Actions */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/realestat/swipe" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
+          <Link href="/swipe" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
             <Heart className="h-4 w-4 mr-2" />
             Start Swiping
           </Link>
-          <Link href="/realestat/map" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
+          <Link href="/map" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
             <MapPin className="h-4 w-4 mr-2" />
             Browse Properties
           </Link>
@@ -198,7 +198,7 @@ export default function HomePage() {
           <div className="text-center mt-8">
             <p className="text-gray-600">
               Showing 12 of {allProperties.length} properties. 
-              <Link href="/realestat/map" className="text-blue-600 hover:underline ml-1">
+              <Link href="/map" className="text-blue-600 hover:underline ml-1">
                 View all on map →
               </Link>
             </p>
