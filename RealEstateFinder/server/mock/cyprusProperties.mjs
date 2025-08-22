@@ -11,6 +11,8 @@ try {
 
 // Add the user's property as the first entry, with Lefkoşa (Nicosia) coordinates
 cyprusProperties.push({
+  id: 1,
+  country: 'CY',
   latitude: 35.1856, // Lefkoşa (Nicosia) latitude
   longitude: 33.3823, // Lefkoşa (Nicosia) longitude
   title: 'For Rent Loft 3+1 Fully Furnished Duplex at Cyprus Girne Watergarden Residance',
@@ -29,6 +31,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 2,
+  country: 'CY',
   latitude: 35.1258, // Famagusta (Mağusa) latitude
   longitude: 33.9411, // Famagusta (Mağusa) longitude
   title: '2+1 Apartment In Stella Apartment, Fully Furnished At The Centre Of Famagusta In Gülseren District With A Some Sea View.',
@@ -47,6 +51,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 3,
+  country: 'CY',
   latitude: 35.1224, // Mağusa Merkez (Famagusta) latitude
   longitude: 33.9389, // Mağusa Merkez (Famagusta) longitude
   title: 'Flat For Sale in Mağusa Merkez, Famagusta',
@@ -65,6 +71,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 4,
+  country: 'CY',
   latitude: 35.1631, // Yeni Boğaziçi (Famagusta) latitude
   longitude: 33.8722, // Yeni Boğaziçi (Famagusta) longitude
   title: 'FAMAGUSTA - YENI BOGAZICI GARDENS PARK PROJECT 2+1 APARTMENT FOR SALE *** £115,000 GBP ***',
@@ -83,12 +91,14 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 5,
+  country: 'CY',
   latitude: 35.1406, // Çanakkale (Famagusta) latitude
   longitude: 33.9111, // Çanakkale (Famagusta) longitude
   title: '3+1 Apartment for Sale in Gazimağusa Çanakkale from KIZILÖRS INVESTMENT',
   price: '£99,000 (~5,495,900₺)',
   images: ['https://storage.googleapis.com/101evler-cache/property_wm/property/61083/450993/magusa-canakkale-satilik-daire-450993-1749541385.5429.jpeg'],
-  img_url: 'https://storage.googleapis.com/101evler-cache/property_wm/property/61083/450993/magusa-canakkale-satilik-daire-450993-1749541385.5429.jpeg',
+  img_url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
   location: 'Çanakkale, Famagusta, Cyprus',
   contactUrl: 'https://www.101evler.com/north-cyprus/property-for-sale/famagusta-canakkale-flat-450993.html',
   lister_url: 'https://www.101evler.com/north-cyprus/property-for-sale/famagusta-canakkale-flat-450993.html',
@@ -101,6 +111,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 6,
+  country: 'CY',
   latitude: 35.1224, // Gazimağusa (Famagusta) Center latitude
   longitude: 33.9389, // Gazimağusa (Famagusta) Center longitude
   title: '3+1 / 2+1 Apartments from the Project in Gazimağusa Center',
@@ -119,6 +131,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 7,
+  country: 'CY',
   latitude: 35.1167, // Mutluyaka (Famagusta) latitude
   longitude: 33.8667, // Mutluyaka (Famagusta) longitude
   title: 'Semi Detached For Sale in Mutluyaka, Famagusta',
@@ -137,6 +151,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 8,
+  country: 'CY',
   latitude: 35.0667, // Beyarmudu (Famagusta) latitude
   longitude: 33.7333, // Beyarmudu (Famagusta) longitude
   title: 'BEYARMUDU .... TURKISH PRODUCT SINGLE STOREY HOUSE',
@@ -191,6 +207,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 9,
+  country: 'CY',
   latitude: 35.4131, // Tatlısu (Famagusta) latitude
   longitude: 33.7772, // Tatlısu (Famagusta) longitude
   title: 'For Sale 2+1 Apartment at Tatlısu Seaterra Reserve from KIZILÖRS INVESTMENT',
@@ -210,6 +228,8 @@ cyprusProperties.push({
 
 // Add more Cyprus properties with real images and URLs
 cyprusProperties.push({
+  id: 10,
+  country: 'CY',
   latitude: 35.1856,
   longitude: 33.3823,
   title: 'Luxury 2+1 Apartment in Nicosia City Center',
@@ -228,6 +248,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 11,
+  country: 'CY',
   latitude: 35.1258,
   longitude: 33.9411,
   title: 'Sea View Villa in Famagusta Beachfront',
@@ -246,6 +268,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 12,
+  country: 'CY',
   latitude: 35.1631,
   longitude: 33.8722,
   title: 'Modern 3+1 Penthouse in Yeni Boğaziçi',
@@ -264,6 +288,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 13,
+  country: 'CY',
   latitude: 35.1406,
   longitude: 33.9111,
   title: 'Family Villa in Çanakkale with Garden',
@@ -282,6 +308,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 14,
+  country: 'CY',
   latitude: 35.1856,
   longitude: 33.3823,
   title: 'Studio Apartment in Nicosia for Investment',
@@ -300,10 +328,12 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 15,
+  country: 'CY',
   latitude: 35.1258,
   longitude: 33.9411,
   title: 'Luxury 4+1 Villa in Famagusta Golf Resort',
-  price: '£220,000 (~12,210,000₺)',
+  price: '£220,000 (~9,990,000₺)',
   images: ['https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80'],
   img_url: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=800&q=80',
   location: 'Famagusta Golf Resort, Cyprus',
@@ -318,6 +348,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 16,
+  country: 'CY',
   latitude: 35.1631,
   longitude: 33.8722,
   title: '2+1 Apartment in Yeni Boğaziçi with Pool',
@@ -336,6 +368,8 @@ cyprusProperties.push({
 });
 
 cyprusProperties.push({
+  id: 17,
+  country: 'CY',
   latitude: 35.1406,
   longitude: 33.9111,
   title: '1+1 Apartment in Çanakkale for Young Professionals',

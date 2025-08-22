@@ -279,7 +279,33 @@ export const api = {
     }
     
     if (country === 'CY') {
-      console.log('Returning Cyprus properties:', generatedCyprusProperties.length);
+      console.log('=== CYPRUS DEBUG: Attempting to fetch real Cyprus properties ===');
+      
+      try {
+        // Try to fetch real Cyprus properties from the server first
+        const response = await fetch('/api/cyprus-properties');
+        if (response.ok) {
+          const serverProperties = await response.json();
+          console.log('=== CYPRUS DEBUG: Server returned properties ===');
+          console.log('Server properties count:', serverProperties.length);
+          console.log('First 3 server properties:', serverProperties.slice(0, 3).map(p => ({ 
+            id: p.id, 
+            title: p.title, 
+            country: p.country,
+            img_url: p.img_url 
+          })));
+          
+          if (serverProperties && serverProperties.length > 0) {
+            console.log('Using real Cyprus properties from server');
+            return serverProperties;
+          }
+        }
+      } catch (error) {
+        console.log('Failed to fetch from server, using generated properties:', error);
+      }
+      
+      // Fallback to generated properties if server fails
+      console.log('Using generated Cyprus properties as fallback');
       return generatedCyprusProperties;
     }
     

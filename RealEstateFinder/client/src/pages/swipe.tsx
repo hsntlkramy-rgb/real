@@ -31,20 +31,30 @@ export default function SwipePage() {
     { code: 'DE', name: 'Germany' }
   ];
 
-  // Fetch properties for selected country using Bayut API
+  // Fetch properties for selected country - FIXED to properly handle Cyprus
   const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
     queryKey: ['swipe-properties', selectedCountry?.code, minPrice, maxPrice],
     queryFn: async () => {
       if (!selectedCountry) return [];
       
       try {
-        if (selectedCountry.code === 'UAE') {
-          // Use Bayut API for UAE
-          return api.getPropertiesByCountry('UAE');
-        } else {
-          // Use mock data for other countries
-          return api.getPropertiesByCountry(selectedCountry.code);
-        }
+        console.log('=== SWIPE DEBUG: Fetching properties for country ===', selectedCountry.code);
+        
+        // Get properties by country - this will return the correct properties
+        const countryProperties = await api.getPropertiesByCountry(selectedCountry.code);
+        
+        console.log('=== SWIPE DEBUG: Properties received ===');
+        console.log('Country:', selectedCountry.code);
+        console.log('Properties count:', countryProperties.length);
+        console.log('First 3 properties:', countryProperties.slice(0, 3).map(p => ({ 
+          id: p.id, 
+          title: p.title, 
+          country: p.country,
+          img_url: p.img_url 
+        })));
+        console.log('=== END SWIPE DEBUG ===');
+        
+        return countryProperties;
       } catch (error) {
         console.error('Error loading properties:', error);
         return [];
