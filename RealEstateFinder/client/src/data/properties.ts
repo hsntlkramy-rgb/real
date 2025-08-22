@@ -195,37 +195,45 @@ export const api = {
     
     if (country === 'CY') {
       console.log('=== CYPRUS DEBUG: Loading Cyprus properties from local data ===');
+      console.log('Raw Cyprus data:', cyprusPropertiesData);
       
       try {
         // Use local Cyprus properties data since server won't run on GitHub Pages
-        const cyprusProperties = cyprusPropertiesData.map((property: any, index: number) => ({
-          id: index + 1,
-          country: 'CY',
-          title: property.title,
-          price: property.price,
-          location: property.location,
-          images: property.images,
-          img_url: property.images[0], // Use first image as main image
-          description: property.description,
-          tags: property.tags,
-          personas: property.personas || {},
-          latitude: property.latitude,
-          longitude: property.longitude,
-          isActive: property.isActive !== false,
-          contactUrl: property.contactUrl,
-          lister_url: property.lister_url,
-          contactPhone: property.contactPhone || '',
-          contactEmail: property.contactEmail || ''
-        }));
+        const cyprusProperties = cyprusPropertiesData.map((property: any, index: number) => {
+          const mappedProperty = {
+            id: index + 1,
+            country: 'CY',
+            title: property.title,
+            price: property.price,
+            location: property.location,
+            images: property.images,
+            img_url: property.images[0], // Use first image as main image
+            description: property.description,
+            tags: property.tags,
+            personas: property.personas || {},
+            latitude: property.latitude,
+            longitude: property.longitude,
+            isActive: property.isActive !== false,
+            contactUrl: property.contactUrl,
+            lister_url: property.lister_url,
+            contactPhone: property.contactPhone || '',
+            contactEmail: property.contactEmail || ''
+          };
+          
+          console.log(`Property ${index + 1}:`, {
+            id: mappedProperty.id,
+            title: mappedProperty.title,
+            img_url: mappedProperty.img_url,
+            images: mappedProperty.images,
+            contactUrl: mappedProperty.contactUrl
+          });
+          
+          return mappedProperty;
+        });
         
         console.log('=== CYPRUS DEBUG: Loaded Cyprus properties ===');
         console.log('Cyprus properties count:', cyprusProperties.length);
-        console.log('First 3 Cyprus properties:', cyprusProperties.slice(0, 3).map((p: any) => ({ 
-          id: p.id, 
-          title: p.title, 
-          country: p.country,
-          img_url: p.img_url 
-        })));
+        console.log('All Cyprus properties:', cyprusProperties);
         
         return cyprusProperties;
       } catch (error) {
