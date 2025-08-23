@@ -1,32 +1,55 @@
 import React, { useState } from 'react';
 import { Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
 import { PropertyWithScore } from '../lib/types';
-import { api } from '../data/properties';
 import { MapPin, Search, Heart, Eye } from 'lucide-react';
+import cyprusProperties from '../cyprus-properties.json';
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [likedProperties, setLikedProperties] = useState<Set<number>>(new Set());
 
-  // Fetch real properties from Bayut API
-  const { data: allProperties = [], isLoading: propertiesLoading } = useQuery<PropertyWithScore[]>({
-    queryKey: ['properties', searchQuery],
-    queryFn: async () => {
-      if (searchQuery.trim()) {
-        return api.searchProperties(searchQuery);
-      }
-      return api.getProperties();
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
-  });
+  // Convert Cyprus properties to PropertyWithScore format
+  const convertToPropertyWithScore = (cyprusProperty: any): PropertyWithScore => {
+    return {
+      id: Math.random(), // Generate random ID since Cyprus properties don't have one
+      title: cyprusProperty.title,
+      description: cyprusProperty.description,
+      price: cyprusProperty.price,
+      location: cyprusProperty.location,
+      country: 'CY',
+      images: cyprusProperty.images || [],
+      img_url: cyprusProperty.img_url || (cyprusProperty.images && cyprusProperty.images[0]) || '',
+      tags: cyprusProperty.tags || [],
+      personas: cyprusProperty.personas || {},
+      latitude: cyprusProperty.latitude,
+      longitude: cyprusProperty.longitude,
+      isActive: cyprusProperty.isActive || true,
+      coordinates: {
+        lat: cyprusProperty.latitude,
+        lng: cyprusProperty.longitude
+      },
+      contactUrl: cyprusProperty.contactUrl || cyprusProperty.lister_url,
+      lister_url: cyprusProperty.lister_url,
+      contactPhone: cyprusProperty.contactPhone,
+      contactEmail: cyprusProperty.contactEmail
+    };
+  };
 
-  // Calculate stats from real data
-  const totalProperties = allProperties.length;
-  const uaeProperties = allProperties.filter(p => p.country === 'UAE').length;
-  const cyprusProperties = allProperties.filter(p => p.country === 'CY').length;
-  const otherProperties = totalProperties - uaeProperties - cyprusProperties;
+  // Load and filter Cyprus properties
+  const allProperties = cyprusProperties.map(convertToPropertyWithScore);
+  const filteredProperties = searchQuery.trim() 
+    ? allProperties.filter(property => 
+        property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        property.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : allProperties;
+
+  // Calculate stats from Cyprus data
+  const totalProperties = filteredProperties.length;
+  const cyprusPropertiesCount = filteredProperties.filter(p => p.country === 'CY').length;
+  const otherProperties = totalProperties - cyprusPropertiesCount;
 
   const toggleLike = (propertyId: number) => {
     const newLiked = new Set(likedProperties);
@@ -43,16 +66,7 @@ export default function HomePage() {
     // The query will automatically refetch due to queryKey change
   };
 
-  if (propertiesLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading real properties from Bayut API...</p>
-        </div>
-      </div>
-    );
-  }
+  // No loading state needed since we're using local data
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -63,7 +77,7 @@ export default function HomePage() {
             Find Your Dream Home
           </h1>
           <p className="text-xl text-center mb-8 max-w-2xl mx-auto">
-            Discover amazing properties across UAE, Cyprus, and beyond. Real-time data from Bayut API.
+            Discover amazing properties across Cyprus. Beautiful homes, apartments, and villas with real photos and details.
           </p>
           
           {/* Search Form */}
@@ -91,17 +105,13 @@ export default function HomePage() {
 
       {/* Stats Section */}
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg p-6 text-center shadow-sm">
             <div className="text-3xl font-bold text-blue-600">{totalProperties}</div>
             <div className="text-gray-600">Total Properties</div>
           </div>
           <div className="bg-white rounded-lg p-6 text-center shadow-sm">
-            <div className="text-3xl font-bold text-green-600">{uaeProperties}</div>
-            <div className="text-gray-600">UAE Properties</div>
-          </div>
-          <div className="bg-white rounded-lg p-6 text-center shadow-sm">
-            <div className="text-3xl font-bold text-purple-600">{cyprusProperties}</div>
+            <div className="text-3xl font-bold text-purple-600">{cyprusPropertiesCount}</div>
             <div className="text-gray-600">Cyprus Properties</div>
           </div>
           <div className="bg-white rounded-lg p-6 text-center shadow-sm">
@@ -128,16 +138,16 @@ export default function HomePage() {
       {/* Properties Grid */}
       <div className="container mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold text-center mb-8">
-          Featured Properties ({allProperties.length} found)
+          Featured Properties ({filteredProperties.length} found)
         </h2>
         
-        {allProperties.length === 0 ? (
+        {filteredProperties.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600 text-lg">No properties found. Try adjusting your search.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allProperties.slice(0, 12).map((property) => (
+            {filteredProperties.slice(0, 12).map((property) => (
               <div key={property.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <div className="relative">
                   <img
@@ -194,10 +204,10 @@ export default function HomePage() {
           </div>
         )}
         
-        {allProperties.length > 12 && (
+        {filteredProperties.length > 12 && (
           <div className="text-center mt-8">
             <p className="text-gray-600">
-              Showing 12 of {allProperties.length} properties. 
+              Showing 12 of {filteredProperties.length} properties. 
               <Link href="/map" className="text-blue-600 hover:underline ml-1">
                 View all on map →
               </Link>

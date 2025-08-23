@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { PropertyWithScore } from '../lib/types';
-import { api } from '../data/properties';
 import { Heart, X, MapPin, Home, Star, ArrowLeft, ArrowRight } from 'lucide-react';
+import cyprusProperties from '../cyprus-properties.json';
 
 export default function SwipePage() {
-  const [selectedCountry, setSelectedCountry] = useState<{ code: string; name: string } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<{ code: string; name: string } | null>({ code: 'CY', name: 'Cyprus' });
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentStep, setCurrentStep] = useState<'country-select' | 'swipe'>('country-select');
+  const [currentStep, setCurrentStep] = useState<'country-select' | 'swipe'>('swipe');
   const [likedProperties, setLikedProperties] = useState<PropertyWithScore[]>([]);
   const [passedProperties, setPassedProperties] = useState<PropertyWithScore[]>([]);
   const [minPrice, setMinPrice] = useState('');
@@ -21,49 +20,48 @@ export default function SwipePage() {
   const touchStartY = useRef<number>(0);
 
   const countries = [
-    { code: 'UAE', name: 'United Arab Emirates' },
-    { code: 'CY', name: 'Cyprus' },
-    { code: 'UK', name: 'United Kingdom' },
-    { code: 'US', name: 'United States' },
-    { code: 'IT', name: 'Italy' },
-    { code: 'ES', name: 'Spain' },
-    { code: 'FR', name: 'France' },
-    { code: 'DE', name: 'Germany' }
+    { code: 'CY', name: 'Cyprus' }
   ];
 
-  // Fetch properties for selected country - FIXED to properly handle Cyprus
-  const { data: properties = [], isLoading: loading } = useQuery<PropertyWithScore[]>({
-    queryKey: ['swipe-properties', selectedCountry?.code, minPrice, maxPrice],
-    queryFn: async () => {
-      if (!selectedCountry) return [];
-      
-      try {
-        console.log('=== SWIPE DEBUG: Fetching properties for country ===', selectedCountry.code);
-        
-        // Get properties by country - this will return the correct properties
-        const countryProperties = await api.getPropertiesByCountry(selectedCountry.code);
-        
-        console.log('=== SWIPE DEBUG: Properties received ===');
-        console.log('Country:', selectedCountry.code);
-        console.log('Properties count:', countryProperties.length);
-        console.log('First 3 properties:', countryProperties.slice(0, 3).map(p => ({ 
-          id: p.id, 
-          title: p.title, 
-          country: p.country,
-          img_url: p.img_url 
-        })));
-        console.log('=== END SWIPE DEBUG ===');
-        
-        return countryProperties;
-      } catch (error) {
-        console.error('Error loading properties:', error);
-        return [];
-      }
-    },
-    enabled: !!selectedCountry && currentStep === 'swipe',
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
+  // Convert Cyprus properties to PropertyWithScore format
+  const convertToPropertyWithScore = (cyprusProperty: any): PropertyWithScore => {
+    return {
+      id: Math.random(), // Generate random ID since Cyprus properties don't have one
+      title: cyprusProperty.title,
+      description: cyprusProperty.description,
+      price: cyprusProperty.price,
+      location: cyprusProperty.location,
+      country: 'CY',
+      images: cyprusProperty.images || [],
+      img_url: cyprusProperty.img_url || (cyprusProperty.images && cyprusProperty.images[0]) || '',
+      tags: cyprusProperty.tags || [],
+      personas: cyprusProperty.personas || {},
+      latitude: cyprusProperty.latitude,
+      longitude: cyprusProperty.longitude,
+      isActive: cyprusProperty.isActive || true,
+      coordinates: {
+        lat: cyprusProperty.latitude,
+        lng: cyprusProperty.longitude
+      },
+      contactUrl: cyprusProperty.contactUrl || cyprusProperty.lister_url,
+      lister_url: cyprusProperty.lister_url,
+      contactPhone: cyprusProperty.contactPhone,
+      contactEmail: cyprusProperty.contactEmail
+    };
+  };
+
+  // Load Cyprus properties and filter by price if needed
+  const allProperties = cyprusProperties.map(convertToPropertyWithScore);
+  const properties = allProperties.filter(property => {
+    if (!minPrice && !maxPrice) return true;
+    
+    const price = parseFloat(property.price.replace(/[^0-9.]/g, ''));
+    if (minPrice && price < parseFloat(minPrice)) return false;
+    if (maxPrice && price > parseFloat(maxPrice)) return false;
+    return true;
   });
+
+  const loading = false; // No loading needed for local data
 
   const handleCountrySelect = (country: { code: string; name: string }) => {
     setSelectedCountry(country);
