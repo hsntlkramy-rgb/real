@@ -28,19 +28,19 @@ jobs:
           node-version: '18'
           cache: 'npm'
           
+      - name: Change to client directory
+        run: cd RealEstateFinder/client
+        
       - name: Install dependencies
-        working-directory: RealEstateFinder/client
         run: npm ci
         
       - name: Build project
-        working-directory: RealEstateFinder/client
         run: npm run build
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload artifact
-        working-directory: RealEstateFinder/client
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
