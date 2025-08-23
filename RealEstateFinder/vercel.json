@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd client && npm run vercel-build",
+  "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
   "framework": "vite",
-  "installCommand": "cd client && npm install"
+  "installCommand": "npm install"
 }
