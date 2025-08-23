@@ -1,0 +1,7 @@
+# Ignore server files for Vercel (frontend only)
+server/
+functions/
+*.ts
+*.js
+!client/**/*.ts
+!client/**/*.js
