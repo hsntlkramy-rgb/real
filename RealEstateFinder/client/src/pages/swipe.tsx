@@ -110,15 +110,23 @@ export default function SwipePage() {
     const diffY = touchStartY.current - touchCurrentY;
     
     // Only handle horizontal swipes (ignore vertical scrolling)
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 15) {
       e.preventDefault();
       
       // Add real-time visual feedback during swipe
       if (cardRef.current) {
-        const rotation = (diffX / 20) * (diffX > 0 ? 1 : -1);
-        const opacity = Math.max(0.3, 1 - Math.abs(diffX) / 300);
-        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg)`;
+        const rotation = (diffX / 15) * (diffX > 0 ? 1 : -1);
+        const opacity = Math.max(0.2, 1 - Math.abs(diffX) / 250);
+        const scale = Math.max(0.8, 1 - Math.abs(diffX) / 500);
+        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg) scale(${scale})`;
         cardRef.current.style.opacity = opacity.toString();
+        
+        // Add swipe direction hint
+        if (diffX > 50) {
+          cardRef.current.style.borderLeft = '4px solid #ef4444';
+        } else if (diffX < -50) {
+          cardRef.current.style.borderRight = '4px solid #22c55e';
+        }
       }
     }
   };
@@ -161,6 +169,16 @@ export default function SwipePage() {
       cardRef.current.style.cursor = 'grab';
     }
     
+    // Reset card position and style
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'all 0.3s ease';
+      cardRef.current.style.transform = '';
+      cardRef.current.style.opacity = '';
+      cardRef.current.style.cursor = 'grab';
+      cardRef.current.style.borderLeft = '';
+      cardRef.current.style.borderRight = '';
+    }
+    
     touchStartX.current = 0;
     touchStartY.current = 0;
   };
@@ -182,12 +200,20 @@ export default function SwipePage() {
     const diffX = touchStartX.current - e.clientX;
     const diffY = touchStartX.current - e.clientY;
     
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 15) {
       if (cardRef.current) {
-        const rotation = (diffX / 20) * (diffX > 0 ? 1 : -1);
-        const opacity = Math.max(0.3, 1 - Math.abs(diffX) / 300);
-        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg)`;
+        const rotation = (diffX / 15) * (diffX > 0 ? 1 : -1);
+        const opacity = Math.max(0.2, 1 - Math.abs(diffX) / 250);
+        const scale = Math.max(0.8, 1 - Math.abs(diffX) / 500);
+        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg) scale(${scale})`;
         cardRef.current.style.opacity = opacity.toString();
+        
+        // Add swipe direction hint
+        if (diffX > 50) {
+          cardRef.current.style.borderLeft = '4px solid #ef4444';
+        } else if (diffX < -50) {
+          cardRef.current.style.borderRight = '4px solid #22c55e';
+        }
       }
     }
   };
@@ -222,6 +248,8 @@ export default function SwipePage() {
       cardRef.current.style.transform = '';
       cardRef.current.style.opacity = '';
       cardRef.current.style.cursor = 'grab';
+      cardRef.current.style.borderLeft = '';
+      cardRef.current.style.borderRight = '';
     }
     
     touchStartX.current = 0;
@@ -398,19 +426,19 @@ export default function SwipePage() {
   const currentProperty = properties[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4">
+        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-6">
           <div className="flex items-center justify-between">
             <button
               onClick={handleBackToCountrySelect}
-              className="text-white hover:text-blue-200 transition-colors"
+              className="text-white hover:text-blue-200 transition-colors p-2 rounded-full hover:bg-white/20"
             >
               ← Back
             </button>
             <div className="text-center">
-              <h1 className="font-semibold">{selectedCountry?.name}</h1>
+              <h1 className="font-bold text-lg">{selectedCountry?.name}</h1>
               <p className="text-sm opacity-90">
                 {currentIndex + 1} of {properties.length}
               </p>
@@ -422,9 +450,9 @@ export default function SwipePage() {
         {/* Property Card */}
         <div 
           ref={cardRef}
-          className={`relative transition-transform duration-300 ${
-            swipeDirection === 'left' ? 'transform -translate-x-full opacity-0' :
-            swipeDirection === 'right' ? 'transform translate-x-full opacity-0' : ''
+          className={`relative transition-all duration-300 ease-out ${
+            swipeDirection === 'left' ? 'transform -translate-x-full opacity-0 scale-95' :
+            swipeDirection === 'right' ? 'transform translate-x-full opacity-0 scale-95' : ''
           }`}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -439,28 +467,42 @@ export default function SwipePage() {
             touchAction: 'pan-y'
           }}
         >
+          {/* Swipe Direction Indicators */}
+          <div className="absolute top-4 left-4 z-10">
+            {swipeDirection === 'left' && (
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                PASS ❌
+              </div>
+            )}
+            {swipeDirection === 'right' && (
+              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                LIKE ❤️
+              </div>
+            )}
+          </div>
+
           <img
             src={currentProperty.img_url}
             alt={currentProperty.title}
-            className="w-full h-80 object-cover"
+            className="w-full h-80 object-cover rounded-t-3xl"
           />
           
           {/* Property Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
-            <h2 className="text-xl font-bold mb-2">{currentProperty.title}</h2>
-            <div className="flex items-center mb-2">
-              <MapPin className="h-4 w-4 mr-2" />
-              <span className="text-sm">{currentProperty.location}</span>
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6 text-white">
+            <h2 className="text-2xl font-bold mb-3 leading-tight">{currentProperty.title}</h2>
+            <div className="flex items-center mb-3">
+              <MapPin className="h-5 w-5 mr-2 text-blue-300" />
+              <span className="text-sm font-medium">{currentProperty.location}</span>
             </div>
-            <p className="text-2xl font-bold text-yellow-400 mb-2">{currentProperty.price}</p>
-            <p className="text-sm opacity-90 line-clamp-2">{currentProperty.description}</p>
+            <p className="text-3xl font-bold text-yellow-400 mb-3">{currentProperty.price}</p>
+            <p className="text-sm opacity-90 line-clamp-2 mb-4">{currentProperty.description}</p>
             
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-2">
               {currentProperty.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="bg-white/20 text-white px-2 py-1 rounded-full text-xs"
+                  className="bg-white/25 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm"
                 >
                   {tag}
                 </span>
@@ -470,37 +512,39 @@ export default function SwipePage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="p-6">
-          <div className="flex justify-center space-x-6">
+        <div className="p-6 bg-gray-50">
+          <div className="flex justify-center space-x-8">
             <button
               onClick={handlePass}
-              className="w-16 h-16 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+              className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-110 transform"
             >
-              <X className="h-8 w-8" />
+              <X className="h-10 w-10" />
             </button>
             
             <button
               onClick={handleLike}
-              className="w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+              className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-110 transform"
             >
-              <Heart className="h-8 w-8" />
+              <Heart className="h-10 w-10" />
             </button>
           </div>
 
           {/* Swipe Instructions */}
-          <div className="mt-4 text-center text-sm text-gray-500">
-            <p className="mb-2">💡 <strong>Swipe Controls:</strong></p>
-            <div className="flex justify-center items-center space-x-6 text-xs">
-              <div className="flex items-center">
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                <span>Swipe Left = Pass</span>
+          <div className="mt-6 text-center">
+            <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-4 border border-blue-200">
+              <p className="text-blue-800 font-semibold mb-3">💡 <strong>Swipe Controls:</strong></p>
+              <div className="flex justify-center items-center space-x-8 text-sm text-blue-700">
+                <div className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm">
+                  <ArrowLeft className="h-5 w-5 mr-2 text-red-500" />
+                  <span className="font-medium">Swipe Left = Pass</span>
+                </div>
+                <div className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm">
+                  <ArrowRight className="h-5 w-5 mr-2 text-green-500" />
+                  <span className="font-medium">Swipe Right = Like</span>
+                </div>
               </div>
-              <div className="flex items-center">
-                <ArrowRight className="h-4 w-4 mr-1" />
-                <span>Swipe Right = Like</span>
-              </div>
+              <p className="mt-3 text-xs text-blue-600">Keyboard: ← → arrows, Space (like), Esc (pass)</p>
             </div>
-            <p className="mt-2 text-xs">Keyboard: ← → arrows, Space (like), Esc (pass)</p>
           </div>
           
           {/* View Details Button */}
@@ -509,7 +553,7 @@ export default function SwipePage() {
               href={currentProperty.contactUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-medium transition-colors"
+              className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-center py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               View Details & Contact Agent
             </a>
