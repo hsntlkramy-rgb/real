@@ -169,16 +169,6 @@ export default function SwipePage() {
       cardRef.current.style.cursor = 'grab';
     }
     
-    // Reset card position and style
-    if (cardRef.current) {
-      cardRef.current.style.transition = 'all 0.3s ease';
-      cardRef.current.style.transform = '';
-      cardRef.current.style.opacity = '';
-      cardRef.current.style.cursor = 'grab';
-      cardRef.current.style.borderLeft = '';
-      cardRef.current.style.borderRight = '';
-    }
-    
     touchStartX.current = 0;
     touchStartY.current = 0;
   };
@@ -248,8 +238,6 @@ export default function SwipePage() {
       cardRef.current.style.transform = '';
       cardRef.current.style.opacity = '';
       cardRef.current.style.cursor = 'grab';
-      cardRef.current.style.borderLeft = '';
-      cardRef.current.style.borderRight = '';
     }
     
     touchStartX.current = 0;
@@ -280,11 +268,19 @@ export default function SwipePage() {
           break;
         case ' ':
           e.preventDefault();
-          handleLike();
+          setSwipeDirection('right');
+          setTimeout(() => {
+            handleLike();
+            setSwipeDirection(null);
+          }, 300);
           break;
         case 'Escape':
           e.preventDefault();
-          handlePass();
+          setSwipeDirection('left');
+          setTimeout(() => {
+            handlePass();
+            setSwipeDirection(null);
+          }, 300);
           break;
       }
     };
@@ -426,31 +422,31 @@ export default function SwipePage() {
   const currentProperty = properties[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white p-6">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={handleBackToCountrySelect}
-              className="text-white hover:text-blue-200 transition-colors p-2 rounded-full hover:bg-white/20"
-            >
-              ← Back
-            </button>
-            <div className="text-center">
-              <h1 className="font-bold text-lg">{selectedCountry?.name}</h1>
-              <p className="text-sm opacity-90">
-                {currentIndex + 1} of {properties.length}
-              </p>
-            </div>
-            <div className="w-8"></div>
+    <div className="min-h-screen bg-black flex flex-col">
+      {/* Header */}
+      <div className="bg-white/10 backdrop-blur-md border-b border-white/20 p-4 z-20 relative">
+        <div className="flex items-center justify-between max-w-md mx-auto">
+          <button
+            onClick={handleBackToCountrySelect}
+            className="text-white hover:text-gray-300 transition-colors p-2 rounded-full hover:bg-white/10"
+          >
+            ← Back
+          </button>
+          <div className="text-center">
+            <h1 className="font-bold text-lg text-white">{selectedCountry?.name}</h1>
+            <p className="text-sm text-white/80">
+              {currentIndex + 1} of {properties.length}
+            </p>
           </div>
+          <div className="w-8"></div>
         </div>
+      </div>
 
-        {/* Property Card */}
+      {/* Property Card - Full Screen Tinder Style */}
+      <div className="flex-1 relative overflow-hidden">
         <div 
           ref={cardRef}
-          className={`relative transition-all duration-300 ease-out ${
+          className={`absolute inset-0 transition-all duration-300 ease-out ${
             swipeDirection === 'left' ? 'transform -translate-x-full opacity-0 scale-95' :
             swipeDirection === 'right' ? 'transform translate-x-full opacity-0 scale-95' : ''
           }`}
@@ -467,97 +463,100 @@ export default function SwipePage() {
             touchAction: 'pan-y'
           }}
         >
+          {/* Full Screen Image */}
+          <img
+            src={currentProperty.img_url}
+            alt={currentProperty.title}
+            className="w-full h-full object-cover"
+          />
+          
           {/* Swipe Direction Indicators */}
-          <div className="absolute top-4 left-4 z-10">
+          <div className="absolute top-6 left-6 z-10">
             {swipeDirection === 'left' && (
-              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+              <div className="bg-red-500 text-white px-4 py-2 rounded-full text-lg font-bold animate-pulse shadow-lg">
                 PASS ❌
               </div>
             )}
             {swipeDirection === 'right' && (
-              <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+              <div className="bg-green-500 text-white px-4 py-2 rounded-full text-lg font-bold animate-pulse shadow-lg">
                 LIKE ❤️
               </div>
             )}
           </div>
-
-          <img
-            src={currentProperty.img_url}
-            alt={currentProperty.title}
-            className="w-full h-80 object-cover rounded-t-3xl"
-          />
           
-          {/* Property Info Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6 text-white">
-            <h2 className="text-2xl font-bold mb-3 leading-tight">{currentProperty.title}</h2>
-            <div className="flex items-center mb-3">
-              <MapPin className="h-5 w-5 mr-2 text-blue-300" />
-              <span className="text-sm font-medium">{currentProperty.location}</span>
-            </div>
-            <p className="text-3xl font-bold text-yellow-400 mb-3">{currentProperty.price}</p>
-            <p className="text-sm opacity-90 line-clamp-2 mb-4">{currentProperty.description}</p>
-            
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {currentProperty.tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="bg-white/25 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm"
-                >
-                  {tag}
-                </span>
-              ))}
+          {/* Property Info Overlay - Tinder Style */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 text-white">
+            <div className="max-w-md mx-auto">
+              <h2 className="text-3xl font-bold mb-4 leading-tight">{currentProperty.title}</h2>
+              <div className="flex items-center mb-4">
+                <MapPin className="h-6 w-6 mr-3 text-blue-300" />
+                <span className="text-lg font-medium">{currentProperty.location}</span>
+              </div>
+              <p className="text-4xl font-bold text-yellow-400 mb-4">{currentProperty.price}</p>
+              <p className="text-lg opacity-90 mb-6 leading-relaxed">{currentProperty.description}</p>
+              
+              {/* Tags */}
+              <div className="flex flex-wrap gap-3 mb-6">
+                {currentProperty.tags.slice(0, 4).map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border border-white/30"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Action Buttons */}
-        <div className="p-6 bg-gray-50">
-          <div className="flex justify-center space-x-8">
-            <button
-              onClick={handlePass}
-              className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-110 transform"
-            >
-              <X className="h-10 w-10" />
-            </button>
-            
-            <button
-              onClick={handleLike}
-              className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-110 transform"
-            >
-              <Heart className="h-10 w-10" />
-            </button>
-          </div>
-
-          {/* Swipe Instructions */}
-          <div className="mt-6 text-center">
-            <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-4 border border-blue-200">
-              <p className="text-blue-800 font-semibold mb-3">💡 <strong>Swipe Controls:</strong></p>
-              <div className="flex justify-center items-center space-x-8 text-sm text-blue-700">
-                <div className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm">
-                  <ArrowLeft className="h-5 w-5 mr-2 text-red-500" />
-                  <span className="font-medium">Swipe Left = Pass</span>
-                </div>
-                <div className="flex items-center bg-white px-3 py-2 rounded-full shadow-sm">
-                  <ArrowRight className="h-5 w-5 mr-2 text-green-500" />
-                  <span className="font-medium">Swipe Right = Like</span>
-                </div>
-              </div>
-              <p className="mt-3 text-xs text-blue-600">Keyboard: ← → arrows, Space (like), Esc (pass)</p>
-            </div>
-          </div>
+      {/* Action Buttons - Tinder Style */}
+      <div className="bg-black/20 backdrop-blur-md border-t border-white/20 p-6">
+        <div className="flex justify-center space-x-12 max-w-md mx-auto">
+          <button
+            onClick={handlePass}
+            className="w-16 h-16 bg-white hover:bg-gray-100 text-red-500 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 transform border-2 border-red-500"
+          >
+            <X className="h-8 w-8" />
+          </button>
           
-          {/* View Details Button */}
-          <div className="mt-6">
-            <a
-              href={currentProperty.contactUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-center py-4 rounded-2xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              View Details & Contact Agent
-            </a>
+          <button
+            onClick={handleLike}
+            className="w-16 h-16 bg-white hover:bg-gray-100 text-green-500 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 transform border-2 border-green-500"
+          >
+            <Heart className="h-8 w-8" />
+          </button>
+        </div>
+
+        {/* Swipe Instructions - Minimal Tinder Style */}
+        <div className="mt-4 text-center">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
+            <p className="text-white/80 font-medium mb-2">💡 Swipe Controls</p>
+            <div className="flex justify-center items-center space-x-6 text-sm text-white/70">
+              <div className="flex items-center">
+                <ArrowLeft className="h-4 w-4 mr-1 text-red-400" />
+                <span>Swipe Left = Pass</span>
+              </div>
+              <div className="flex items-center">
+                <ArrowRight className="h-4 w-4 mr-1 text-green-400" />
+                <span>Swipe Right = Like</span>
+              </div>
+            </div>
+            <p className="mt-2 text-xs text-white/60">Keyboard: ← → arrows, Space (like), Esc (pass)</p>
           </div>
+        </div>
+        
+        {/* View Details Button - Tinder Style */}
+        <div className="mt-4">
+          <a
+            href={currentProperty.contactUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-white hover:bg-gray-100 text-black text-center py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/30"
+          >
+            View Details & Contact Agent
+          </a>
         </div>
       </div>
     </div>
