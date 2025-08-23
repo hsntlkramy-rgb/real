@@ -92,6 +92,12 @@ export default function SwipePage() {
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    
+    // Add visual feedback
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'none';
+      cardRef.current.style.cursor = 'grabbing';
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -104,8 +110,16 @@ export default function SwipePage() {
     const diffY = touchStartY.current - touchCurrentY;
     
     // Only handle horizontal swipes (ignore vertical scrolling)
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
       e.preventDefault();
+      
+      // Add real-time visual feedback during swipe
+      if (cardRef.current) {
+        const rotation = (diffX / 20) * (diffX > 0 ? 1 : -1);
+        const opacity = Math.max(0.3, 1 - Math.abs(diffX) / 300);
+        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg)`;
+        cardRef.current.style.opacity = opacity.toString();
+      }
     }
   };
 
@@ -137,6 +151,77 @@ export default function SwipePage() {
           setSwipeDirection(null);
         }, 300);
       }
+    }
+    
+    // Reset card position and style
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'all 0.3s ease';
+      cardRef.current.style.transform = '';
+      cardRef.current.style.opacity = '';
+      cardRef.current.style.cursor = 'grab';
+    }
+    
+    touchStartX.current = 0;
+    touchStartY.current = 0;
+  };
+
+  // Mouse drag handlers for desktop
+  const handleMouseDown = (e: React.MouseEvent) => {
+    touchStartX.current = e.clientX;
+    touchStartY.current = e.clientY;
+    
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'none';
+      cardRef.current.style.cursor = 'grabbing';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!touchStartX.current) return;
+    
+    const diffX = touchStartX.current - e.clientX;
+    const diffY = touchStartX.current - e.clientY;
+    
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+      if (cardRef.current) {
+        const rotation = (diffX / 20) * (diffX > 0 ? 1 : -1);
+        const opacity = Math.max(0.3, 1 - Math.abs(diffX) / 300);
+        cardRef.current.style.transform = `translateX(${-diffX}px) rotate(${rotation}deg)`;
+        cardRef.current.style.opacity = opacity.toString();
+      }
+    }
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!touchStartX.current) return;
+    
+    const diffX = touchStartX.current - e.clientX;
+    const diffY = touchStartX.current - e.clientY;
+    
+    const minSwipeDistance = 100;
+    
+    if (Math.abs(diffX) > minSwipeDistance && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) {
+        setSwipeDirection('left');
+        setTimeout(() => {
+          handlePass();
+          setSwipeDirection(null);
+        }, 300);
+      } else {
+        setSwipeDirection('right');
+        setTimeout(() => {
+          handleLike();
+          setSwipeDirection(null);
+        }, 300);
+      }
+    }
+    
+    // Reset card position and style
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'all 0.3s ease';
+      cardRef.current.style.transform = '';
+      cardRef.current.style.opacity = '';
+      cardRef.current.style.cursor = 'grab';
     }
     
     touchStartX.current = 0;
@@ -344,6 +429,15 @@ export default function SwipePage() {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          style={{
+            cursor: 'grab',
+            userSelect: 'none',
+            touchAction: 'pan-y'
+          }}
         >
           <img
             src={currentProperty.img_url}
