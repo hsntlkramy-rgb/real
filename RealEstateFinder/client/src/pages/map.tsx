@@ -2,38 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { PropertyMap } from '../components/property-map';
 import { PropertyWithScore } from '../lib/types';
 import { useLocation } from 'wouter';
-import { generatedUAEProperties } from '../data/properties-fixed';
+import cyprusProperties from '../cyprus-properties.json';
 
-// Function to convert UAE properties to PropertyWithScore format
-const convertToPropertyWithScore = (uaeProperty: any): PropertyWithScore => {
+// Function to convert Cyprus properties to PropertyWithScore format
+const convertToPropertyWithScore = (cyprusProperty: any): PropertyWithScore => {
   return {
-    id: uaeProperty.id,
-    title: uaeProperty.title,
-    description: uaeProperty.description,
-    price: uaeProperty.price,
-    location: uaeProperty.location,
-    country: 'UAE',
-    images: uaeProperty.images || [],
-    img_url: uaeProperty.img_url || (uaeProperty.images && uaeProperty.images[0]) || '',
-    tags: uaeProperty.tags || [],
-    personas: uaeProperty.personas || {},
-    latitude: uaeProperty.latitude,
-    longitude: uaeProperty.longitude,
-    isActive: uaeProperty.isActive || true,
+    id: Math.random(), // Generate random ID since Cyprus properties don't have one
+    title: cyprusProperty.title,
+    description: cyprusProperty.description,
+    price: cyprusProperty.price,
+    location: cyprusProperty.location,
+    country: 'CY',
+    images: cyprusProperty.images || [],
+    img_url: cyprusProperty.img_url || (cyprusProperty.images && cyprusProperty.images[0]) || '',
+    tags: cyprusProperty.tags || [],
+    personas: cyprusProperty.personas || {},
+    latitude: cyprusProperty.latitude,
+    longitude: cyprusProperty.longitude,
+    isActive: cyprusProperty.isActive || true,
     coordinates: {
-      lat: uaeProperty.latitude,
-      lng: uaeProperty.longitude
+      lat: cyprusProperty.latitude,
+      lng: cyprusProperty.longitude
     },
-    contactUrl: uaeProperty.contactUrl || uaeProperty.lister_url,
-    lister_url: uaeProperty.lister_url,
-    contactPhone: uaeProperty.contactPhone,
-    contactEmail: uaeProperty.contactEmail
+    contactUrl: cyprusProperty.contactUrl || cyprusProperty.lister_url,
+    lister_url: cyprusProperty.lister_url,
+    contactPhone: cyprusProperty.contactPhone,
+    contactEmail: cyprusProperty.contactEmail
   };
 };
 
 export default function MapPage() {
   const [location, setLocation] = useLocation();
-  const [selectedCountry, setSelectedCountry] = useState('UAE'); // Default to UAE
+  const [selectedCountry, setSelectedCountry] = useState('CY'); // Default to Cyprus
   const [searchQuery, setSearchQuery] = useState('');
   const [properties, setProperties] = useState<PropertyWithScore[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,14 +47,14 @@ export default function MapPage() {
     }
   }, []);
   
-  // Load UAE properties and filter based on search
+  // Load Cyprus properties and filter based on search
   useEffect(() => {
     setLoading(true);
     
-    let filteredProperties = generatedUAEProperties as any[];
+    let filteredProperties = cyprusProperties as any[];
     
-    console.log('=== MAP PAGE: Loading UAE Properties ===');
-    console.log('Total UAE properties:', filteredProperties.length);
+    console.log('=== MAP PAGE: Loading Cyprus Properties ===');
+    console.log('Total Cyprus properties:', filteredProperties.length);
     console.log('First property:', filteredProperties[0]);
     
     // Filter by search query if provided
@@ -69,8 +69,8 @@ export default function MapPage() {
       console.log('After search filter:', filteredProperties.length);
     }
     
-    // Filter by country (though we're only showing UAE properties)
-    if (selectedCountry !== 'All' && selectedCountry !== 'UAE') {
+    // Filter by country (though we're only showing Cyprus properties)
+    if (selectedCountry !== 'All' && selectedCountry !== 'CY') {
       filteredProperties = [];
     }
     
@@ -79,14 +79,14 @@ export default function MapPage() {
     
     console.log('Converted properties:', convertedProperties.length);
     console.log('First converted property:', convertedProperties[0]);
-    console.log('=== END MAP PAGE: Loading UAE Properties ===');
+    console.log('=== END MAP PAGE: Loading Cyprus Properties ===');
     
     setProperties(convertedProperties);
     setLoading(false);
   }, [searchQuery, selectedCountry]);
 
   const countries = [
-    { code: 'UAE', name: 'United Arab Emirates' },
+    { code: 'CY', name: 'Cyprus' },
     { code: 'All', name: 'All Countries' }
   ];
 
@@ -107,7 +107,7 @@ export default function MapPage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">UAE Property Map</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Cyprus Property Map</h1>
             
             <div className="flex items-center gap-4">
               {/* Search Bar */}
@@ -162,7 +162,7 @@ export default function MapPage() {
 
       <div className="h-[calc(100vh-120px)]">
         <PropertyMap 
-          initialCenter={[25.2048, 55.2708]} // UAE center (Dubai)
+          initialCenter={[35.1264, 33.4299]} // Cyprus center
           initialZoom={8}
           properties={properties}
           loading={loading}
